@@ -66,12 +66,12 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
               Select any room on the plan to inspect details and start a reservation request
             </p>
           </div>
-          <span className="text-[11px] font-mono font-bold text-[var(--muted)] px-2 py-1 border border-[var(--line)] rounded-sm uppercase tracking-widest">
+          <span className="text-xs font-mono font-bold text-[var(--muted)] px-2 py-1 border border-[var(--line)] rounded-sm uppercase tracking-widest">
             Interactive 2D Plan
           </span>
         </div>
 
-        <div className="relative aspect-[16/10] bg-white rounded-sm border border-[var(--line)] overflow-hidden shadow-sm flex items-center justify-center">
+        <div className="relative aspect-[16/10] bg-white rounded-sm border border-[var(--line)] overflow-hidden  flex items-center justify-center">
           <svg
             viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`}
             className="w-full h-full select-none"
@@ -227,7 +227,7 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
         </div>
 
         {/* Legend */}
-        <div className="mt-4 pt-3 border-t border-[var(--line)] flex flex-wrap items-center justify-between text-[11px] text-[var(--muted)] gap-4">
+        <div className="mt-4 pt-3 border-t border-[var(--line)] flex flex-wrap items-center justify-between text-xs text-[var(--muted)] gap-4">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 bg-[var(--ink)] border border-[var(--ink)] inline-block" />
@@ -265,14 +265,14 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
                   <Building2 className="w-12 h-12 text-[var(--faint)]" />
                 </div>
               )}
-              <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
+              <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
                 {selectedFacility.facility_code}
               </span>
             </div>
 
             <div>
               <div className="flex items-center justify-between gap-2">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-[10px] font-bold uppercase bg-[var(--ink)] text-white">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-xs font-bold uppercase bg-[var(--ink)] text-white">
                   {selectedFacility.category.replace('_', ' ')}
                 </span>
                 <span className="flex items-center gap-1 text-[var(--ink)] font-medium">
@@ -305,7 +305,7 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
 
             <Link
               to={`/facilities/${selectedFacility.id}`}
-              className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-center text-sm shadow-sm transition disabled:opacity-50"
+              className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-center text-sm  transition disabled:opacity-50"
             >
               View Details & Reserve
               <ArrowRight className="w-4 h-4 ml-1" />

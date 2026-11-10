@@ -129,7 +129,7 @@ export function LandingPage() {
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
                     to="/login"
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-white text-black font-semibold text-sm hover:bg-gray-900 transition"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-white text-black font-semibold text-sm hover:bg-[#1a1a1a] transition"
                   >
                     <Compass className="w-4 h-4" />
                     Sign in
@@ -147,7 +147,7 @@ export function LandingPage() {
             </div>
 
             <div className="lg:col-span-5 space-y-6">
-              <div className="rounded-sm border border-white/10 bg-white/5 p-5 shadow-xl">
+              <div className="rounded-sm border border-white/10 bg-white/5 p-5 ">
                 <h3 className="text-[var(--muted)] text-xs font-semibold uppercase tracking-widest mb-4">
                   Availability board
                 </h3>
@@ -158,11 +158,11 @@ export function LandingPage() {
                       <div key={f.code} className="flex items-center justify-between px-4 py-3 border border-white/10 rounded-sm">
                         <div className="flex flex-col">
                           <p className="text-white font-medium text-sm">{f.name}</p>
-                          <span className="text-[11px] text-white/40 uppercase tracking-wider">{f.code}</span>
+                          <span className="text-xs text-white/40 uppercase tracking-wider">{f.code}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span
-                            className={`w-2 h-2 rounded-full ${active ? 'bg-white' : 'bg-white/20'}`}
+                            className={`w-2 h-2 rounded-sm ${active ? 'bg-white' : 'bg-white/20'}`}
                           />
                           <span className="text-xs text-white/70 font-medium capitalize">{f.status}</span>
                         </div>
@@ -181,7 +181,7 @@ export function LandingPage() {
                 ].map(([big, small]) => (
                   <div key={small} className="rounded-sm border border-white/10 bg-white/5 p-4">
                     <div className="text-xl font-black text-white">{big}</div>
-                    <div className="mt-1 text-[10px] text-white/50 uppercase tracking-wider font-medium">{small}</div>
+                    <div className="mt-1 text-xs text-white/50 uppercase tracking-wider font-medium">{small}</div>
                   </div>
                 ))}
               </div>
@@ -208,7 +208,7 @@ export function LandingPage() {
               return (
                 <li key={i} className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <span className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-sm border border-black bg-black text-white font-black text-[10px] uppercase">
+                    <span className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-sm border border-black bg-black text-white font-black text-xs uppercase">
                       0{i + 1}
                     </span>
                     <div>
@@ -233,10 +233,10 @@ export function LandingPage() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-[var(--line)]">
-                  <th className="px-6 py-4 text-[11px] font-bold text-[var(--muted)] uppercase tracking-wider">Building</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[var(--muted)] uppercase tracking-wider">Floor plan</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[var(--muted)] uppercase tracking-wider">Facilities</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[var(--muted)] uppercase tracking-wider text-right">Action</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[var(--muted)] uppercase tracking-wider">Building</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[var(--muted)] uppercase tracking-wider">Floor plan</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[var(--muted)] uppercase tracking-wider">Facilities</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[var(--muted)] uppercase tracking-wider text-right">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -300,7 +300,7 @@ export function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4">
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-sm bg-white text-black font-semibold hover:bg-gray-900 transition"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-sm bg-white text-black font-semibold hover:bg-[#1a1a1a] transition"
               >
                 <Compass className="w-5 h-5" />
                 Sign in and explore

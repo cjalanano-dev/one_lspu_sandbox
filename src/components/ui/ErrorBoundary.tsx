@@ -32,7 +32,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
       return (
         <div className="min-h-screen flex items-center justify-center bg-white p-6">
-          <div className="w-full max-w-md p-6 rounded-sm border border-[var(--line)] bg-white shadow-sm text-center">
+          <div className="w-full max-w-md p-6 rounded-sm border border-[var(--line)] bg-white  text-center">
             <AlertTriangle className="w-10 h-10 text-[var(--ink)] mx-auto mb-4" />
             <h2 className="text-lg font-bold text-[var(--ink)] mb-2">Something went wrong</h2>
             <p className="text-sm text-[var(--muted)] mb-4">

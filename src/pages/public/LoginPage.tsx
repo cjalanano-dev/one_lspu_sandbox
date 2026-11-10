@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Mail, Lock, ArrowRight, User } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../features/auth/AuthContext'
 
 export function LoginPage() {
@@ -8,7 +9,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const { signIn, user } = useAuth()
+  const { signIn } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -20,7 +21,19 @@ export function LoginPage() {
       setIsLoading(true)
       await signIn(email, password)
 
-      const role = user?.primary_role ?? 'student'
+      // user profile is loaded asynchronously by the auth listener;
+      // fetch it directly so the role-based redirect fires correctly.
+      let role = 'student'
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('primary_role')
+          .eq('email', email)
+          .single()
+        role = data?.primary_role ?? 'student'
+      } catch {
+        /* keep default student role if profile lookup fails */
+      }
       const defaultPath =
         role === 'officer' ? '/organization' : role === 'facility_admin' || role === 'system_admin' ? '/admin' : '/explorer'
       const from = (location.state as { from?: { pathname: string } })?.from?.pathname || defaultPath
@@ -50,8 +63,8 @@ export function LoginPage() {
             and submit reservation requests.
           </p>
         </div>
-        <div className="mt-12">
-          <p className="text-[11px] text-white/40 uppercase tracking-widest font-semibold mb-2">
+        {/* <div className="mt-12">
+          <p className="text-xs text-white/40 uppercase tracking-widest font-semibold mb-2">
             Demo accounts
           </p>
           <ul className="space-y-2 text-sm text-white/70 leading-relaxed">
@@ -72,7 +85,7 @@ export function LoginPage() {
               <span className="ml-2 font-normal text-white/50">· All accounts</span>
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
 
       {/* Right — white form */}
@@ -95,7 +108,7 @@ export function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
                 aria-describedby={error ? 'login-error' : undefined}
               />
             </div>
@@ -111,7 +124,7 @@ export function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
                 aria-describedby={error ? 'login-error' : undefined}
               />
             </div>
@@ -126,7 +139,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 rounded-sm bg-[var(--line-strong)] hover:bg-[#1a1a1a] text-white font-semibold text-sm shadow-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-sm bg-[var(--line-strong)] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>

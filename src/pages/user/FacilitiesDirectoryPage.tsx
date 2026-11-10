@@ -58,14 +58,14 @@ export function FacilitiesDirectoryPage() {
               placeholder="Search facility name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-white focus:outline-none focus:border-[var(--line-strong)]"
+              className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-white focus:border-[var(--line-strong)]"
             />
           </div>
 
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-medium text-[var(--ink)] bg-white focus:outline-none focus:border-[var(--line-strong)] appearance-none"
+            className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-medium text-[var(--ink)] bg-white focus:border-[var(--line-strong)] appearance-none"
           >
             <option value="all">All categories</option>
             <option value="auditorium">Auditorium</option>
@@ -99,16 +99,16 @@ export function FacilitiesDirectoryPage() {
                       <Building2 className="w-12 h-12 text-[var(--faint)]" />
                     </div>
                   )}
-                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm text-[10px] font-mono font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
+                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm text-xs font-mono font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
                     {fac.facility_code}
                   </span>
-                  <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase bg-white border border-[var(--ink)] text-[var(--ink)]">
+                  <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-white border border-[var(--ink)] text-[var(--ink)]">
                     {fac.category.replace('_', ' ')}
                   </span>
                 </div>
 
                 <div className="p-5 space-y-3">
-                  <div className="text-[11px] font-bold text-[var(--muted)] uppercase tracking-wider">
+                  <div className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">
                     {building?.name || 'Campus Building'}
                   </div>
                   <h3 className="font-bold text-[var(--ink)] text-sm leading-snug">{fac.name}</h3>
@@ -132,7 +132,7 @@ export function FacilitiesDirectoryPage() {
               <div className="p-5 pt-0">
                 <Link
                   to={`/facilities/${fac.id}`}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-sm shadow-sm transition"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition"
                 >
                   View Details & Book
                   <ArrowRight className="w-3.5 h-3.5" />

@@ -111,13 +111,13 @@ export function OrganizationDashboardPage() {
           )}
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="px-2 py-0.5 rounded-sm border border-white text-[10px] font-mono font-bold uppercase bg-white text-[var(--ink)]">
+              <span className="px-2 py-0.5 rounded-sm border border-white text-xs font-mono font-bold uppercase bg-white text-[var(--ink)]">
                 {selectedOrg?.acronym}
               </span>
-              <span className="text-[11px] text-white/50 font-medium uppercase tracking-widest">Student Organization</span>
+              <span className="text-xs text-white/50 font-medium uppercase tracking-widest">Student Organization</span>
             </div>
             <h1 className="text-2xl font-black text-white">{selectedOrg?.name}</h1>
-            <p className="text-[11px] text-white/60 mt-1 max-w-2xl leading-relaxed uppercase tracking-wider font-medium">
+            <p className="text-xs text-white/60 mt-1 max-w-2xl leading-relaxed uppercase tracking-wider font-medium">
               {selectedOrg?.description}
             </p>
           </div>
@@ -125,7 +125,7 @@ export function OrganizationDashboardPage() {
         <div className="flex items-center gap-3 w-full md:w-auto">
           <button
             onClick={() => setShowNewActivityModal(true)}
-            className="px-5 py-3 rounded-sm bg-white text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-gray-900 transition"
+            className="px-5 py-3 rounded-sm bg-white text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition"
           >
             <Plus className="w-4 h-4" />
             New Organization Activity
@@ -149,7 +149,7 @@ export function OrganizationDashboardPage() {
                   <CalendarDays className="w-4 h-4 text-[var(--ink)]" />
                   Organization Activities
                 </h3>
-                <p className="text-[11px] text-[var(--muted)] mt-0.5 uppercase tracking-wider font-medium">
+                <p className="text-xs text-[var(--muted)] mt-0.5 uppercase tracking-wider font-medium">
                   Planned university events, hackathons, and workshops
                 </p>
               </div>
@@ -165,7 +165,7 @@ export function OrganizationDashboardPage() {
 
           <div className="space-y-3">
             {activities.length === 0 ? (
-              <div className="p-8 text-center text-[var(--muted)] text-[11px]">
+              <div className="p-8 text-center text-[var(--muted)] text-xs">
                 No activities planned. Click 'New Organization Activity' to create one.
               </div>
             ) : (
@@ -179,7 +179,7 @@ export function OrganizationDashboardPage() {
                     <span className={`tag ${statusTagClass(act.status)}`}>{act.status.toUpperCase()}</span>
                   </div>
                   <p className="text-xs text-[var(--muted)]">{act.description}</p>
-                  <div className="flex items-center justify-between pt-2 border-t border-[var(--line)] text-[11px] text-[var(--muted)]">
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--line)] text-xs text-[var(--muted)]">
                     <span className="flex items-center gap-1 font-medium text-[var(--ink)]">
                       <Calendar className="w-3 h-3" />
                       Date: {act.activity_date}
@@ -200,7 +200,7 @@ export function OrganizationDashboardPage() {
                   <Calendar className="w-4 h-4 text-[var(--ink)]" />
                   Organization Facility Reservations
                 </h3>
-                <p className="text-[11px] text-[var(--muted)] mt-0.5 uppercase tracking-wider font-medium">
+                <p className="text-xs text-[var(--muted)] mt-0.5 uppercase tracking-wider font-medium">
                   Live status of venues requested on behalf of {selectedOrg?.acronym}
                 </p>
               </div>
@@ -209,7 +209,7 @@ export function OrganizationDashboardPage() {
 
           <div className="space-y-3">
             {orgReservations.length === 0 ? (
-              <div className="p-8 text-center text-[var(--muted)] text-[11px]">
+              <div className="p-8 text-center text-[var(--muted)] text-xs">
                 No facility reservations submitted for this organization yet.
               </div>
             ) : (
@@ -222,7 +222,7 @@ export function OrganizationDashboardPage() {
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="text-[10px] font-bold text-[var(--ink)] uppercase tracking-widest">
+                        <span className="text-xs font-bold text-[var(--ink)] uppercase tracking-widest">
                           {fac?.name || 'Facility'} ({fac?.facility_code})
                         </span>
                         <h4 className="font-bold text-[var(--ink)] text-sm mt-0.5">{res.title}</h4>
@@ -231,12 +231,12 @@ export function OrganizationDashboardPage() {
                         {res.status.toUpperCase()}
                       </span>
                     </div>
-                    <div className="text-[11px] text-[var(--muted)] flex items-center gap-1.5">
+                    <div className="text-xs text-[var(--muted)] flex items-center gap-1.5">
                       <Clock className="w-3 h-3 text-[var(--faint)]" />
                       <span>{formatDateTime(res.start_datetime)}</span>
                     </div>
                     {res.status === 'approved' && (
-                      <div className="text-[11px] text-[var(--ink)] font-medium flex items-center gap-1 pt-1">
+                      <div className="text-xs text-[var(--ink)] font-medium flex items-center gap-1 pt-1">
                         <CheckCircle2 className="w-3 h-3" />
                         Approved by Administrator
                       </div>
@@ -255,49 +255,53 @@ export function OrganizationDashboardPage() {
         title="Create Organization Activity"
         titleId="create-activity-dialog-title"
       >
-        <p className="text-[11px] text-[var(--muted)] mb-4" id="create-activity-dialog-desc">
+        <p className="text-xs text-[var(--muted)] mb-4" id="create-activity-dialog-desc">
           Add a new official activity to associate with facility reservations.
         </p>
         <form onSubmit={handleCreateActivity} className="space-y-4 text-[var(--ink)]" aria-describedby="create-activity-dialog-desc">
           <div>
-            <label className="block text-sm font-medium text-[var(--ink)] mb-1">Activity Title *</label>
+            <label htmlFor="org-activity-title" className="block text-sm font-medium text-[var(--ink)] mb-1">Activity Title *</label>
             <input
+              id="org-activity-title"
               type="text"
               placeholder="e.g. CodeCamp: Full-Stack Web Sprint"
               value={actTitle}
               onChange={(e) => setActTitle(e.target.value)}
               required
-              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--ink)] mb-1">Description</label>
+            <label htmlFor="org-activity-desc" className="block text-sm font-medium text-[var(--ink)] mb-1">Description</label>
             <textarea
+              id="org-activity-desc"
               rows={2}
               placeholder="Event agenda and target outcomes..."
               value={actDesc}
               onChange={(e) => setActDesc(e.target.value)}
-              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-[var(--ink)] mb-1">Target Date *</label>
+              <label htmlFor="org-activity-date" className="block text-sm font-medium text-[var(--ink)] mb-1">Target Date *</label>
               <input
+                id="org-activity-date"
                 type="date"
                 value={actDate}
                 onChange={(e) => setActDate(e.target.value)}
                 required
-                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--ink)] mb-1">Expected Attendees</label>
+              <label htmlFor="org-activity-attendees" className="block text-sm font-medium text-[var(--ink)] mb-1">Expected Attendees</label>
               <input
+                id="org-activity-attendees"
                 type="number"
                 value={actAttendees}
                 onChange={(e) => setActAttendees(Number(e.target.value) || 0)}
-                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
               />
             </div>
           </div>

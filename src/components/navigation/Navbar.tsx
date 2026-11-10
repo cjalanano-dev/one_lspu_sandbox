@@ -150,7 +150,7 @@ export function Navbar() {
   )
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-[var(--line)] shadow-sm">
+    <header className="sticky top-0 z-50 bg-white border-b border-[var(--line)] ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -183,14 +183,14 @@ export function Navbar() {
                   >
                     <Bell className="w-5 h-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 w-4 h-4 bg-[var(--line-strong)] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                      <span className="absolute top-1 right-1 w-4 h-4 bg-[var(--line-strong)] text-white text-xs font-bold rounded-sm flex items-center justify-center">
                         {unreadCount}
                       </span>
                     )}
                   </button>
 
                   {showNotifs && (
-                    <div id="notifications-dropdown" className="absolute right-0 mt-2 w-80 sm:w-96 bg-white text-[var(--ink)] rounded-[var(--radius)] shadow-lg border border-[var(--line)] py-2 z-50">
+                    <div id="notifications-dropdown" className="absolute right-0 mt-2 w-80 sm:w-96 bg-white text-[var(--ink)] rounded-[var(--radius)]  border border-[var(--line)] py-2 z-50">
                       <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--line)]">
                         <span className="font-semibold text-sm text-[var(--ink)]">Notifications</span>
                         <span className="text-xs text-[var(--faint)]">{notifications.length} total</span>
@@ -222,7 +222,7 @@ export function Navbar() {
                               <div className="flex-1">
                                 <p className="font-semibold text-[var(--ink)]">{n.title}</p>
                                 <p className="text-[var(--muted)] mt-0.5 leading-relaxed">{n.message}</p>
-                                <span className="text-[10px] text-[var(--faint)] mt-1 block">
+                                <span className="text-xs text-[var(--faint)] mt-1 block">
                                   {new Date(n.created_at).toLocaleTimeString([], {
                                     hour: '2-digit',
                                     minute: '2-digit',
@@ -230,7 +230,7 @@ export function Navbar() {
                                 </span>
                               </div>
                               {!n.is_read && (
-                                <span className="w-2 h-2 rounded-full bg-[var(--line-strong)] mt-1.5 shrink-0" />
+                                <span className="w-2 h-2 rounded-sm bg-[var(--line-strong)] mt-1.5 shrink-0" />
                               )}
                             </div>
                           ))
@@ -245,7 +245,7 @@ export function Navbar() {
                   <img
                     src={user?.avatar_url || '/user-placeholder.svg'}
                     alt={user?.full_name || 'User'}
-                    className="w-9 h-9 rounded-full object-cover border border-[var(--line)]"
+                    className="w-9 h-9 rounded-sm object-cover border border-[var(--line)]"
                     loading="lazy"
                   />
                   <div className="hidden lg:block text-left text-xs cursor-pointer" onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
@@ -256,7 +256,7 @@ export function Navbar() {
                   </div>
 
                   {profileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white text-[var(--ink)] rounded-[var(--radius)] shadow-lg border border-[var(--line)] py-2 z-50">
+                    <div className="absolute right-0 mt-2 w-48 bg-white text-[var(--ink)] rounded-[var(--radius)]  border border-[var(--line)] py-2 z-50">
                       <Link
                         to="/my-reservations"
                         onClick={() => setProfileMenuOpen(false)}

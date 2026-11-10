@@ -144,7 +144,7 @@ export function AdminDashboardPage() {
 
       {/* Action Feedback */}
       {actionError || actionSuccess ? (
-        <div className="p-3 border border-[var(--line-strong)] bg-[var(--ink)] text-white text-[11px] flex items-start gap-2" role="status" aria-live="polite">
+        <div className="p-3 border border-[var(--line-strong)] bg-[var(--ink)] text-white text-xs flex items-start gap-2" role="status" aria-live="polite">
           {actionError ? (
             <>
               <AlertTriangle className="w-4 h-4 text-white shrink-0 mt-0.5" />
@@ -179,7 +179,7 @@ export function AdminDashboardPage() {
           icon: <Users className="w-5 h-5" />,
         }].map((cell, i) => (
           <div key={cell.label} className="p-5 border-r border-b border-[var(--line)] last:col-start-1 last:border-r-0 last:border-b-0 lg:last:border-r-0 lg:border-r border-[var(--line)] sm:border-r-0 lg:border-b-0 lg:border-r border-[var(--line)]">
-            <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider block">{cell.label}</span>
+            <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider block">{cell.label}</span>
             <div className="mt-1 flex items-center gap-2">
               <div className="text-2xl font-black text-[var(--ink)]">{cell.value}</div>
               <div className="w-8 h-8 rounded-sm border border-[var(--ink)] flex items-center justify-center text-[var(--ink)] flex-shrink-0 ml-auto">
@@ -195,7 +195,7 @@ export function AdminDashboardPage() {
         <div className="border-b border-[var(--line)] px-6 pt-4 flex items-center gap-6">
           <button
             onClick={() => setActiveTab('pending')}
-            className={`pb-4 text-[11px] font-bold transition border-b-2 flex items-center gap-2 ${
+            className={`pb-4 text-xs font-bold transition border-b-2 flex items-center gap-2 ${
               activeTab === 'pending'
                 ? 'border-[var(--line-strong)] text-[var(--ink)]'
                 : 'border-transparent text-[var(--muted)] hover:text-[var(--ink)]'
@@ -210,7 +210,7 @@ export function AdminDashboardPage() {
 
           <button
             onClick={() => setActiveTab('all')}
-            className={`pb-4 text-[11px] font-bold transition border-b-2 flex items-center gap-2 ${
+            className={`pb-4 text-xs font-bold transition border-b-2 flex items-center gap-2 ${
               activeTab === 'all'
                 ? 'border-[var(--line-strong)] text-[var(--ink)]'
                 : 'border-transparent text-[var(--muted)] hover:text-[var(--ink)]'
@@ -233,17 +233,18 @@ export function AdminDashboardPage() {
                   placeholder="Search title, purpose, or facility..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-white focus:outline-none focus:border-[var(--line-strong)]"
+                  className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-white focus:border-[var(--line-strong)]"
                   aria-label="Search pending reservations"
                 />
               </div>
               <div className="flex items-end gap-1.5">
                 <Filter className="w-3.5 h-3.5 text-[var(--faint)]" />
-                <label className="text-[11px] font-bold text-[var(--ink)] uppercase tracking-widest mb-1 block sr-only">Status filter</label>
+                <label htmlFor="admin-status-filter" className="text-xs font-bold text-[var(--ink)] uppercase tracking-widest mb-1 block">Status filter</label>
                 <select
+                  id="admin-status-filter"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as any)}
-                  className="border border-[var(--line)] rounded-sm text-[11px] py-2 px-3 font-bold text-[var(--ink)] bg-white focus:outline-none focus:border-[var(--line-strong)] appearance-none"
+                  className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-bold text-[var(--ink)] bg-white focus:border-[var(--line-strong)] appearance-none"
                 >
                   <option value="all">All statuses</option>
                   <option value="pending">Pending only</option>
@@ -254,7 +255,7 @@ export function AdminDashboardPage() {
             </div>
 
             {filteredPending.length === 0 ? (
-              <div className="py-16 text-center text-[var(--muted)] text-[11px]">
+              <div className="py-16 text-center text-[var(--muted)] text-xs">
                 <CheckCircle2 className="w-10 h-10 text-[var(--ink)] mx-auto mb-3" />
                 <h4 className="font-bold text-[var(--ink)] text-sm">Review Queue Empty</h4>
                 <p className="text-[var(--muted)] mt-1">
@@ -273,7 +274,7 @@ export function AdminDashboardPage() {
                     >
                       <div className="space-y-2 flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-[var(--ink)] uppercase tracking-widest">
+                          <span className="text-xs font-bold text-[var(--ink)] uppercase tracking-widest">
                             AWAITING APPROVAL
                           </span>
                           <span className="font-medium text-[var(--ink)] truncate">
@@ -283,7 +284,7 @@ export function AdminDashboardPage() {
 
                         <h3 className="font-bold text-[var(--ink)] text-base truncate">{res.title}</h3>
 
-                        <div className="flex flex-wrap items-center gap-4 text-[11px] text-[var(--muted)]">
+                        <div className="flex flex-wrap items-center gap-4 text-xs text-[var(--muted)]">
                           <span className="flex items-center gap-1 font-medium text-[var(--ink)]">
                             <Clock className="w-3 h-3" />
                             {formatDateTime(res.start_datetime)} -{' '}
@@ -301,16 +302,16 @@ export function AdminDashboardPage() {
                           </span>
                         </div>
 
-                        <p className="text-[11px] text-[var(--muted)] pt-2 leading-relaxed">
+                        <p className="text-xs text-[var(--muted)] pt-2 leading-relaxed">
                           <span className="font-bold text-[var(--ink)]">Purpose: </span>
                           {res.purpose}
                         </p>
 
                         {res.requested_equipment?.length > 0 && (
-                          <div className="text-[10px] text-[var(--muted)] flex items-center gap-1 flex-wrap mt-3 uppercase tracking-widest font-bold">
+                          <div className="text-xs text-[var(--muted)] flex items-center gap-1 flex-wrap mt-3 uppercase tracking-widest font-bold">
                             Equipment Setup:
                             {res.requested_equipment.map((eq, i) => (
-                              <span key={i} className="px-2 py-0.5 rounded-sm border border-[var(--line)] text-[var(--ink)] bg-white text-[10px]">
+                              <span key={i} className="px-2 py-0.5 rounded-sm border border-[var(--line)] text-[var(--ink)] bg-white text-xs">
                                 {eq}
                               </span>
                             ))}
@@ -328,7 +329,7 @@ export function AdminDashboardPage() {
                         </button>
                         <button
                           onClick={() => handleApprove(res.id)}
-                          className="px-5 py-2.5 rounded-sm bg-[var(--ink)] text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5"
+                          className="px-5 py-2.5 rounded-sm bg-[var(--ink)] text-white text-xs font-bold  transition flex items-center gap-1.5"
                         >
                           <CheckCircle2 className="w-4 h-4" />
                           Approve
@@ -346,7 +347,7 @@ export function AdminDashboardPage() {
         {activeTab === 'all' && (
           <div className="divide-y divide-[var(--line)] max-h-[600px] overflow-y-auto p-4">
             {reservations.length === 0 ? (
-              <div className="py-8 text-center text-[var(--muted)] text-[11px]">
+              <div className="py-8 text-center text-[var(--muted)] text-xs">
                 No reservations yet.
               </div>
             ) : (
@@ -356,7 +357,7 @@ export function AdminDashboardPage() {
                   <div key={res.id} className="p-3 sm:p-4 flex items-center justify-between text-xs hover:bg-[var(--surface-2)] transition">
                     <div className="space-y-1 min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className={`tag ${statusTagClass(res.status)} text-[10px]`}>
+                        <span className={`tag ${statusTagClass(res.status)} text-xs`}>
                           {res.status.toUpperCase()}
                         </span>
                         <span className="font-bold text-[var(--ink)] truncate">{res.title}</span>
@@ -367,7 +368,7 @@ export function AdminDashboardPage() {
                         <span>{formatDateTime(res.start_datetime)}</span>
                       </div>
                     </div>
-                    <span className="font-mono text-[10px] text-[var(--faint)]">{res.id.slice(0, 8)}...</span>
+                    <span className="font-mono text-xs text-[var(--faint)]">{res.id.slice(0, 8)}...</span>
                   </div>
                 )
               })
@@ -382,19 +383,20 @@ export function AdminDashboardPage() {
         title="Decline Reservation Request"
         titleId="reject-dialog-title"
       >
-        <p className="text-[11px] text-[var(--muted)] mb-4" id="reject-dialog-desc">
+        <p className="text-xs text-[var(--muted)] mb-4" id="reject-dialog-desc">
           Provide a clear reason for declining "{rejectModalRes?.title}". The requesting user will be notified immediately.
         </p>
         <form onSubmit={handleReject} className="space-y-4 text-[var(--ink)]" aria-describedby="reject-dialog-desc">
           <div>
-            <label className="block text-sm font-medium text-[var(--ink)] mb-1">Rejection Reason *</label>
+            <label htmlFor="reject-reason" className="block text-sm font-medium text-[var(--ink)] mb-1">Rejection Reason *</label>
             <textarea
+              id="reject-reason"
               rows={3}
               placeholder="e.g. Facility is scheduled for university inspection, or capacity limits exceeded."
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
               required
-              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
             />
           </div>
 

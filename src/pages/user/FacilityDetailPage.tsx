@@ -264,7 +264,7 @@ export function FacilityDetailPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2 text-[11px] text-[var(--muted)]">
+      <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
         <button
           onClick={() => navigate('/explorer')}
           className="hover:text-[var(--ink)] flex items-center gap-1 font-medium transition"
@@ -283,7 +283,7 @@ export function FacilityDetailPage() {
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className="tag tag-available font-bold">{facility.facility_code}</span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-[10px] font-bold uppercase bg-[var(--ink)] text-white">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-xs font-bold uppercase bg-[var(--ink)] text-white">
                 {facility.category.replace('_', ' ')}
               </span>
               <span className="tag tag-available font-bold">Active & Reservable</span>
@@ -294,14 +294,14 @@ export function FacilityDetailPage() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
               <div className="p-3 border border-[var(--line)] rounded-sm bg-[var(--surface)]">
-                <span className="text-[var(--faint)] block font-medium text-[10px] uppercase tracking-wider">Capacity</span>
+                <span className="text-[var(--faint)] block font-medium text-xs uppercase tracking-wider">Capacity</span>
                 <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
                   <Users className="w-4 h-4 text-[var(--ink)]" />
                   {facility.capacity} People
                 </span>
               </div>
               <div className="p-3 border border-[var(--line)] rounded-sm bg-[var(--surface)]">
-                <span className="text-[var(--faint)] block font-medium text-[10px] uppercase tracking-wider">Operating Hours</span>
+                <span className="text-[var(--faint)] block font-medium text-xs uppercase tracking-wider">Operating Hours</span>
                 <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
                   <Clock className="w-4 h-4 text-[var(--ink)]" />
                   {schedules.length > 0 ? (
@@ -315,7 +315,7 @@ export function FacilityDetailPage() {
                 </span>
               </div>
               <div className="p-3 border border-[var(--line)] rounded-sm bg-[var(--surface)]">
-                <span className="text-[var(--faint)] block font-medium text-[10px] uppercase tracking-wider">Location</span>
+                <span className="text-[var(--faint)] block font-medium text-xs uppercase tracking-wider">Location</span>
                 <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
                   <Building2 className="w-4 h-4 text-[var(--ink)]" />
                   {building?.code} Level
@@ -324,7 +324,7 @@ export function FacilityDetailPage() {
             </div>
 
             <div className="mt-6">
-              <h4 className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <h4 className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <Cpu className="w-3 h-3 text-[var(--ink)]" />
                 Available Built-in Equipment
               </h4>
@@ -362,7 +362,7 @@ export function FacilityDetailPage() {
               <Building2 className="w-12 h-12 text-[var(--faint)]" />
             </div>
           )}
-          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
+          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
             {facility.facility_code}
           </span>
         </div>
@@ -399,7 +399,7 @@ export function FacilityDetailPage() {
                   <Calendar className="w-5 h-5 text-[var(--ink)]" />
                   Submit Facility Reservation Request
                 </h3>
-                <p className="text-[11px] text-[var(--muted)] mt-1 uppercase tracking-wider font-medium">
+                <p className="text-xs text-[var(--muted)] mt-1 uppercase tracking-wider font-medium">
                   Choose a date and an available time slot, then describe your request.
                 </p>
               </div>
@@ -429,7 +429,7 @@ export function FacilityDetailPage() {
                   min={new Date().toISOString().slice(0, 10)}
                   onChange={(e) => setFormDate(e.target.value)}
                   required
-                  className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                  className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
                 />
               </div>
 
@@ -438,7 +438,7 @@ export function FacilityDetailPage() {
                   Available Time Slots *
                 </label>
                 {availableSlots.length === 0 ? (
-                  <div className="p-4 rounded-sm border border-[var(--line-strong)] bg-white text-[var(--ink)] text-[11px]">
+                  <div className="p-4 rounded-sm border border-[var(--line-strong)] bg-white text-[var(--ink)] text-xs">
                     No available time slots on this date. The facility may be closed, fully booked,
                     or under maintenance. Try another day.
                   </div>
@@ -450,9 +450,9 @@ export function FacilityDetailPage() {
                         onClick={() => setSelectedSlot(slot)}
                         disabled={!slot.available}
                         aria-pressed={selectedSlot?.start === slot.start && selectedSlot?.end === slot.end}
-                        className={`px-3 py-2.5 rounded-sm text-[10px] font-medium border transition ${
+                        className={`px-3 py-2.5 rounded-sm text-xs font-medium border transition ${
                           selectedSlot?.start === slot.start && selectedSlot?.end === slot.end
-                            ? 'bg-[var(--line-strong)] border-[var(--line-strong)] text-white shadow-sm'
+                            ? 'bg-[var(--line-strong)] border-[var(--line-strong)] text-white '
                             : slot.available
                             ? 'bg-white border-[var(--line-strong)] text-[var(--ink)] hover:bg-[var(--surface-2)] hover:border-[var(--ink)]'
                             : 'bg-[var(--surface-2)] border-[var(--line)] text-[var(--faint)] cursor-not-allowed'
@@ -460,7 +460,7 @@ export function FacilityDetailPage() {
                       >
                         {slot.start} – {slot.end}
                         {!slot.available && (
-                          <span className="ml-1 text-[9px] text-[var(--faint)]">unavailable</span>
+                          <span className="ml-1 text-xs text-[var(--faint)]">unavailable</span>
                         )}
                       </button>
                     ))}
@@ -486,7 +486,7 @@ export function FacilityDetailPage() {
                       value={form.title}
                       onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
                       required
-                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
                     />
                   </div>
 
@@ -501,24 +501,25 @@ export function FacilityDetailPage() {
                       value={form.purpose}
                       onChange={(e) => setForm((prev) => ({ ...prev, purpose: e.target.value }))}
                       required
-                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
                     />
                   </div>
 
                   {isOfficer && (
                     <div className="p-4 rounded-sm border border-[var(--line)] bg-[var(--surface-2)]">
-                      <h4 className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-3">Organization</h4>
+                      <h4 className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-3">Organization</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-[11px] font-bold text-[var(--ink)] mb-1 uppercase tracking-widest">
+                          <label htmlFor="reservation-org" className="block text-xs font-bold text-[var(--ink)] mb-1 uppercase tracking-widest">
                             Student Organization
                           </label>
                           <select
+                            id="reservation-org"
                             value={form.selectedOrgId}
                             onChange={(e) =>
                               setForm((prev) => ({ ...prev, selectedOrgId: e.target.value }))
                             }
-                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] font-medium focus:outline-none focus:border-[var(--line-strong)]"
+                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] font-medium focus:border-[var(--line-strong)]"
                             aria-label="Student Organization"
                           >
                             {organizations.map((org) => (
@@ -529,15 +530,16 @@ export function FacilityDetailPage() {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold text-[var(--ink)] mb-1 uppercase tracking-widest">
+                          <label htmlFor="reservation-activity" className="block text-xs font-bold text-[var(--ink)] mb-1 uppercase tracking-widest">
                             Associated Org Activity
                           </label>
                           <select
+                            id="reservation-activity"
                             value={form.selectedActivityId}
                             onChange={(e) =>
                               setForm((prev) => ({ ...prev, selectedActivityId: e.target.value }))
                             }
-                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] font-medium focus:outline-none focus:border-[var(--line-strong)]"
+                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] font-medium focus:border-[var(--line-strong)]"
                             aria-label="Associated Org Activity"
                           >
                             <option value="">-- Standalone Reservation --</option>
@@ -565,13 +567,13 @@ export function FacilityDetailPage() {
                       max={facility.capacity}
                       value={form.attendeeCount}
                       onChange={(e) => setForm((prev) => ({ ...prev, attendeeCount: Number(e.target.value) || 1 }))}
-                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
                     />
                   </div>
 
                   {facility.equipment && facility.equipment.length > 0 && (
                     <fieldset className="border border-[var(--line)] rounded-sm p-3">
-                      <legend className="block text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-3 px-2">
+                      <legend className="block text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-3 px-2">
                         Request Specific Equipment Setup
                       </legend>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" role="group" aria-label="Equipment options">
@@ -606,7 +608,7 @@ export function FacilityDetailPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-sm shadow-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {submitting ? 'Validating Conflicts...' : 'Confirm & Request Reservation'}
                     </button>
@@ -629,14 +631,14 @@ export function FacilityDetailPage() {
               <Clock className="w-4 h-4 text-[var(--ink)]" />
               Existing Schedule & Bookings
             </h3>
-            <p className="text-[11px] text-[var(--muted)] mt-0.5 uppercase tracking-wider font-medium">
+            <p className="text-xs text-[var(--muted)] mt-0.5 uppercase tracking-wider font-medium">
               Approved slots block new bookings. Pending slots are queued for review.
             </p>
           </div>
 
           <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
             {existingReservations.length === 0 ? (
-              <div className="py-8 text-center text-[var(--muted)] text-[11px]">
+              <div className="py-8 text-center text-[var(--muted)] text-xs">
                 No active reservations for this facility. All standard operating hours are open.
               </div>
             ) : (
@@ -651,14 +653,14 @@ export function FacilityDetailPage() {
                       {res.status.toUpperCase()}
                     </span>
                   </div>
-                  <div className="text-[11px] text-[var(--muted)] flex items-center gap-1.5">
+                  <div className="text-xs text-[var(--muted)] flex items-center gap-1.5">
                     <Calendar className="w-3 h-3 text-[var(--faint)]" />
                     <span>{formatDateTime(res.start_datetime)}</span>
                     <span>→</span>
                     <span>{new Date(res.end_datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                   {res.purpose && (
-                    <p className="text-[11px] text-[var(--muted)] line-clamp-1 italic">
+                    <p className="text-xs text-[var(--muted)] line-clamp-1 italic">
                       "{res.purpose}"
                     </p>
                   )}

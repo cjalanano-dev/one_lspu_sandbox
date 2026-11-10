@@ -114,7 +114,7 @@ export function MyReservationsPage() {
               <button
                 key={st}
                 onClick={() => setFilterStatus(st as any)}
-                className={`px-3 py-1.5 rounded-sm text-[11px] font-bold capitalize transition ${
+                className={`px-3 py-1.5 rounded-sm text-xs font-bold capitalize transition ${
                   filterStatus === st
                     ? 'bg-[var(--line-strong)] text-white'
                     : 'border border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'
@@ -128,7 +128,7 @@ export function MyReservationsPage() {
       </div>
 
       {actionMsg.text && (
-        <div className="p-3 border border-[var(--line-strong)] bg-[var(--ink)] text-white text-[11px] flex items-start gap-2" role="status" aria-live="polite">
+        <div className="p-3 border border-[var(--line-strong)] bg-[var(--ink)] text-white text-xs flex items-start gap-2" role="status" aria-live="polite">
           {actionMsg.type === 'success' ? (
             <CheckCircle2 className="w-4 h-4 text-white shrink-0 mt-0.5" />
           ) : (
@@ -175,7 +175,7 @@ export function MyReservationsPage() {
                         {res.status.toUpperCase()}
                       </span>
                       {isPast && (
-                        <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest bg-[var(--surface-2)] px-2 py-0.5 rounded-sm">
+                        <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest bg-[var(--surface-2)] px-2 py-0.5 rounded-sm">
                           Past
                         </span>
                       )}
@@ -201,7 +201,7 @@ export function MyReservationsPage() {
                       </span>
                     </div>
 
-                    <p className="text-[11px] text-[var(--muted)] pt-1 leading-relaxed">
+                    <p className="text-xs text-[var(--muted)] pt-1 leading-relaxed">
                       <span className="font-bold text-[var(--ink)]">Purpose: </span>
                       {res.purpose}
                     </p>
@@ -225,13 +225,13 @@ export function MyReservationsPage() {
                             <span>Cancel this request?</span>
                             <button
                               onClick={() => handleConfirmCancel(res.id)}
-                              className="ml-2 px-3 py-1.5 rounded-sm bg-[var(--ink)] text-white text-[10px] font-bold hover:bg-[#1a1a1a] transition"
+                              className="ml-2 px-3 py-1.5 rounded-sm bg-[var(--ink)] text-white text-xs font-bold hover:bg-[#1a1a1a] transition"
                             >
                               Yes
                             </button>
                             <button
                               onClick={() => setConfirmCancelId(null)}
-                              className="ml-2 px-3 py-1.5 rounded-sm text-[var(--muted)] text-[10px] font-bold hover:bg-[var(--surface-2)] transition"
+                              className="ml-2 px-3 py-1.5 rounded-sm text-[var(--muted)] text-xs font-bold hover:bg-[var(--surface-2)] transition"
                             >
                               No
                             </button>

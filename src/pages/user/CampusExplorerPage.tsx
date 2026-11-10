@@ -91,7 +91,7 @@ export function CampusExplorerPage() {
                 <Building2 className="w-5 h-5" />
               </div>
               <div className="overflow-hidden">
-                <span className="text-[10px] font-mono font-bold text-[var(--ink)] uppercase tracking-widest">{b.code}</span>
+                <span className="text-xs font-mono font-bold text-[var(--ink)] uppercase tracking-widest">{b.code}</span>
                 <h3 className="font-bold text-sm truncate">{b.name}</h3>
                 <p className="text-xs text-[var(--muted)] truncate flex items-center gap-1 mt-0.5">
                   <MapPin className="w-3 h-3 text-[var(--faint)] shrink-0" />
@@ -105,7 +105,7 @@ export function CampusExplorerPage() {
 
       <div className="rounded-sm border border-[var(--line)] bg-white p-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-          <span className="text-[11px] font-bold text-[var(--muted)] uppercase tracking-widest mr-1 flex items-center gap-1">
+          <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mr-1 flex items-center gap-1">
             <Layers className="w-3.5 h-3.5" />
             Levels:
           </span>
@@ -115,7 +115,7 @@ export function CampusExplorerPage() {
               <button
                 key={floor.id}
                 onClick={() => setSelectedFloor(floor)}
-                className={`px-3.5 py-1.5 rounded-sm text-[11px] font-bold whitespace-nowrap transition ${
+                className={`px-3.5 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition ${
                   isSelected
                     ? 'bg-black text-white'
                     : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'
@@ -135,7 +135,7 @@ export function CampusExplorerPage() {
               placeholder="Search room, code..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-white focus:outline-none focus:border-[var(--line-strong)]"
+              className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-white focus:border-[var(--line-strong)]"
             />
           </div>
 
@@ -144,7 +144,7 @@ export function CampusExplorerPage() {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-medium text-[var(--ink)] bg-white focus:outline-none focus:border-[var(--line-strong)] appearance-none"
+              className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-medium text-[var(--ink)] bg-white focus:border-[var(--line-strong)] appearance-none"
             >
               <option value="all">All categories</option>
               <option value="auditorium">Auditorium</option>

@@ -12,7 +12,7 @@
     --line: 0 0% 89%;
     --line-strong: 0 0% 4%;
 
-    --radius: 0.25rem;
+    --radius: 0.125rem;
 
     /* ---------- Type scale ---------- */
     --text-xs: 0.75rem;
@@ -89,7 +89,7 @@
     font-size: var(--text-xs);
     font-weight: 600;
     padding: 0.125rem 0.5rem;
-    border-radius: 9999px;
+    border-radius: var(--radius);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -164,7 +164,6 @@
   .field-input:focus {
     outline: none;
     border-color: hsl(var(--line-strong));
-    ring: 2px solid hsl(var(--line-strong));
   }
 
   /* ---------- Buttons ---------- */

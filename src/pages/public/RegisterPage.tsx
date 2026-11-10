@@ -75,7 +75,7 @@ export function RegisterPage() {
           </p>
         </div>
         <div className="mt-12">
-          <p className="text-[11px] text-white/40 uppercase tracking-widest font-semibold mb-2">
+          <p className="text-xs text-white/40 uppercase tracking-widest font-semibold mb-2">
             Roles
           </p>
           <ul className="space-y-2 text-sm text-white/70 leading-relaxed">
@@ -119,7 +119,7 @@ export function RegisterPage() {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
                 aria-describedby={error ? 'register-error' : undefined}
               />
             </div>
@@ -135,7 +135,7 @@ export function RegisterPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
                 aria-describedby={error ? 'register-error' : undefined}
               />
             </div>
@@ -152,7 +152,7 @@ export function RegisterPage() {
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
                 aria-describedby={error ? 'register-error' : undefined}
               />
             </div>
@@ -204,7 +204,7 @@ export function RegisterPage() {
                   )
                 })}
               </div>
-              <p className="text-[11px] text-[var(--faint)] mt-1 uppercase tracking-wider">
+              <p className="text-xs text-[var(--faint)] mt-1 uppercase tracking-wider">
                 Admin accounts cannot be self-registered.
               </p>
             </div>
@@ -219,7 +219,7 @@ export function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 rounded-sm bg-[var(--line-strong)] hover:bg-[#1a1a1a] text-white font-semibold text-sm shadow-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-sm bg-[var(--line-strong)] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
