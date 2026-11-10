@@ -224,14 +224,11 @@ export function Navbar() {
               <div className="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
                 ONE <span className="text-sky-400 font-extrabold">Facility</span>
               </div>
-              <p className="text-[10px] text-slate-400 -mt-1 font-mono tracking-wider">
-                CAMPUS MANAGEMENT
-              </p>
             </div>
           </Link>
 
-          {/* Desktop navigation (hidden on mobile) */}
-          <nav className="hidden md:flex items-center space-x-1">
+          {/* Desktop navigation (hidden below desktop; tablet uses the mobile pattern) */}
+          <nav className="hidden lg:flex items-center space-x-2">
             {user ? authedLinks : guestLinks}
           </nav>
 
@@ -243,7 +240,7 @@ export function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowNotifs(!showNotifs)}
-                    className="relative p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
+                    className="relative p-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
                     aria-label="View notifications"
                     aria-expanded={showNotifs}
                     aria-controls="notifications-dropdown"
