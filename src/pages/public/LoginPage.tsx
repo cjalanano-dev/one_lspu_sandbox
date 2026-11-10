@@ -152,7 +152,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 rounded-sm bg-[var(--line-strong)] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-sm border border-[var(--line-strong)] bg-[var(--line-strong)] hover:bg-[#1a1a1a] hover:border-[var(--ink)] text-white font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>

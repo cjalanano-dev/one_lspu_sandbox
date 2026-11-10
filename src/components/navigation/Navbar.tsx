@@ -267,7 +267,7 @@ export function Navbar() {
                       </Link>
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-4 py-3 text-left text-xs text-[var(--ink)] border border-[var(--line-strong)] bg-transparent hover:bg-[var(--line-strong)] hover:text-white flex items-center gap-2"
+                        className="w-full px-4 py-2.5 text-xs text-left text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
                       >
                         <LogOut className="w-4 h-4 text-[var(--ink)] mr-2" />
                         Sign out
