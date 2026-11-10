@@ -256,18 +256,18 @@ export function Navbar() {
                   </div>
 
                   {profileMenuOpen && (
-                    <div className="absolute right-0 mt-4 w-48 bg-white text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line)] py-2 z-50">
+                    <div className="absolute right-0 mt-5 w-48 bg-white text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line)] py-2 z-50">
                       <Link
                         to="/my-reservations"
                         onClick={() => setProfileMenuOpen(false)}
-                        className="px-4 py-3 text-xs font-medium text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2 border-b border-[var(--line)] pb-3"
+                        className="px-4 py-3 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2 border-b border-[var(--line)] pb-3"
                       >
                         <Calendar className="w-4 h-4 text-[var(--faint)] mr-2" />
                         My Reservations
                       </Link>
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-4 py-3 text-left text-[var(--muted)] font-medium hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
+                        className="w-full px-4 py-3 text-left text-xs text-[var(--ink)] border border-[var(--line-strong)] bg-transparent hover:bg-[var(--line-strong)] hover:text-white flex items-center gap-2"
                       >
                         <LogOut className="w-4 h-4 text-[var(--ink)] mr-2" />
                         Sign out
