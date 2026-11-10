@@ -1,12 +1,42 @@
-import React, { useState } from 'react'
-import { Info, Users, Cpu, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react'
+import { useState } from 'react'
+import { Building2, Info, Users, Cpu, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import type { Facility, Floor } from '../../types'
 
-export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectFacility }) {
-  const [hoveredFacility, setHoveredFacility] = useState(null)
+interface FloorPlanViewerProps {
+  floor: Floor
+  facilities: Facility[]
+  selectedFacility: Facility | null
+  onSelectFacility: (facility: Facility) => void
+}
 
-  // Facilities on this floor
+// Normalize seed coordinates (up to ~480x280) into the SVG viewBox (100x70)
+const VIEWBOX_W = 100
+const VIEWBOX_H = 70
+const MAX_SRC_W = 480
+const MAX_SRC_H = 280
+
+function normalizePosition(pos: any) {
+  if (!pos) return { x: 10, y: 10, width: 25, height: 20 }
+  return {
+    x: Math.min(Math.max((pos.x ?? 10) / MAX_SRC_W, 0), 1) * VIEWBOX_W,
+    y: Math.min(Math.max((pos.y ?? 10) / MAX_SRC_H, 0), 1) * VIEWBOX_H,
+    width: Math.min(Math.max((pos.width ?? 25) / MAX_SRC_W, 0.02), 0.25) * VIEWBOX_W,
+    height: Math.min(Math.max((pos.height ?? 20) / MAX_SRC_H, 0.02), 0.25) * VIEWBOX_H,
+  }
+}
+
+export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectFacility }: FloorPlanViewerProps) {
+  const [hoveredFacility, setHoveredFacility] = useState<Facility | null>(null)
+
   const floorFacilities = facilities.filter((f) => f.floor_id === floor.id)
+
+  const handleRoomKeyDown = (e: React.KeyboardEvent, facility: Facility) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      onSelectFacility(facility)
+    }
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 items-start">
@@ -19,7 +49,7 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
               {floor.name}
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Click on any facility highlighted in the floor plan to inspect details and check schedule
+              Select any facility on the plan to inspect details and check its schedule
             </p>
           </div>
           <span className="text-xs font-mono font-medium bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">
@@ -27,10 +57,8 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
           </span>
         </div>
 
-        {/* SVG Container with architectural grid styling */}
         <div className="relative aspect-[16/10] bg-slate-950 rounded-xl overflow-hidden border border-slate-800 shadow-inner flex items-center justify-center">
-          {/* Subtle Grid overlay */}
-          <div 
+          <div
             className="absolute inset-0 opacity-15 pointer-events-none"
             style={{
               backgroundImage: 'radial-gradient(circle, #38bdf8 1px, transparent 1px)',
@@ -39,16 +67,18 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
           />
 
           <svg
-            viewBox="0 0 100 70"
+            viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`}
             className="w-full h-full select-none"
             preserveAspectRatio="xMidYMid meet"
+            role="img"
+            aria-label={`Floor plan for ${floor.name}`}
           >
             {/* Building Perimeter outline */}
             <rect
               x="5"
               y="5"
-              width="90"
-              height="60"
+              width={VIEWBOX_W - 10}
+              height={VIEWBOX_H - 10}
               rx="2"
               fill="#090d16"
               stroke="#1e293b"
@@ -59,16 +89,16 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
             {/* Central Corridor */}
             <rect
               x="10"
-              y="32"
-              width="80"
-              height="8"
+              y={VIEWBOX_H * 0.45}
+              width={VIEWBOX_W - 20}
+              height={VIEWBOX_H * 0.12}
               fill="#0f172a"
               stroke="#334155"
               strokeWidth="0.5"
             />
             <text
-              x="50"
-              y="37"
+              x={VIEWBOX_W / 2}
+              y={VIEWBOX_H * 0.5}
               fill="#475569"
               fontSize="2.5"
               fontFamily="sans-serif"
@@ -81,7 +111,7 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
 
             {/* Render Facility Rooms */}
             {floorFacilities.map((facility) => {
-              const pos = facility.map_position || { x: 10, y: 10, width: 25, height: 20 }
+              const pos = normalizePosition(facility.map_position)
               const isSelected = selectedFacility?.id === facility.id
               const isHovered = hoveredFacility?.id === facility.id
 
@@ -99,13 +129,21 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
                 strokeColor = '#60a5fa'
               }
 
+              const centerX = pos.x + pos.width / 2
+              const centerY = pos.y + pos.height / 2
+
               return (
                 <g
                   key={facility.id}
                   onClick={() => onSelectFacility(facility)}
+                  onKeyDown={(e) => handleRoomKeyDown(e, facility)}
                   onMouseEnter={() => setHoveredFacility(facility)}
                   onMouseLeave={() => setHoveredFacility(null)}
-                  className="cursor-pointer transition-all duration-200"
+                  className="cursor-pointer transition-all duration-200 focus-visible:outline-none"
+                  tabIndex={0}
+                  role="button"
+                  aria-label={facility.facility_code}
+                  aria-pressed={isSelected ? 'true' : 'false'}
                 >
                   {/* Room Box */}
                   <rect
@@ -122,8 +160,8 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
 
                   {/* Room Identifier Label */}
                   <text
-                    x={pos.x + pos.width / 2}
-                    y={pos.y + pos.height / 2 - 1.5}
+                    x={centerX}
+                    y={centerY - 1.5}
                     fill="#f8fafc"
                     fontSize="2.4"
                     fontWeight="bold"
@@ -137,8 +175,8 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
 
                   {/* Room Type Label */}
                   <text
-                    x={pos.x + pos.width / 2}
-                    y={pos.y + pos.height / 2 + 2.5}
+                    x={centerX}
+                    y={centerY + 2.5}
                     fill="#94a3b8"
                     fontSize="1.8"
                     fontFamily="sans-serif"
@@ -160,6 +198,16 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
               )
             })}
           </svg>
+
+          {floorFacilities.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-full text-center p-8">
+              <Info className="w-10 h-10 text-slate-500 mb-3" />
+              <h4 className="text-sm font-medium text-slate-900">No facilities on this floor</h4>
+              <p className="text-xs text-slate-500 mt-1 max-w-xs">
+                {floor.name} doesn't have any rooms drawn yet. Use the facility list below instead.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Legend */}
@@ -189,11 +237,18 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
         {selectedFacility ? (
           <div className="space-y-5">
             <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-100">
-              <img
-                src={selectedFacility.image_url}
-                alt={selectedFacility.name}
-                className="w-full h-full object-cover"
-              />
+              {selectedFacility.image_url ? (
+                <img
+                  src={selectedFacility.image_url}
+                  alt={selectedFacility.name}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="w-full h-full bg-slate-200 flex items-center justify-center">
+                  <Building2 className="w-12 h-12 text-slate-400" />
+                </div>
+              )}
               <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-xs font-semibold uppercase bg-slate-900/80 backdrop-blur text-white">
                 {selectedFacility.facility_code}
               </span>
@@ -232,29 +287,20 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
               </div>
             </div>
 
-            {selectedFacility.rules && (
-              <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                <p className="leading-snug">{selectedFacility.rules}</p>
-              </div>
-            )}
-
-            <div className="pt-2">
-              <Link
-                to={`/facilities/${selectedFacility.id}`}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-sm shadow-md shadow-sky-600/20 transition"
-              >
-                View Schedule & Reserve
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+            <Link
+              to={`/facilities/${selectedFacility.id}`}
+              className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-center shadow-md transition disabled:opacity-50"
+            >
+              View Details & Reserve
+              <ArrowRight className="w-4 h-4 ml-1" />
+            </Link>
           </div>
         ) : (
-          <div className="py-16 text-center text-slate-400 flex flex-col items-center">
-            <Info className="w-10 h-10 text-slate-300 mb-3" />
-            <h4 className="font-semibold text-slate-700 text-sm">No Facility Selected</h4>
-            <p className="text-xs text-slate-400 max-w-xs mt-1">
-              Select any room inside the architectural plan or list to view specifications and launch reservations.
+          <div className="flex flex-col items-center justify-center h-full text-center p-8">
+            <Info className="w-10 h-10 text-slate-500 mb-3" />
+            <h4 className="text-sm font-medium text-slate-900">No facility selected</h4>
+            <p className="text-xs text-slate-500 mt-1 max-w-xs">
+              Tap a room on the plan above to see its details and start a reservation request.
             </p>
           </div>
         )}

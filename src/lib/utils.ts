@@ -1,11 +1,11 @@
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
-export function cn(...inputs) {
+export function cn(...inputs: any[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(dateString) {
+export function formatDate(dateString: string | null | undefined): string {
   if (!dateString) return ''
   const date = new Date(dateString)
   return new Intl.DateTimeFormat('en-US', {
@@ -15,7 +15,7 @@ export function formatDate(dateString) {
   }).format(date)
 }
 
-export function formatDateTime(dateString) {
+export function formatDateTime(dateString: string | null | undefined): string {
   if (!dateString) return ''
   const date = new Date(dateString)
   return new Intl.DateTimeFormat('en-US', {
@@ -28,7 +28,7 @@ export function formatDateTime(dateString) {
   }).format(date)
 }
 
-export function formatTimeOnly(dateString) {
+export function formatTimeOnly(dateString: string | null | undefined): string {
   if (!dateString) return ''
   const date = new Date(dateString)
   return new Intl.DateTimeFormat('en-US', {
@@ -38,7 +38,7 @@ export function formatTimeOnly(dateString) {
   }).format(date)
 }
 
-export function getStatusBadgeClass(status) {
+export function getStatusBadgeClass(status: string | null | undefined): string {
   switch (status?.toLowerCase()) {
     case 'approved':
     case 'available':

@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Building2, Search, Filter, Users, Cpu, ArrowRight } from 'lucide-react'
+import { Building2, Search, Users, Cpu, ArrowRight } from 'lucide-react'
 import { dataStore } from '../../lib/dataStore'
+import type { Facility, Building } from '../../types'
 
 export function FacilitiesDirectoryPage() {
-  const [facilities, setFacilities] = useState([])
-  const [buildingsMap, setBuildingsMap] = useState({})
-  const [search, setSearch] = useState('')
-  const [category, setCategory] = useState('all')
+  const [facilities, setFacilities] = useState<Facility[]>([])
+  const [buildingsMap, setBuildingsMap] = useState<Record<string, Building>>({})
+  const [search, setSearch] = useState<string>('')
+  const [category, setCategory] = useState<string>('all')
 
   useEffect(() => {
     async function loadData() {
       const facs = await dataStore.getFacilities()
       setFacilities(facs)
       const blds = await dataStore.getBuildings()
-      const bMap = {}
+      const bMap: Record<string, Building> = {}
       blds.forEach((b) => {
         bMap[b.id] = b
       })
@@ -30,7 +31,7 @@ export function FacilitiesDirectoryPage() {
       return (
         f.name.toLowerCase().includes(term) ||
         f.facility_code.toLowerCase().includes(term) ||
-        f.description.toLowerCase().includes(term)
+        f.description?.toLowerCase().includes(term)
       )
     }
     return true
@@ -89,7 +90,7 @@ export function FacilitiesDirectoryPage() {
               <div>
                 <div className="relative aspect-[16/9] bg-slate-100 overflow-hidden">
                   <img
-                    src={fac.image_url}
+                    src={fac.image_url || ''}
                     alt={fac.name}
                     className="w-full h-full object-cover"
                   />

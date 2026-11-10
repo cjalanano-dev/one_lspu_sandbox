@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Building2, Layers, Search, Filter, Compass, MapPin } from 'lucide-react'
 import { dataStore } from '../../lib/dataStore'
 import { FloorPlanViewer } from '../../features/campus/FloorPlanViewer'
+import type { Building, Floor, Facility } from '../../types'
 
 export function CampusExplorerPage() {
-  const [buildings, setBuildings] = useState([])
-  const [floors, setFloors] = useState([])
-  const [facilities, setFacilities] = useState([])
+  const [buildings, setBuildings] = useState<Building[]>([])
+  const [floors, setFloors] = useState<Floor[]>([])
+  const [facilities, setFacilities] = useState<Facility[]>([])
 
-  const [selectedBuilding, setSelectedBuilding] = useState(null)
-  const [selectedFloor, setSelectedFloor] = useState(null)
-  const [selectedFacility, setSelectedFacility] = useState(null)
+  const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null)
+  const [selectedFloor, setSelectedFloor] = useState<Floor | null>(null)
+  const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null)
 
-  const [categoryFilter, setCategoryFilter] = useState('all')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState<string>('')
 
   // Initial load
   useEffect(() => {
@@ -46,7 +47,7 @@ export function CampusExplorerPage() {
       if (!selectedBuilding) return
       const facList = await dataStore.getFacilities({
         buildingId: selectedBuilding.id,
-        floorId: selectedFloor?.id,
+        floorId: selectedFloor?.id ?? undefined,
         category: categoryFilter,
         search: searchQuery,
       })

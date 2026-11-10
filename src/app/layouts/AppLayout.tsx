@@ -1,4 +1,3 @@
-import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { Navbar } from '../../components/navigation/Navbar'
 
@@ -17,7 +16,7 @@ export function AppLayout() {
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               All Systems Operational
             </span>
-            <span>Version 1.0 (Hackathon MVP)</span>
+            <span>Real data from Supabase</span>
           </div>
         </div>
       </footer>
