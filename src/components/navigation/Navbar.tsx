@@ -176,7 +176,7 @@ export function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowNotifs(!showNotifs)}
-                    className="relative p-3 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
+                    className="relative p-3 rounded-[var(--radius)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
                     aria-label="View notifications"
                     aria-expanded={showNotifs}
                     aria-controls="notifications-dropdown"
@@ -256,19 +256,18 @@ export function Navbar() {
                   </div>
 
                   {profileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white text-[var(--ink)] rounded-[var(--radius)]  border border-[var(--line)] py-2 z-50">
+                    <div className="absolute right-0 mt-4 w-48 bg-white text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line)] py-2 z-50">
                       <Link
                         to="/my-reservations"
                         onClick={() => setProfileMenuOpen(false)}
-                        className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
+                        className="px-4 py-3 text-xs font-medium text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2 border-b border-[var(--line)] pb-3"
                       >
                         <Calendar className="w-4 h-4 text-[var(--faint)] mr-2" />
                         My Reservations
                       </Link>
-                      <div className="h-px bg-[var(--line)] my-1" />
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-4 py-2.5 text-xs text-left text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
+                        className="w-full px-4 py-3 text-left text-[var(--muted)] font-medium hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
                       >
                         <LogOut className="w-4 h-4 text-[var(--ink)] mr-2" />
                         Sign out
@@ -281,13 +280,13 @@ export function Navbar() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--muted)] hover:text-[var(--ink)] transition"
+                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--ink)] border border-[var(--line-strong)] hover:bg-[var(--surface-2)] transition"
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/register"
-                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium transition text-[var(--ink)] hover:bg-[var(--surface-2)]"
+                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--ink)] border border-[var(--line-strong)] hover:bg-[var(--surface-2)] transition"
                 >
                   Create account
                 </Link>
