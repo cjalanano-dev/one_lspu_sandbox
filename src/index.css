@@ -2,37 +2,17 @@
 
 @layer base {
   :root {
-    /* ---------- Semantic color tokens (HSL) ---------- */
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    /* ---------- Monochrome semantic tokens (HSL-neutral) ---------- */
+    --paper: 0 0% 100%;
+    --surface: 0 0% 98%;
+    --surface-2: 0 0% 96%;
+    --ink: 0 0% 4%;
+    --muted: 0 0% 32%;
+    --faint: 0 0% 64%;
+    --line: 0 0% 89%;
+    --line-strong: 0 0% 4%;
 
-    --primary: 221.2 83.2% 53.3%;      /* sky-500 */
-    --primary-foreground: 210 40% 98%;
-    --primary-hover: 217 91% 48%;
-
-    --secondary: 240 5% 93%;
-    --secondary-foreground: 222.2 84% 4.9%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 221.2 83.2% 53.3%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --success: 142.1 76.2% 36.3%;
-    --success-foreground: 210 40% 98%;
-
-    --warning: 48 96% 53%;
-    --warning-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-
-    --radius: 0.75rem;
+    --radius: 0.25rem;
 
     /* ---------- Type scale ---------- */
     --text-xs: 0.75rem;
@@ -54,15 +34,15 @@
   }
 
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
+    background-color: hsl(var(--surface));
+    color: hsl(var(--ink));
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     line-height: 1.5;
   }
 
   /* ---------- Focus styles (a11y) ---------- */
   *:focus-visible {
-    outline: 2px solid hsl(var(--ring));
+    outline: 2px solid hsl(var(--line-strong));
     outline-offset: 2px;
   }
 
@@ -83,8 +63,8 @@
     overflow: visible;
     z-index: 9999;
     padding: 0.75rem 1rem;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    background: hsl(var(--line-strong));
+    color: hsl(var(--paper));
     border-radius: var(--radius);
     text-decoration: none;
     font-weight: 600;
@@ -92,9 +72,7 @@
 
   /* ---------- Reduced motion ---------- */
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -104,8 +82,8 @@
 }
 
 @layer components {
-  /* ---------- Status badges (token-driven, 4.5:1 contrast) ---------- */
-  .badge {
+  /* ---------- Status tags — state via icon + label, not color ---------- */
+  .tag {
     display: inline-flex;
     align-items: center;
     font-size: var(--text-xs);
@@ -115,45 +93,53 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-
-  .badge-approved {
-    background-color: #f0fdf4;
-    color: #14532d;
-    border: 1px solid #bbf7d0;
+  .tag-approved {
+    background: hsl(var(--line-strong));
+    color: hsl(var(--paper));
+    border: 1px solid hsl(var(--line-strong));
   }
-  .badge-pending {
-    background-color: #fffbeb;
-    color: #713f12;
-    border: 1px solid #fde68a;
+  .tag-pending {
+    background: transparent;
+    color: hsl(var(--ink));
+    border: 1px solid hsl(var(--line-strong));
   }
-  .badge-rejected,
-  .badge-cancelled {
-    background-color: #fff1f2;
-    color: #9f1239;
-    border: 1px solid #fecaca;
+  .tag-rejected,
+  .tag-cancelled {
+    background: hsl(var(--surface-2));
+    color: hsl(var(--muted));
+    border: 1px solid hsl(var(--line));
   }
-  .badge-maintenance {
-    background-color: #faf5ff;
-    color: #6b21a8;
-    border: 1px solid #e9d5ff;
+  .tag-maintenance {
+    background: hsl(var(--surface-2));
+    color: hsl(var(--muted));
+    border: 1px solid hsl(var(--line));
   }
-  .badge-reserved,
-  .badge-occupied {
-    background-color: #eff6ff;
-    color: #1e40af;
-    border: 1px solid #bfdbfe;
+  .tag-available {
+    background: hsl(var(--line-strong));
+    color: hsl(var(--paper));
+    border: 1px solid hsl(var(--line-strong));
+  }
+  .tag-reserved {
+    background: hsl(var(--surface-2));
+    color: hsl(var(--ink));
+    border: 1px solid hsl(var(--line-strong));
+  }
+  .tag-occupied {
+    background: hsl(var(--surface-2));
+    color: hsl(var(--muted));
+    border: 1px solid hsl(var(--line));
   }
 
   /* ---------- KPI value ---------- */
   .kpi-value {
     font-size: 1.875rem;
     font-weight: 900;
-    color: hsl(var(--foreground));
+    color: hsl(var(--ink));
   }
   .kpi-label {
     font-size: 0.75rem;
     font-weight: 600;
-    color: hsl(var(--muted-foreground));
+    color: hsl(var(--muted));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -163,44 +149,45 @@
     display: block;
     font-size: 0.875rem;
     font-weight: 600;
-    color: hsl(var(--foreground));
+    color: hsl(var(--ink));
     margin-bottom: 0.25rem;
   }
   .field-input {
     width: 100%;
     padding: 0.5rem 0.75rem;
-    border: 1px solid hsl(var(--border));
-    border-radius: 0.75rem;
-    background: #fff;
-    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--line));
+    border-radius: var(--radius);
+    background: hsl(var(--paper));
+    color: hsl(var(--ink));
     font-size: 0.875rem;
   }
   .field-input:focus {
     outline: none;
-    border-color: hsl(var(--ring));
-    ring: 2px solid hsl(var(--ring));
+    border-color: hsl(var(--line-strong));
+    ring: 2px solid hsl(var(--line-strong));
   }
 
-  /* ---------- Button tokens ---------- */
+  /* ---------- Buttons ---------- */
   .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0.75rem 1.5rem;
-    border-radius: 0.75rem;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    border-radius: var(--radius);
+    background: hsl(var(--line-strong));
+    color: hsl(var(--paper));
     font-size: 0.875rem;
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.12s;
   }
   .btn-primary:hover {
-    background: hsl(var(--primary-hover));
+    background: #1a1a1a;
   }
   .btn-primary:disabled {
-    opacity: 0.5;
+    background: hsl(var(--surface-2));
+    color: hsl(var(--faint));
     cursor: not-allowed;
   }
 
@@ -209,17 +196,41 @@
     align-items: center;
     justify-content: center;
     padding: 0.75rem 1.5rem;
-    border-radius: 0.75rem;
-    border: 1px solid hsl(var(--border));
-    background: #fff;
-    color: hsl(var(--foreground));
+    border-radius: var(--radius);
+    border: 1px solid hsl(var(--line-strong));
+    background: hsl(var(--paper));
+    color: hsl(var(--ink));
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.12s;
   }
   .btn-outline:hover {
-    border-color: hsl(var(--primary));
-    color: hsl(var(--primary));
+    background: hsl(var(--surface-2));
+  }
+
+  .btn-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    background: transparent;
+    color: hsl(var(--ink));
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .btn-text:hover {
+    background: hsl(var(--surface-2));
+  }
+
+  /* ---------- Panel ---------- */
+  .panel {
+    background: hsl(var(--paper));
+    border: 1px solid hsl(var(--line));
+    border-radius: var(--radius);
   }
 }

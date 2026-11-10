@@ -10,7 +10,6 @@ import {
   LogOut,
   CheckCircle2,
   Clock,
-  X,
   X as CloseIcon,
   Menu,
 } from 'lucide-react'
@@ -39,7 +38,6 @@ export function Navbar() {
     return () => window.removeEventListener('onefacility_notif_updated', fetchNotifs)
   }, [user?.id])
 
-  // Close mobile menu, notifications, and profile menu on route change and Escape
   useEffect(() => {
     setMobileMenuOpen(false)
     setShowNotifs(false)
@@ -55,7 +53,6 @@ export function Navbar() {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node
       if (!target) return
-      // crude check: if click isn't inside header, close overlays
       if (!(target as Element).closest('header')) {
         setMobileMenuOpen(false)
         setShowNotifs(false)
@@ -90,96 +87,37 @@ export function Navbar() {
 
   if (isLoading) return null
 
+  const navItem = (path: string, label: string, icon: React.ReactNode, extra?: string) => {
+    const active = isActive(path)
+    return (
+      <Link
+        to={path}
+        className={`px-3 py-2 rounded-[var(--radius)] text-sm font-medium transition flex items-center gap-2 border border-transparent ${
+          active
+            ? 'bg-black text-white border-black font-bold'
+            : 'text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] hover:border-[var(--line-strong)]'
+        } ${extra || ''}`}
+      >
+        {icon}
+        {label}
+      </Link>
+    )
+  }
+
   const guestLinks = (
     <>
-      <Link
-        to="/explorer"
-        className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-          isActive('/explorer')
-            ? 'bg-slate-800 text-sky-400 shadow-sm'
-            : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-        }`}
-      >
-        <Compass className="w-4 h-4" />
-        Campus Explorer
-      </Link>
-      <Link
-        to="/facilities"
-        className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-          isActive('/facilities')
-            ? 'bg-slate-800 text-sky-400 shadow-sm'
-            : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-        }`}
-      >
-        <Building2 className="w-4 h-4" />
-        Facilities
-      </Link>
+      {navItem('/explorer', 'Campus Explorer', <Compass className="w-4 h-4" />)}
+      {navItem('/facilities', 'Facilities', <Building2 className="w-4 h-4" />)}
     </>
   )
 
   const authedLinks = (
     <>
-      <Link
-        to="/explorer"
-        className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-          isActive('/explorer')
-            ? 'bg-slate-800 text-sky-400 shadow-sm'
-            : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-        }`}
-      >
-        <Compass className="w-4 h-4" />
-        Campus Explorer
-      </Link>
-      <Link
-        to="/facilities"
-        className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-          isActive('/facilities')
-            ? 'bg-slate-800 text-sky-400 shadow-sm'
-            : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-        }`}
-      >
-        <Building2 className="w-4 h-4" />
-        Facilities
-      </Link>
-      <Link
-        to="/my-reservations"
-        className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-          isActive('/my-reservations')
-            ? 'bg-slate-800 text-sky-400 shadow-sm'
-            : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-        }`}
-      >
-        <Calendar className="w-4 h-4" />
-        My Reservations
-      </Link>
-
-      {isOfficer && (
-        <Link
-          to="/organization"
-          className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-            isActive('/organization')
-              ? 'bg-slate-800 text-sky-400 shadow-sm'
-              : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-          }`}
-        >
-          <Users className="w-4 h-4 text-indigo-400" />
-          Org Dashboard
-        </Link>
-      )}
-
-      {isAdmin && (
-        <Link
-          to="/admin"
-          className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-            isActive('/admin')
-              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-              : 'text-amber-400 hover:bg-amber-500/10'
-          }`}
-        >
-          <ShieldCheck className="w-4 h-4" />
-          Admin Panel
-        </Link>
-      )}
+      {navItem('/explorer', 'Campus Explorer', <Compass className="w-4 h-4" />)}
+      {navItem('/facilities', 'Facilities', <Building2 className="w-4 h-4" />)}
+      {navItem('/my-reservations', 'My Reservations', <Calendar className="w-4 h-4" />)}
+      {isOfficer && navItem('/organization', 'Org Dashboard', <Users className="w-4 h-4" />)}
+      {isAdmin && navItem('/admin', 'Admin Panel', <ShieldCheck className="w-4 h-4" />)}
     </>
   )
 
@@ -187,13 +125,13 @@ export function Navbar() {
     <>
       <Link
         to="/login"
-        className="w-full py-3 px-4 rounded-xl bg-sky-500 text-slate-950 font-semibold text-center shadow-lg shadow-sky-500/25 transition hover:bg-sky-400"
+        className="w-full py-3 px-4 border border-[var(--line-strong)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
       >
         Sign in
       </Link>
       <Link
         to="/register"
-        className="w-full py-3 px-4 rounded-xl border border-slate-200 text-slate-600 font-medium text-center hover:bg-slate-50 transition"
+        className="w-full py-3 px-4 border border-[var(--line)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--muted)] hover:bg-[var(--surface-2)] transition"
       >
         Create account
       </Link>
@@ -204,7 +142,7 @@ export function Navbar() {
     <>
       <button
         onClick={handleSignOut}
-        className="w-full py-3 px-4 rounded-xl border border-slate-200 text-slate-600 font-medium text-center hover:bg-slate-50 transition"
+        className="w-full py-3 px-4 border border-[var(--line)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--muted)] hover:bg-[var(--surface-2)] transition"
       >
         Sign out
       </button>
@@ -212,22 +150,20 @@ export function Navbar() {
   )
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-900 border-b border-slate-800 text-white shadow-md">
+    <header className="sticky top-0 z-50 bg-white border-b border-[var(--line)] shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
-              <Building2 className="w-6 h-6" />
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-9 h-9 rounded-[var(--radius)] border border-[var(--line-strong)] bg-black flex items-center justify-center group-hover:bg-[var(--surface-2)] transition">
+              <Building2 className="w-6 h-6 text-white" />
             </div>
-            <div>
-              <div className="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
-                ONE <span className="text-sky-400 font-extrabold">Facility</span>
-              </div>
+            <div className="text-[var(--ink)] font-bold tracking-tight text-lg flex items-center gap-0.5 group-hover:text-black transition">
+              ONE FACILITY
             </div>
           </Link>
 
-          {/* Desktop navigation (hidden below desktop; tablet uses the mobile pattern) */}
+          {/* Desktop navigation */}
           <nav className="hidden lg:flex items-center space-x-2">
             {user ? authedLinks : guestLinks}
           </nav>
@@ -240,30 +176,29 @@ export function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowNotifs(!showNotifs)}
-                    className="relative p-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
+                    className="relative p-3 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
                     aria-label="View notifications"
                     aria-expanded={showNotifs}
                     aria-controls="notifications-dropdown"
                   >
                     <Bell className="w-5 h-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 w-4 h-4 bg-sky-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                      <span className="absolute top-1 right-1 w-4 h-4 bg-[var(--line-strong)] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                         {unreadCount}
                       </span>
                     )}
                   </button>
 
-                  {/* Notification Dropdown */}
                   {showNotifs && (
-                    <div id="notifications-dropdown" className="absolute right-0 mt-2 w-80 sm:w-96 bg-white text-slate-900 rounded-xl shadow-2xl border border-slate-200 py-2 z-50 animate-in fade-in slide-in-from-top-2">
-                      <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100">
-                        <span className="font-semibold text-sm text-slate-800">Notifications</span>
-                        <span className="text-xs text-slate-500">{notifications.length} total</span>
+                    <div id="notifications-dropdown" className="absolute right-0 mt-2 w-80 sm:w-96 bg-white text-[var(--ink)] rounded-[var(--radius)] shadow-lg border border-[var(--line)] py-2 z-50">
+                      <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--line)]">
+                        <span className="font-semibold text-sm text-[var(--ink)]">Notifications</span>
+                        <span className="text-xs text-[var(--faint)]">{notifications.length} total</span>
                       </div>
 
-                      <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                      <div className="max-h-80 overflow-y-auto divide-y divide-[var(--line)]">
                         {notifications.length === 0 ? (
-                          <div className="p-6 text-center text-slate-400 text-sm">
+                          <div className="p-6 text-center text-[var(--muted)] text-sm">
                             No notifications yet.
                           </div>
                         ) : (
@@ -271,23 +206,23 @@ export function Navbar() {
                             <div
                               key={n.id}
                               onClick={() => handleMarkRead(n.id)}
-                              className={`p-3 text-xs cursor-pointer transition hover:bg-slate-50 flex items-start gap-3 ${
-                                !n.is_read ? 'bg-sky-50/60' : ''
+                              className={`p-3 text-xs cursor-pointer transition hover:bg-[var(--surface-2)] flex items-start gap-3 ${
+                                !n.is_read ? 'bg-[var(--surface-2)]' : ''
                               }`}
                             >
                               <div className="mt-0.5">
                                 {n.notification_type === 'reservation_approved' ? (
-                                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                                  <CheckCircle2 className="w-4 h-4 text-[var(--ink)]" />
                                 ) : n.notification_type === 'reservation_rejected' ? (
-                                  <X className="w-4 h-4 text-rose-600" />
+                                  <Clock className="w-4 h-4 text-[var(--muted)]" />
                                 ) : (
-                                  <Clock className="w-4 h-4 text-sky-600" />
+                                  <Clock className="w-4 h-4 text-[var(--muted)]" />
                                 )}
                               </div>
                               <div className="flex-1">
-                                <p className="font-semibold text-slate-900">{n.title}</p>
-                                <p className="text-slate-600 mt-0.5 leading-relaxed">{n.message}</p>
-                                <span className="text-[10px] text-slate-400 mt-1 block">
+                                <p className="font-semibold text-[var(--ink)]">{n.title}</p>
+                                <p className="text-[var(--muted)] mt-0.5 leading-relaxed">{n.message}</p>
+                                <span className="text-[10px] text-[var(--faint)] mt-1 block">
                                   {new Date(n.created_at).toLocaleTimeString([], {
                                     hour: '2-digit',
                                     minute: '2-digit',
@@ -295,7 +230,7 @@ export function Navbar() {
                                 </span>
                               </div>
                               {!n.is_read && (
-                                <span className="w-2 h-2 rounded-full bg-sky-500 mt-1.5 shrink-0" />
+                                <span className="w-2 h-2 rounded-full bg-[var(--line-strong)] mt-1.5 shrink-0" />
                               )}
                             </div>
                           ))
@@ -306,36 +241,36 @@ export function Navbar() {
                 </div>
 
                 {/* Profile Avatar & Dropdown */}
-                <div className="relative flex items-center gap-3 pl-2 border-l border-slate-800">
+                <div className="relative flex items-center gap-2 pl-2 border-l border-[var(--line)]">
                   <img
-                    src={user?.avatar_url || '/assets/user-placeholder.svg'}
+                    src={user?.avatar_url || '/user-placeholder.svg'}
                     alt={user?.full_name || 'User'}
-                    className="w-8 h-8 rounded-full object-cover ring-2 ring-sky-500/50"
+                    className="w-9 h-9 rounded-full object-cover border border-[var(--line)]"
                     loading="lazy"
                   />
-                  <div className="hidden lg:block text-left text-xs cursor-pointer group" onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
-                    <div className="font-medium text-slate-200">{user?.full_name}</div>
-                    <div className="text-slate-400 capitalize">
+                  <div className="hidden lg:block text-left text-xs cursor-pointer" onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
+                    <div className="font-medium text-[var(--ink)]">{user?.full_name}</div>
+                    <div className="text-[var(--muted)] capitalize">
                       {user?.primary_role?.replace('_', ' ')}
                     </div>
                   </div>
 
                   {profileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white text-slate-900 rounded-xl shadow-2xl border border-slate-200 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                    <div className="absolute right-0 mt-2 w-48 bg-white text-[var(--ink)] rounded-[var(--radius)] shadow-lg border border-[var(--line)] py-2 z-50">
                       <Link
                         to="/my-reservations"
                         onClick={() => setProfileMenuOpen(false)}
-                        className="px-4 py-2.5 text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2"
+                        className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
                       >
-                        <Calendar className="w-4 h-4 text-slate-400 mr-2" />
+                        <Calendar className="w-4 h-4 text-[var(--faint)] mr-2" />
                         My Reservations
                       </Link>
-                      <div className="h-px bg-slate-100 my-1" />
+                      <div className="h-px bg-[var(--line)] my-1" />
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-4 py-2.5 text-xs text-left text-slate-600 hover:bg-slate-50 flex items-center gap-2"
+                        className="w-full px-4 py-2.5 text-xs text-left text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
                       >
-                        <LogOut className="w-4 h-4 text-rose-600 mr-2" />
+                        <LogOut className="w-4 h-4 text-[var(--ink)] mr-2" />
                         Sign out
                       </button>
                     </div>
@@ -346,13 +281,13 @@ export function Navbar() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition"
+                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--muted)] hover:text-[var(--ink)] transition"
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/register"
-                  className="px-3 py-2 rounded-lg text-sm font-medium transition text-sky-400 hover:text-sky-300"
+                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium transition text-[var(--ink)] hover:bg-[var(--surface-2)]"
                 >
                   Create account
                 </Link>
@@ -362,7 +297,7 @@ export function Navbar() {
             {/* Mobile menu toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              className="md:hidden p-2 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
@@ -379,11 +314,11 @@ export function Navbar() {
 
       {/* Mobile menu panel */}
       {mobileMenuOpen && (
-        <div id="mobile-menu" className="fixed inset-0 z-40 bg-slate-900/95 backdrop-blur-sm">
+        <div id="mobile-menu" className="fixed inset-0 z-40 bg-white">
           <div className="absolute top-0 right-0 p-4">
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/50 transition"
+              className="p-2 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
               aria-label="Close menu"
             >
               <CloseIcon className="w-6 h-6" />
@@ -391,13 +326,13 @@ export function Navbar() {
           </div>
           <div className="max-w-md w-full mx-auto pt-20 pb-12 px-6 space-y-6">
             <nav className="space-y-3">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-4">
                 Explore
               </h2>
               {user ? authedLinks : guestLinks}
             </nav>
-            <div className="space-y-3 pt-6 border-t border-slate-800">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">
+            <div className="space-y-3 pt-6 border-t border-[var(--line)]">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-4">
                 Account
               </h2>
               {user ? mobileAuthedActions : mobileGuestActions}

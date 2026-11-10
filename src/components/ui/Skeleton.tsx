@@ -10,7 +10,7 @@ export function Skeleton({ className, width = '100%', height = '1rem', ...props 
   return (
     <div
       className={cn(
-        'animate-pulse rounded-xl bg-slate-200 dark:bg-slate-700',
+        'animate-pulse rounded-sm bg-[var(--surface-2)] dark:bg-[var(--surface-2)]',
         className,
       )}
       style={{ width, height }}

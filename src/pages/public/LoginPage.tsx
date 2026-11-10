@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Mail, Lock, ArrowRight, User, CheckCircle2 } from 'lucide-react'
+import { Mail, Lock, ArrowRight, User } from 'lucide-react'
 import { useAuth } from '../../features/auth/AuthContext'
 
 export function LoginPage() {
@@ -15,9 +15,9 @@ export function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setIsLoading(true)
 
     try {
+      setIsLoading(true)
       await signIn(email, password)
 
       const role = user?.primary_role ?? 'student'
@@ -33,82 +33,131 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="w-full max-w-md space-y-8 p-6">
-        <div className="text-center">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center mx-auto mb-4">
-            <User className="w-6 h-6 text-white" />
+    <div className="min-h-screen flex">
+      {/* Left — black panel */}
+      <div className="hidden lg:flex w-1/2 bg-black flex-col justify-between p-12 lg:p-16">
+        <div>
+          <div className="w-10 h-10 rounded-sm border border-white bg-black flex items-center justify-center mb-6">
+            <BuildingIcon className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-2xl font-extrabold text-slate-900">Welcome back</h1>
-          <p className="text-slate-500 mt-1">Sign in to your ONE Facility account</p>
+          <h1 className="text-3xl font-black text-white leading-tight">
+            ONE FACILITY<br />
+            Campus access,<br />
+            from any screen.
+          </h1>
+          <p className="mt-6 text-white/60 text-sm leading-relaxed max-w-md">
+            Sign in to your ONE Facility account to explore buildings, check floor-plan availability,
+            and submit reservation requests.
+          </p>
         </div>
+        <div className="mt-12">
+          <p className="text-[11px] text-white/40 uppercase tracking-widest font-semibold mb-2">
+            Demo accounts
+          </p>
+          <ul className="space-y-2 text-sm text-white/70 leading-relaxed">
+            <li>
+              <span className="font-mono font-bold text-white">student@campus.edu</span>
+              <span className="ml-2 font-normal text-white/50">· Student</span>
+            </li>
+            <li>
+              <span className="font-mono font-bold text-white">officer@campus.edu</span>
+              <span className="ml-2 font-normal text-white/50">· Organization officer</span>
+            </li>
+            <li>
+              <span className="font-mono font-bold text-white">admin@campus.edu</span>
+              <span className="ml-2 font-normal text-white/50">· Facility administrator</span>
+            </li>
+            <li className="mt-3">
+              <span className="font-mono font-bold text-white">Demo1234!</span>
+              <span className="ml-2 font-normal text-white/50">· All accounts</span>
+            </li>
+          </ul>
+        </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-slate-700">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
-              aria-describedby={error ? 'login-error' : undefined}
-            />
+      {/* Right — white form */}
+      <div className="flex-1 flex items-center justify-center bg-white p-8 sm:p-12">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-extrabold text-[var(--ink)]">Welcome back</h1>
+            <p className="text-[var(--muted)] mt-1">Sign in to your ONE Facility account</p>
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium text-slate-700">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
-              aria-describedby={error ? 'login-error' : undefined}
-            />
-          </div>
-
-          {error && (
-            <div id="login-error" className="rounded-xl bg-rose-50 border border-rose-200 p-3.5 text-xs text-rose-700 flex items-start gap-2" role="alert">
-              <span className="text-rose-600 shrink-0 mt-0.5">✕</span>
-              <span>{error}</span>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-medium text-[var(--ink)]">
+                Email address
+              </label>
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                aria-describedby={error ? 'login-error' : undefined}
+              />
             </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {isLoading ? (
-              <>
-                <CheckCircle2 className="w-4 h-4 animate-spin" />
-                Signing in...
-              </>
-            ) : (
-              <>
-                <ArrowRight className="w-4 h-4" />
-                Sign in
-              </>
+            <div className="space-y-2">
+              <label htmlFor="password" className="block text-sm font-medium text-[var(--ink)]">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
+                aria-describedby={error ? 'login-error' : undefined}
+              />
+            </div>
+
+            {error && (
+              <div id="login-error" className="rounded-sm border border-black p-3.5 bg-black text-white text-xs flex items-start gap-2" role="alert">
+                <span className="text-white shrink-0 mt-0.5">✕</span>
+                <span>{error}</span>
+              </div>
             )}
-          </button>
-        </form>
 
-        <div className="text-center text-xs text-slate-500">
-          Don't have an account?{' '}
-          <Link to="/register" className="font-medium text-sky-600 hover:underline">
-            Create one
-          </Link>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 px-4 rounded-sm bg-[var(--line-strong)] hover:bg-[#1a1a1a] text-white font-semibold text-sm shadow-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/60 border-t-transparent rounded-full animate-spin"></span>
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <ArrowRight className="w-4 h-4" />
+                  Sign in
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="text-center text-xs text-[var(--muted)]">
+            Don't have an account?{' '}
+            <Link to="/register" className="font-medium text-[var(--ink)] hover:underline">
+              Create one
+            </Link>
+          </div>
         </div>
       </div>
     </div>
+  )
+}
+
+function BuildingIcon({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M3 4V21h18V4h-6v3h-6V4z" />
+    </svg>
   )
 }

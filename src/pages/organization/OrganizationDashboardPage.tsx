@@ -11,8 +11,29 @@ import { Link } from 'react-router-dom'
 import { dataStore } from '../../lib/dataStore'
 import { useAuth } from '../../features/auth/AuthContext'
 import { Dialog } from '../../components/ui/Dialog'
-import { formatDateTime, getStatusBadgeClass } from '../../lib/utils'
+import { formatDateTime } from '../../lib/utils'
 import type { Organization, Activity, Reservation, Facility } from '../../types'
+
+const statusTagClass = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case 'approved':
+    case 'available':
+      return 'tag tag-available'
+    case 'pending':
+      return 'tag tag-pending'
+    case 'rejected':
+    case 'cancelled':
+    case 'unavailable':
+      return 'tag tag-rejected'
+    case 'maintenance':
+      return 'tag tag-maintenance'
+    case 'occupied':
+    case 'reserved':
+      return 'tag tag-reserved'
+    default:
+      return 'tag tag-pending'
+  }
+}
 
 export function OrganizationDashboardPage() {
   const { user } = useAuth()
@@ -75,22 +96,28 @@ export function OrganizationDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-gradient-to-r from-slate-900 to-indigo-950 rounded-3xl p-6 sm:p-8 text-white border border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex items-center gap-5">
-          <img
-            src={selectedOrg?.logo_url || ''}
-            alt={selectedOrg?.name || ''}
-            className="w-16 h-16 rounded-2xl object-cover ring-4 ring-white/10 shadow-lg"
-          />
+      <div className="bg-[var(--ink)] text-white rounded-sm border border-[var(--ink)] p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          {selectedOrg?.logo_url ? (
+            <img
+              src={selectedOrg.logo_url}
+              alt={selectedOrg.name}
+              className="w-14 h-14 rounded-sm object-cover border border-white/10 grayscale"
+            />
+          ) : (
+            <div className="w-14 h-14 rounded-sm bg-white/10 flex items-center justify-center border border-white/10 grayscale">
+              <Compass className="w-8 h-8 text-white" />
+            </div>
+          )}
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-400/30">
+              <span className="px-2 py-0.5 rounded-sm border border-white text-[10px] font-mono font-bold uppercase bg-white text-[var(--ink)]">
                 {selectedOrg?.acronym}
               </span>
-              <span className="text-xs text-slate-300 font-medium">Student Organization</span>
+              <span className="text-[11px] text-white/50 font-medium uppercase tracking-widest">Student Organization</span>
             </div>
-            <h1 className="text-2xl font-extrabold text-white">{selectedOrg?.name}</h1>
-            <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+            <h1 className="text-2xl font-black text-white">{selectedOrg?.name}</h1>
+            <p className="text-[11px] text-white/60 mt-1 max-w-2xl leading-relaxed uppercase tracking-wider font-medium">
               {selectedOrg?.description}
             </p>
           </div>
@@ -98,63 +125,63 @@ export function OrganizationDashboardPage() {
         <div className="flex items-center gap-3 w-full md:w-auto">
           <button
             onClick={() => setShowNewActivityModal(true)}
-            className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-sky-500/20 transition active:scale-95"
+            className="px-5 py-3 rounded-sm bg-white text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-gray-900 transition"
           >
             <Plus className="w-4 h-4" />
             New Organization Activity
           </button>
           <Link
             to="/explorer"
-            className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs flex items-center gap-2 border border-white/10 transition"
+            className="px-5 py-3 rounded-sm border border-white text-white font-medium text-sm flex items-center gap-2 hover:bg-white/5 transition"
           >
-            <Compass className="w-4 h-4 text-sky-400" />
+            <Compass className="w-4 h-4 text-white" />
             Explore Spaces
           </Link>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <div className="lg:col-span-6 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-            <div>
-              <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
-                <CalendarDays className="w-4 h-4 text-indigo-600" />
-                Organization Activities
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Planned university events, hackathons, and workshops
-              </p>
+        <div className="lg:col-span-6 bg-white rounded-sm border border-[var(--line)] p-6 space-y-4">
+          <div className="border-b border-[var(--line)] pb-4">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h3 className="font-bold text-[var(--ink)] text-base flex items-center gap-2">
+                  <CalendarDays className="w-4 h-4 text-[var(--ink)]" />
+                  Organization Activities
+                </h3>
+                <p className="text-[11px] text-[var(--muted)] mt-0.5 uppercase tracking-wider font-medium">
+                  Planned university events, hackathons, and workshops
+                </p>
+              </div>
+              <button
+                onClick={() => setShowNewActivityModal(true)}
+                className="p-2 rounded-sm border border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
+                title="Add Activity"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
             </div>
-            <button
-              onClick={() => setShowNewActivityModal(true)}
-              className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition"
-              title="Add Activity"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
           </div>
 
           <div className="space-y-3">
             {activities.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 text-xs">
-                No activities planned. Click '+ New Organization Activity' to create one.
+              <div className="p-8 text-center text-[var(--muted)] text-[11px]">
+                No activities planned. Click 'New Organization Activity' to create one.
               </div>
             ) : (
               activities.map((act) => (
                 <div
                   key={act.id}
-                  className="p-4 rounded-2xl border border-slate-100 bg-slate-50/70 space-y-2 hover:border-indigo-200 transition"
+                  className="p-3 rounded-sm border border-[var(--line)] bg-[var(--surface)] space-y-2 hover:border-black transition"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <h4 className="font-bold text-slate-900 text-sm">{act.title}</h4>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase">
-                      {act.status}
-                    </span>
+                    <h4 className="font-bold text-[var(--ink)] text-sm">{act.title}</h4>
+                    <span className={`tag ${statusTagClass(act.status)}`}>{act.status.toUpperCase()}</span>
                   </div>
-                  <p className="text-xs text-slate-600">{act.description}</p>
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 text-xs text-slate-500">
-                    <span className="flex items-center gap-1 font-medium text-slate-700">
-                      <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                  <p className="text-xs text-[var(--muted)]">{act.description}</p>
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--line)] text-[11px] text-[var(--muted)]">
+                    <span className="flex items-center gap-1 font-medium text-[var(--ink)]">
+                      <Calendar className="w-3 h-3" />
                       Date: {act.activity_date}
                     </span>
                     <span>Expected: {act.expected_attendees} pax</span>
@@ -165,20 +192,24 @@ export function OrganizationDashboardPage() {
           </div>
         </div>
 
-        <div className="lg:col-span-6 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-          <div className="border-b border-slate-100 pb-4">
-            <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-sky-600" />
-              Organization Facility Reservations
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Live status of venues requested on behalf of {selectedOrg?.acronym}
-            </p>
+        <div className="lg:col-span-6 bg-white rounded-sm border border-[var(--line)] p-6 space-y-4">
+          <div className="border-b border-[var(--line)] pb-4">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h3 className="font-bold text-[var(--ink)] text-base flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[var(--ink)]" />
+                  Organization Facility Reservations
+                </h3>
+                <p className="text-[11px] text-[var(--muted)] mt-0.5 uppercase tracking-wider font-medium">
+                  Live status of venues requested on behalf of {selectedOrg?.acronym}
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-3">
             {orgReservations.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 text-xs">
+              <div className="p-8 text-center text-[var(--muted)] text-[11px]">
                 No facility reservations submitted for this organization yet.
               </div>
             ) : (
@@ -187,30 +218,26 @@ export function OrganizationDashboardPage() {
                 return (
                   <div
                     key={res.id}
-                    className="p-4 rounded-2xl border border-slate-100 bg-slate-50/70 space-y-2 hover:border-sky-200 transition"
+                    className="p-3 rounded-sm border border-[var(--line)] bg-white space-y-2 hover:border-black transition"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="text-xs font-bold text-sky-700">
+                        <span className="text-[10px] font-bold text-[var(--ink)] uppercase tracking-widest">
                           {fac?.name || 'Facility'} ({fac?.facility_code})
                         </span>
-                        <h4 className="font-bold text-slate-900 text-sm mt-0.5">{res.title}</h4>
+                        <h4 className="font-bold text-[var(--ink)] text-sm mt-0.5">{res.title}</h4>
                       </div>
-                      <span
-                        className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${getStatusBadgeClass(
-                          res.status
-                        )}`}
-                      >
+                      <span className={`tag ${statusTagClass(res.status)}`}>
                         {res.status.toUpperCase()}
                       </span>
                     </div>
-                    <div className="text-xs text-slate-500 flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-slate-400" />
+                    <div className="text-[11px] text-[var(--muted)] flex items-center gap-1.5">
+                      <Clock className="w-3 h-3 text-[var(--faint)]" />
                       <span>{formatDateTime(res.start_datetime)}</span>
                     </div>
                     {res.status === 'approved' && (
-                      <div className="text-xs text-emerald-700 font-semibold flex items-center gap-1 pt-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
+                      <div className="text-[11px] text-[var(--ink)] font-medium flex items-center gap-1 pt-1">
+                        <CheckCircle2 className="w-3 h-3" />
                         Approved by Administrator
                       </div>
                     )}
@@ -228,63 +255,63 @@ export function OrganizationDashboardPage() {
         title="Create Organization Activity"
         titleId="create-activity-dialog-title"
       >
-        <p className="text-xs text-slate-500 mb-4" id="create-activity-dialog-desc">
+        <p className="text-[11px] text-[var(--muted)] mb-4" id="create-activity-dialog-desc">
           Add a new official activity to associate with facility reservations.
         </p>
-        <form onSubmit={handleCreateActivity} className="space-y-4 text-xs" aria-describedby="create-activity-dialog-desc">
+        <form onSubmit={handleCreateActivity} className="space-y-4 text-[var(--ink)]" aria-describedby="create-activity-dialog-desc">
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">Activity Title *</label>
+            <label className="block text-sm font-medium text-[var(--ink)] mb-1">Activity Title *</label>
             <input
               type="text"
               placeholder="e.g. CodeCamp: Full-Stack Web Sprint"
               value={actTitle}
               onChange={(e) => setActTitle(e.target.value)}
               required
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-[var(--ink)] mb-1">Description</label>
             <textarea
               rows={2}
               placeholder="Event agenda and target outcomes..."
               value={actDesc}
               onChange={(e) => setActDesc(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Target Date *</label>
+              <label className="block text-sm font-medium text-[var(--ink)] mb-1">Target Date *</label>
               <input
                 type="date"
                 value={actDate}
                 onChange={(e) => setActDate(e.target.value)}
                 required
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Expected Attendees</label>
+              <label className="block text-sm font-medium text-[var(--ink)] mb-1">Expected Attendees</label>
               <input
                 type="number"
                 value={actAttendees}
                 onChange={(e) => setActAttendees(Number(e.target.value) || 0)}
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
               />
             </div>
           </div>
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--line)]">
             <button
               type="button"
               onClick={() => setShowNewActivityModal(false)}
-              className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold"
+              className="px-4 py-2 rounded-sm text-[var(--muted)] font-medium hover:bg-[var(--surface-2)] transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold shadow-md shadow-indigo-600/20"
+              className="px-4 py-2 rounded-sm bg-[var(--ink)] text-white font-semibold hover:bg-[#1a1a1a] transition"
             >
               Save Activity
             </button>

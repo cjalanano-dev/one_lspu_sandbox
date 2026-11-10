@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { dataStore } from '../../lib/dataStore'
 import { useAuth } from '../../features/auth/AuthContext'
-import { formatDateTime, getStatusBadgeClass } from '../../lib/utils'
+import { formatDateTime } from '../../lib/utils'
 import type {
   Facility,
   Building,
@@ -34,8 +34,6 @@ interface ReservationFormData {
   selectedOrgId: string
   selectedEquipment: string[]
 }
-
-// ---------- Time helpers ----------
 
 function timeToMinutes(t: string): number {
   const [h, m] = t.split(':').map(Number)
@@ -67,12 +65,10 @@ export function FacilityDetailPage() {
   const [schedules, setSchedules] = useState<any[]>([])
   const [maintenance, setMaintenance] = useState<MaintenancePeriod[]>([])
 
-  // Availability flow state
   const [formDate, setFormDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [selectedSlot, setSelectedSlot] = useState<{ start: string; end: string } | null>(null)
   const [availableSlots, setAvailableSlots] = useState<Array<{ start: string; end: string; available: boolean }>>([])
 
-  // Details form state
   const [form, setForm] = useState<ReservationFormData>({
     title: '',
     purpose: '',
@@ -111,7 +107,6 @@ export function FacilityDetailPage() {
     loadData()
   }, [id])
 
-  // Recompute available slots whenever date, schedules, reservations, or maintenance change
   useEffect(() => {
     if (!facility || !schedules.length) {
       setAvailableSlots([])
@@ -160,8 +155,6 @@ export function FacilityDetailPage() {
     }
 
     setAvailableSlots(slots)
-
-    // Deselect slot if date changed
     setSelectedSlot(null)
   }, [formDate, facility, schedules, existingReservations, maintenance])
 
@@ -223,7 +216,6 @@ export function FacilityDetailPage() {
         `Reservation request submitted successfully for ${formatDateTime(startDateTimeStr)}. Awaiting administrator approval.`,
       )
 
-      // Refresh reservations and recompute availability
       if (facility) {
         const refreshed = await dataStore.getReservations({ facilityId: facility.id })
         setExistingReservations(refreshed)
@@ -241,9 +233,30 @@ export function FacilityDetailPage() {
     }
   }
 
+  const statusTagClass = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'approved':
+      case 'available':
+        return 'tag tag-available'
+      case 'pending':
+        return 'tag tag-pending'
+      case 'rejected':
+      case 'cancelled':
+      case 'unavailable':
+        return 'tag tag-rejected'
+      case 'maintenance':
+        return 'tag tag-maintenance'
+      case 'occupied':
+      case 'reserved':
+        return 'tag tag-reserved'
+      default:
+        return 'tag tag-pending'
+    }
+  }
+
   if (!facility) {
     return (
-      <div className="py-12 text-center text-slate-400">
+      <div className="py-12 text-center text-[var(--muted)]">
         Loading facility details...
       </div>
     )
@@ -251,53 +264,46 @@ export function FacilityDetailPage() {
 
   return (
     <div className="space-y-6">
-      {/* Back button & Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs text-slate-500">
+      <div className="flex items-center gap-2 text-[11px] text-[var(--muted)]">
         <button
           onClick={() => navigate('/explorer')}
-          className="hover:text-slate-800 flex items-center gap-1 font-medium transition"
+          className="hover:text-[var(--ink)] flex items-center gap-1 font-medium transition"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="w-3 h-3" />
           Campus Explorer
         </button>
-        <ChevronRight className="w-3 h-3 text-slate-300" />
-        <span>{building?.name}</span>
-        <ChevronRight className="w-3 h-3 text-slate-300" />
-        <span className="font-semibold text-slate-800">{facility.name}</span>
+        <ChevronRight className="w-3 h-3 text-[var(--faint)]" />
+        <span className="text-[var(--ink)]">{building?.name}</span>
+        <ChevronRight className="w-3 h-3 text-[var(--faint)]" />
+        <span className="font-semibold text-[var(--ink)]">{facility.name}</span>
       </div>
 
-      {/* Hero Facility Showcase */}
-      <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-0">
+      <div className="rounded-sm border border-[var(--line)] bg-white overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0">
         <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-slate-900 text-white">
-                {facility.facility_code}
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 capitalize">
+              <span className="tag tag-available font-bold">{facility.facility_code}</span>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-[10px] font-bold uppercase bg-[var(--ink)] text-white">
                 {facility.category.replace('_', ' ')}
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                Active & Reservable
-              </span>
+              <span className="tag tag-available font-bold">Active & Reservable</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{facility.name}</h1>
-            <p className="text-sm text-slate-600 mt-3 leading-relaxed">{facility.description}</p>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)]">{facility.name}</h1>
+            <p className="text-sm text-[var(--muted)] mt-3 leading-relaxed">{facility.description}</p>
 
-            {/* Quick Metrics */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-xs text-slate-400 block">Capacity</span>
-                <span className="text-sm font-bold text-slate-800 flex items-center gap-1.5 mt-0.5">
-                  <Users className="w-4 h-4 text-sky-600" />
+              <div className="p-3 border border-[var(--line)] rounded-sm bg-[var(--surface)]">
+                <span className="text-[var(--faint)] block font-medium text-[10px] uppercase tracking-wider">Capacity</span>
+                <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
+                  <Users className="w-4 h-4 text-[var(--ink)]" />
                   {facility.capacity} People
                 </span>
               </div>
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-xs text-slate-400 block">Operating Hours</span>
-                <span className="text-sm font-bold text-slate-800 flex items-center gap-1.5 mt-0.5">
-                  <Clock className="w-4 h-4 text-indigo-600" />
+              <div className="p-3 border border-[var(--line)] rounded-sm bg-[var(--surface)]">
+                <span className="text-[var(--faint)] block font-medium text-[10px] uppercase tracking-wider">Operating Hours</span>
+                <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
+                  <Clock className="w-4 h-4 text-[var(--ink)]" />
                   {schedules.length > 0 ? (
                     <>
                       {minutesToTime(timeToMinutes(schedules[0].opening_time))}
@@ -308,79 +314,79 @@ export function FacilityDetailPage() {
                   )}
                 </span>
               </div>
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-xs text-slate-400 block">Location</span>
-                <span className="text-sm font-bold text-slate-800 flex items-center gap-1.5 mt-0.5">
-                  <Building2 className="w-4 h-4 text-emerald-600" />
+              <div className="p-3 border border-[var(--line)] rounded-sm bg-[var(--surface)]">
+                <span className="text-[var(--faint)] block font-medium text-[10px] uppercase tracking-wider">Location</span>
+                <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
+                  <Building2 className="w-4 h-4 text-[var(--ink)]" />
                   {building?.code} Level
                 </span>
               </div>
             </div>
 
-            {/* Equipment specs */}
             <div className="mt-6">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <Cpu className="w-3.5 h-3.5" />
+              <h4 className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <Cpu className="w-3 h-3 text-[var(--ink)]" />
                 Available Built-in Equipment
               </h4>
               <div className="flex flex-wrap gap-2">
                 {facility.equipment?.map((item, idx) => (
                   <span
                     key={idx}
-                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700"
+                    className="px-2.5 py-1 rounded-sm border border-[var(--line)] text-xs font-medium text-[var(--ink)] bg-white"
                   >
                     {item}
                   </span>
                 ))}
               </div>
             </div>
-          </div>
 
-          {facility.rules && (
-            <div className="mt-6 p-3 bg-amber-50/60 rounded-xl border border-amber-200/80 text-xs text-amber-800 flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <span>{facility.rules}</span>
-            </div>
-          )}
+            {facility.rules && (
+              <div className="mt-6 p-3 border-l-4 border-[var(--ink)] bg-[var(--surface-2)] text-xs text-[var(--ink)] flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-[var(--ink)] shrink-0 mt-0.5" />
+                <span>{facility.rules}</span>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="lg:col-span-5 relative aspect-square lg:aspect-auto bg-slate-100">
+        <div className="lg:col-span-5 relative aspect-square lg:aspect-auto bg-[var(--surface-2)]">
           {facility.image_url ? (
             <img
               src={facility.image_url}
               alt={facility.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover grayscale"
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full bg-slate-200 flex items-center justify-center">
-              <Building2 className="w-12 h-12 text-slate-400" />
+            <div className="w-full h-full flex items-center justify-center border border-[var(--line)]">
+              <Building2 className="w-12 h-12 text-[var(--faint)]" />
             </div>
           )}
+          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
+            {facility.facility_code}
+          </span>
         </div>
       </div>
 
-      {/* Two Column Layout: Reservation Form & Facility Calendar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Reservation Request Form */}
-        <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+        <div className="lg:col-span-7 bg-white rounded-sm border border-[var(--line)] p-6 sm:p-8">
           {!user ? (
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-              <Lock className="w-12 h-12 text-slate-400" />
-              <h4 className="text-lg font-bold text-slate-900">Sign in to reserve this facility</h4>
-              <p className="text-slate-600 text-sm max-w-sm">
+              <Lock className="w-12 h-12 text-[var(--muted)]" />
+              <h4 className="text-lg font-bold text-[var(--ink)]">Sign in to reserve this facility</h4>
+              <p className="text-sm text-[var(--muted)] max-w-sm">
                 You must be logged in to submit a reservation request. Sign in or create an account to get started.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   to="/login"
-                  className="px-6 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold shadow-lg shadow-sky-500/25 transition"
+                  className="w-full sm:w-auto px-6 py-3 rounded-sm bg-[var(--ink)] text-white font-semibold text-sm hover:bg-[#1a1a1a] transition"
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/register"
-                  className="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition"
+                  className="w-full sm:w-auto px-6 py-3 rounded-sm border border-[var(--ink)] text-[var(--ink)] font-semibold text-sm hover:bg-[var(--surface-2)] transition"
                 >
                   Create account
                 </Link>
@@ -388,33 +394,32 @@ export function FacilityDetailPage() {
             </div>
           ) : (
             <>
-              <div className="border-b border-slate-100 pb-4 mb-6">
-                <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-sky-600" />
+              <div className="border-b border-[var(--line)] pb-4 mb-6">
+                <h3 className="text-lg font-bold text-[var(--ink)] flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-[var(--ink)]" />
                   Submit Facility Reservation Request
                 </h3>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-[11px] text-[var(--muted)] mt-1 uppercase tracking-wider font-medium">
                   Choose a date and an available time slot, then describe your request.
                 </p>
               </div>
 
               {errorMsg && (
-                <div id="reservation-error" className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-start gap-2" role="alert">
-                  <ShieldAlert className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                <div id="reservation-error" className="mb-5 p-3 border border-black bg-black text-white text-xs flex items-start gap-2" role="alert">
+                  <ShieldAlert className="w-4 h-4 text-white shrink-0 mt-0.5" />
                   <span>{errorMsg}</span>
                 </div>
               )}
 
               {successMsg && (
-                <div id="reservation-success" className="mb-5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 flex items-start gap-2" role="status" aria-live="polite">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div id="reservation-success" className="mb-5 p-3 border border-black bg-black text-white text-xs flex items-start gap-2" role="status" aria-live="polite">
+                  <CheckCircle2 className="w-4 h-4 text-white shrink-0 mt-0.5" />
                   <span>{successMsg}</span>
                 </div>
               )}
 
-              {/* Step 1: Date */}
               <div>
-                <label htmlFor="reservation-date" className="block font-semibold text-slate-700 mb-1">
+                <label htmlFor="reservation-date" className="block text-sm font-medium text-[var(--ink)] mb-1">
                   Date *
                 </label>
                 <input
@@ -424,17 +429,16 @@ export function FacilityDetailPage() {
                   min={new Date().toISOString().slice(0, 10)}
                   onChange={(e) => setFormDate(e.target.value)}
                   required
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                  className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
                 />
               </div>
 
-              {/* Step 2: Time slots */}
               <div className="mt-6">
-                <label className="block font-semibold text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Available Time Slots *
                 </label>
                 {availableSlots.length === 0 ? (
-                  <div className="p-4 rounded-xl bg-rose-50 text-xs text-rose-700 border border-rose-100">
+                  <div className="p-4 rounded-sm border border-[var(--line-strong)] bg-white text-[var(--ink)] text-[11px]">
                     No available time slots on this date. The facility may be closed, fully booked,
                     or under maintenance. Try another day.
                   </div>
@@ -446,35 +450,33 @@ export function FacilityDetailPage() {
                         onClick={() => setSelectedSlot(slot)}
                         disabled={!slot.available}
                         aria-pressed={selectedSlot?.start === slot.start && selectedSlot?.end === slot.end}
-                        className={`px-3 py-2.5 rounded-lg text-xs font-medium border transition ${
+                        className={`px-3 py-2.5 rounded-sm text-[10px] font-medium border transition ${
                           selectedSlot?.start === slot.start && selectedSlot?.end === slot.end
-                            ? 'bg-sky-500 border-sky-500 text-slate-950 shadow-sm'
+                            ? 'bg-[var(--line-strong)] border-[var(--line-strong)] text-white shadow-sm'
                             : slot.available
-                            ? 'bg-white border-sky-200 text-slate-700 hover:bg-sky-50 hover:border-sky-400'
-                            : 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
+                            ? 'bg-white border-[var(--line-strong)] text-[var(--ink)] hover:bg-[var(--surface-2)] hover:border-[var(--ink)]'
+                            : 'bg-[var(--surface-2)] border-[var(--line)] text-[var(--faint)] cursor-not-allowed'
                         }`}
                       >
                         {slot.start} – {slot.end}
                         {!slot.available && (
-                          <span className="ml-1 text-[9px] opacity-70">unavailable</span>
+                          <span className="ml-1 text-[9px] text-[var(--faint)]">unavailable</span>
                         )}
                       </button>
                     ))}
                   </div>
                 )}
                 {selectedSlot && (
-                  <p className="mt-2 text-xs text-sky-600 font-medium">
+                  <p className="mt-2 text-xs text-[var(--ink)] font-medium">
                     Selected: {selectedSlot.start} – {selectedSlot.end} on {formDate}
                   </p>
                 )}
               </div>
 
-              {/* Step 3: Details (shown only after slot selected) */}
               {selectedSlot ? (
-                <form onSubmit={handleReservationSubmit} className="mt-6 space-y-4 text-xs border-t border-slate-100 pt-6">
-                  {/* Title */}
+                <form onSubmit={handleReservationSubmit} className="mt-6 space-y-4 text-[var(--ink)] border-t border-[var(--line)] pt-6">
                   <div>
-                    <label htmlFor="reservation-title" className="block font-semibold text-slate-700 mb-1">
+                    <label htmlFor="reservation-title" className="block text-sm font-medium text-[var(--ink)] mb-1">
                       Reservation Title *
                     </label>
                     <input
@@ -484,14 +486,12 @@ export function FacilityDetailPage() {
                       value={form.title}
                       onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
                       required
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
-                      aria-describedby="reservation-error"
+                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
                     />
                   </div>
 
-                  {/* Purpose */}
                   <div>
-                    <label htmlFor="reservation-purpose" className="block font-semibold text-slate-700 mb-1">
+                    <label htmlFor="reservation-purpose" className="block text-sm font-medium text-[var(--ink)] mb-1">
                       Purpose & Event Details *
                     </label>
                     <textarea
@@ -501,62 +501,61 @@ export function FacilityDetailPage() {
                       value={form.purpose}
                       onChange={(e) => setForm((prev) => ({ ...prev, purpose: e.target.value }))}
                       required
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
-                      aria-describedby="reservation-error"
+                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
                     />
                   </div>
 
-                  {/* If Organization Officer: Associate Activity and Org */}
                   {isOfficer && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100">
-                      <div>
-                        <label className="block font-semibold text-indigo-950 mb-1">
-                          Student Organization
-                        </label>
-                        <select
-                          value={form.selectedOrgId}
-                          onChange={(e) =>
-                            setForm((prev) => ({ ...prev, selectedOrgId: e.target.value }))
-                          }
-                          className="w-full px-3 py-2 rounded-xl bg-white border border-indigo-200 text-slate-800 font-medium focus:ring-1 focus:ring-indigo-500"
-                          aria-label="Student Organization"
-                        >
-                          {organizations.map((org) => (
-                            <option key={org.id} value={org.id}>
-                              {org.name} ({org.acronym})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block font-semibold text-indigo-950 mb-1">
-                          Associated Org Activity
-                        </label>
-                        <select
-                          value={form.selectedActivityId}
-                          onChange={(e) =>
-                            setForm((prev) => ({ ...prev, selectedActivityId: e.target.value }))
-                          }
-                          className="w-full px-3 py-2 rounded-xl bg-white border border-indigo-200 text-slate-800 font-medium focus:ring-1 focus:ring-indigo-500"
-                          aria-label="Associated Org Activity"
-                        >
-                          <option value="">-- Standalone Reservation --</option>
-                          {orgActivities
-                            .filter((a) => !form.selectedOrgId || a.organization_id === form.selectedOrgId)
-                            .map((act) => (
-                              <option key={act.id} value={act.id}>
-                                {act.title} ({act.activity_date})
+                    <div className="p-4 rounded-sm border border-[var(--line)] bg-[var(--surface-2)]">
+                      <h4 className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-3">Organization</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[11px] font-bold text-[var(--ink)] mb-1 uppercase tracking-widest">
+                            Student Organization
+                          </label>
+                          <select
+                            value={form.selectedOrgId}
+                            onChange={(e) =>
+                              setForm((prev) => ({ ...prev, selectedOrgId: e.target.value }))
+                            }
+                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] font-medium focus:outline-none focus:border-[var(--line-strong)]"
+                            aria-label="Student Organization"
+                          >
+                            {organizations.map((org) => (
+                              <option key={org.id} value={org.id}>
+                                {org.name} ({org.acronym})
                               </option>
                             ))}
-                        </select>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-bold text-[var(--ink)] mb-1 uppercase tracking-widest">
+                            Associated Org Activity
+                          </label>
+                          <select
+                            value={form.selectedActivityId}
+                            onChange={(e) =>
+                              setForm((prev) => ({ ...prev, selectedActivityId: e.target.value }))
+                            }
+                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] font-medium focus:outline-none focus:border-[var(--line-strong)]"
+                            aria-label="Associated Org Activity"
+                          >
+                            <option value="">-- Standalone Reservation --</option>
+                            {orgActivities
+                              .filter((a) => !form.selectedOrgId || a.organization_id === form.selectedOrgId)
+                              .map((act) => (
+                                <option key={act.id} value={act.id}>
+                                  {act.title} ({act.activity_date})
+                                </option>
+                              ))}
+                          </select>
+                        </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Expected Attendees */}
                   <div>
-                    <label htmlFor="reservation-attendees" className="block font-semibold text-slate-700 mb-1">
+                    <label htmlFor="reservation-attendees" className="block text-sm font-medium text-[var(--ink)] mb-1">
                       Expected Attendees (Max Capacity: {facility.capacity})
                     </label>
                     <input
@@ -566,32 +565,34 @@ export function FacilityDetailPage() {
                       max={facility.capacity}
                       value={form.attendeeCount}
                       onChange={(e) => setForm((prev) => ({ ...prev, attendeeCount: Number(e.target.value) || 1 }))}
-                      className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
-                      aria-describedby="reservation-error"
+                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:outline-none focus:border-[var(--line-strong)]"
                     />
                   </div>
 
-                  {/* Equipment Checklist */}
                   {facility.equipment && facility.equipment.length > 0 && (
-                    <fieldset className="border rounded-lg p-3">
-                      <legend className="block font-semibold text-slate-700 mb-2 px-2">
-                        Request Specific Equipment Setup:
+                    <fieldset className="border border-[var(--line)] rounded-sm p-3">
+                      <legend className="block text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-3 px-2">
+                        Request Specific Equipment Setup
                       </legend>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" role="group" aria-label="Equipment options">
                         {facility.equipment.map((item) => {
                           const checked = form.selectedEquipment.includes(item)
                           const id = `equipment-${item.replace(/\s+/g, '-')}`
                           return (
-                            <div key={item} className="flex items-center gap-2 p-2 rounded-xl border cursor-pointer transition hover:bg-slate-50">
+                            <div key={item} className={`flex items-center gap-2 p-2 rounded-sm cursor-pointer transition border ${
+                              checked ? 'border-black bg-black' : 'border-[var(--line)] hover:bg-[var(--surface-2)]'
+                            }`}>
                               <input
                                 id={id}
                                 type="checkbox"
                                 checked={checked}
                                 onChange={() => toggleEquipment(item)}
-                                className="w-4 h-4 rounded text-sky-600 focus:ring-2 focus:ring-sky-500 border-slate-300"
+                                className={`w-4 h-4 shrink-0 ${
+                                  checked ? 'bg-black text-white border-black' : 'text-[var(--ink)] border-[var(--line)]'
+                                } focus:ring-2 focus:ring-[var(--line-strong)]`}
                                 aria-label={item}
                               />
-                              <label htmlFor={id} className="text-xs truncate cursor-pointer select-none">
+                              <label htmlFor={id} className="text-xs truncate cursor-pointer select-none text-[var(--ink)]">
                                 {item}
                               </label>
                             </div>
@@ -601,20 +602,19 @@ export function FacilityDetailPage() {
                     </fieldset>
                   )}
 
-                  {/* Submit Action */}
                   <div className="pt-3">
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-sm shadow-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {submitting ? 'Validating Conflicts...' : 'Confirm & Request Reservation'}
                     </button>
                   </div>
                 </form>
               ) : (
-                <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                  <p className="text-sm text-slate-600">
+                <div className="mt-6 p-4 rounded-sm border border-[var(--line)] bg-[var(--surface-2)]">
+                  <p className="text-sm text-[var(--muted)]">
                     Select an available time slot above to continue with your reservation details.
                   </p>
                 </div>
@@ -623,47 +623,42 @@ export function FacilityDetailPage() {
           )}
         </div>
 
-        {/* Facility Schedule & Availability Calendar List */}
-        <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-          <div className="border-b border-slate-100 pb-3">
-            <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
-              <Clock className="w-4 h-4 text-sky-600" />
+        <div className="lg:col-span-5 bg-white rounded-sm border border-[var(--line)] p-6 space-y-4">
+          <div className="border-b border-[var(--line)] pb-3">
+            <h3 className="font-bold text-[var(--ink)] text-base flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[var(--ink)]" />
               Existing Schedule & Bookings
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-[11px] text-[var(--muted)] mt-0.5 uppercase tracking-wider font-medium">
               Approved slots block new bookings. Pending slots are queued for review.
             </p>
           </div>
 
           <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
             {existingReservations.length === 0 ? (
-              <div className="py-8 text-center text-slate-400 text-xs">
+              <div className="py-8 text-center text-[var(--muted)] text-[11px]">
                 No active reservations for this facility. All standard operating hours are open.
               </div>
             ) : (
               existingReservations.map((res) => (
                 <div
                   key={res.id}
-                  className="p-3.5 rounded-2xl border border-slate-100 bg-slate-50/70 flex flex-col gap-1.5"
+                  className="p-3 rounded-sm border border-[var(--line)] bg-white flex flex-col gap-1.5"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <span className="font-bold text-slate-900 text-xs">{res.title}</span>
-                    <span
-                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${getStatusBadgeClass(
-                        res.status
-                      )}`}
-                    >
+                    <span className="font-bold text-[var(--ink)] text-xs">{res.title}</span>
+                    <span className={`tag ${statusTagClass(res.status)}`}>
                       {res.status.toUpperCase()}
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
-                    <Calendar className="w-3 h-3 text-slate-400" />
+                  <div className="text-[11px] text-[var(--muted)] flex items-center gap-1.5">
+                    <Calendar className="w-3 h-3 text-[var(--faint)]" />
                     <span>{formatDateTime(res.start_datetime)}</span>
                     <span>→</span>
                     <span>{new Date(res.end_datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                   {res.purpose && (
-                    <p className="text-[11px] text-slate-600 line-clamp-1 italic">
+                    <p className="text-[11px] text-[var(--muted)] line-clamp-1 italic">
                       "{res.purpose}"
                     </p>
                   )}

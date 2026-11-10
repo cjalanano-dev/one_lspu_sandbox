@@ -16,7 +16,6 @@ export function CampusExplorerPage() {
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState<string>('')
 
-  // Initial load
   useEffect(() => {
     async function loadData() {
       const bList = await dataStore.getBuildings()
@@ -28,7 +27,6 @@ export function CampusExplorerPage() {
     loadData()
   }, [])
 
-  // When building changes, load its floors
   useEffect(() => {
     async function loadFloors() {
       if (!selectedBuilding) return
@@ -41,7 +39,6 @@ export function CampusExplorerPage() {
     loadFloors()
   }, [selectedBuilding])
 
-  // When floor or filters change, load facilities
   useEffect(() => {
     async function loadFacilities() {
       if (!selectedBuilding) return
@@ -63,20 +60,18 @@ export function CampusExplorerPage() {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
-            <Compass className="w-7 h-7 text-sky-600" />
-            Interactive Campus Explorer
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)] tracking-tight flex items-center gap-2.5">
+            <Compass className="w-7 h-7 text-[var(--ink)]" />
+            Campus Explorer
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Navigate through buildings, explore floor layouts, and inspect available university spaces.
+          <p className="text-sm text-[var(--muted)] mt-1">
+            Navigate buildings, explore floor layouts, and inspect available university spaces.
           </p>
         </div>
       </div>
 
-      {/* Building Selector Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {buildings.map((b) => {
           const isSelected = selectedBuilding?.id === b.id
@@ -84,24 +79,22 @@ export function CampusExplorerPage() {
             <div
               key={b.id}
               onClick={() => setSelectedBuilding(b)}
-              className={`p-4 rounded-2xl border cursor-pointer transition flex items-center gap-4 ${
+              className={`p-4 rounded-sm border cursor-pointer transition flex items-center gap-3 ${
                 isSelected
-                  ? 'border-sky-500 bg-white ring-2 ring-sky-500/20 shadow-md'
-                  : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'
+                  ? 'border-black bg-black text-white'
+                  : 'border-[var(--line)] bg-white text-[var(--ink)] hover:border-[var(--line-strong)]'
               }`}
             >
-              <div
-                className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
-                  isSelected ? 'bg-sky-500 text-white' : 'bg-slate-100 text-slate-600'
-                }`}
-              >
-                <Building2 className="w-6 h-6" />
+              <div className={`w-9 h-9 rounded-sm flex items-center justify-center shrink-0 ${
+                isSelected ? 'bg-white text-black' : 'bg-[var(--surface-2)] border border-[var(--line)]'
+              }`}>
+                <Building2 className="w-5 h-5" />
               </div>
               <div className="overflow-hidden">
-                <span className="text-xs font-mono font-bold text-sky-600">{b.code}</span>
-                <h3 className="font-bold text-slate-900 text-sm truncate">{b.name}</h3>
-                <p className="text-xs text-slate-500 truncate flex items-center gap-1 mt-0.5">
-                  <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                <span className="text-[10px] font-mono font-bold text-[var(--ink)] uppercase tracking-widest">{b.code}</span>
+                <h3 className="font-bold text-sm truncate">{b.name}</h3>
+                <p className="text-xs text-[var(--muted)] truncate flex items-center gap-1 mt-0.5">
+                  <MapPin className="w-3 h-3 text-[var(--faint)] shrink-0" />
                   {b.location_description}
                 </p>
               </div>
@@ -110,11 +103,9 @@ export function CampusExplorerPage() {
         })}
       </div>
 
-      {/* Floor Tab Selector & Filters */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-        {/* Floor Pills */}
+      <div className="rounded-sm border border-[var(--line)] bg-white p-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-1 flex items-center gap-1">
+          <span className="text-[11px] font-bold text-[var(--muted)] uppercase tracking-widest mr-1 flex items-center gap-1">
             <Layers className="w-3.5 h-3.5" />
             Levels:
           </span>
@@ -124,10 +115,10 @@ export function CampusExplorerPage() {
               <button
                 key={floor.id}
                 onClick={() => setSelectedFloor(floor)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+                className={`px-3.5 py-1.5 rounded-sm text-[11px] font-bold whitespace-nowrap transition ${
                   isSelected
-                    ? 'bg-slate-900 text-white shadow-sm'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-black text-white'
+                    : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'
                 }`}
               >
                 {floor.name.split('-')[0]}
@@ -136,27 +127,26 @@ export function CampusExplorerPage() {
           })}
         </div>
 
-        {/* Category & Search filter */}
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 sm:w-48">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-4 h-4 text-[var(--faint)] absolute left-3 top-2.5" />
             <input
               type="text"
               placeholder="Search room, code..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-sky-500"
+              className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-white focus:outline-none focus:border-[var(--line-strong)]"
             />
           </div>
 
           <div className="flex items-center gap-1.5">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <Filter className="w-3.5 h-3.5 text-[var(--faint)]" />
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg text-xs py-1.5 px-2.5 font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-sky-500"
+              className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-medium text-[var(--ink)] bg-white focus:outline-none focus:border-[var(--line-strong)] appearance-none"
             >
-              <option value="all">All Categories</option>
+              <option value="all">All categories</option>
               <option value="auditorium">Auditorium</option>
               <option value="conference_room">Conference</option>
               <option value="laboratory">Laboratory</option>
@@ -167,7 +157,6 @@ export function CampusExplorerPage() {
         </div>
       </div>
 
-      {/* Main Floor Plan View Component */}
       {selectedFloor && (
         <FloorPlanViewer
           floor={selectedFloor}
