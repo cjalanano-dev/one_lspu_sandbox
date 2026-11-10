@@ -183,9 +183,7 @@ export function Navbar() {
                   >
                     <Bell className="w-5 h-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 w-4 h-4 bg-[var(--line-strong)] text-white text-xs font-bold rounded-sm flex items-center justify-center">
-                        {unreadCount}
-                      </span>
+                      <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
                     )}
                   </button>
 
