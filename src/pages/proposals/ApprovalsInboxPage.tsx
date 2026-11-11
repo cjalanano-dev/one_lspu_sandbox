@@ -7,7 +7,11 @@ import { formatDateTime } from '../../lib/utils'
 
 const ROLE_LABEL: Record<string, string> = {
   adviser: 'Organization Adviser',
+  college_dean: 'College Dean',
+  osas: 'Office of Student Affairs & Services (OSAS)',
   osa_staff: 'Office of Student Affairs',
+  campus_director: 'Campus Director',
+  university_president: 'University President',
   facility_admin: 'Facility Administrator',
   system_admin: 'System Administrator (all steps)',
 }

@@ -63,8 +63,8 @@ export function ProposalsListPage() {
           <p className="text-xs font-bold uppercase tracking-widest text-[hsl(var(--muted))]">Digital paperwork</p>
           <h1 className="text-2xl font-black">Event proposals</h1>
           <p className="text-sm text-[hsl(var(--muted))] mt-1 max-w-xl">
-            File the activity proposal, budget and venue request once. It moves through the Adviser, OSA and
-            Facility approvals online, with nothing to print and nothing to lose.
+            File the activity proposal, budget and venue request once. It moves through the Org Adviser, College Dean,
+            OSAS, Campus Director, and University President approvals digitally.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -94,8 +94,8 @@ export function ProposalsListPage() {
 
       {!loading && orgs.length === 0 && (
         <div className="panel p-8 text-center">
-          <p className="font-semibold">You are not an officer of any organization yet.</p>
-          <p className="text-sm text-[hsl(var(--muted))]">Ask your org president to add you as an officer.</p>
+          <p className="font-semibold">Access restricted: Organization President or Secretary required.</p>
+          <p className="text-sm text-[hsl(var(--muted))]">Only active organization presidents and secretaries can access and file proposals for student organizations.</p>
         </div>
       )}
 

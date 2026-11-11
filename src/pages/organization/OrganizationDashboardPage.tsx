@@ -115,7 +115,19 @@ export function OrganizationDashboardPage() {
               <span className="px-2 py-0.5 rounded-sm border border-white text-xs font-mono font-bold uppercase bg-white text-[var(--ink)]">
                 {selectedOrg?.acronym}
               </span>
-              <span className="text-xs text-white/50 font-medium uppercase tracking-widest">Student Organization</span>
+              {selectedOrg?.college && (
+                <span className="px-2 py-0.5 rounded-sm border border-white/20 text-xs font-medium uppercase bg-white/10 text-white">
+                  {selectedOrg.college}
+                </span>
+              )}
+              {selectedOrg?.parent_org_id && (
+                <span className="text-xs text-white/60 font-medium uppercase tracking-wider">
+                  · Sub-org under OCTA
+                </span>
+              )}
+              <span className="text-xs text-white/50 font-medium uppercase tracking-widest">
+                Student Organization
+              </span>
             </div>
             <h1 className="text-2xl font-black text-white">{selectedOrg?.name}</h1>
             <p className="text-xs text-white/60 mt-1 max-w-2xl leading-relaxed uppercase tracking-wider font-medium">

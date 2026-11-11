@@ -48,7 +48,7 @@ export const router = createBrowserRouter([
       {
         path: 'proposals',
         element: (
-          <RequireRole allowedRoles={['officer', 'adviser', 'osa_staff', 'facility_admin', 'system_admin']}>
+          <RequireRole allowedRoles={['officer', 'adviser', 'college_dean', 'osas', 'campus_director', 'university_president', 'osa_staff', 'facility_admin', 'system_admin']}>
             <ProposalsListPage />
           </RequireRole>
         ),
@@ -80,7 +80,7 @@ export const router = createBrowserRouter([
       {
         path: 'approvals',
         element: (
-          <RequireRole allowedRoles={['adviser', 'osa_staff', 'facility_admin', 'system_admin']}>
+          <RequireRole allowedRoles={['adviser', 'college_dean', 'osas', 'campus_director', 'university_president', 'osa_staff', 'facility_admin', 'system_admin']}>
             <ApprovalsInboxPage />
           </RequireRole>
         ),

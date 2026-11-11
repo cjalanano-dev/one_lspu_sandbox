@@ -1,11 +1,69 @@
 -- ONE Facility Realistic Seed Data
 -- 1. Organizations
-INSERT INTO public.organizations (id, name, acronym, description, logo_url, status)
+INSERT INTO public.organizations (id, name, acronym, description, logo_url, status, college, org_type, parent_org_id)
 VALUES 
-  ('a1111111-1111-1111-1111-111111111111', 'Association for Computing Machinery - Student Chapter', 'ACM', 'Student chapter dedicated to computing and innovation.', 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=128&q=80', 'active'),
-  ('b2222222-2222-2222-2222-222222222222', 'University Supreme Student Council', 'USSC', 'Apex governing student body for student welfare and activities.', 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=128&q=80', 'active'),
-  ('c3333333-3333-3333-3333-333333333333', 'Society of Mechanical Engineers', 'SME', 'Innovators and builders advancing engineering solutions.', 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=128&q=80', 'active')
-ON CONFLICT (id) DO NOTHING;
+  (
+    'a1111111-0000-0000-0000-000000000001',
+    'Organization of Computer Total Achievers',
+    'OCTA',
+    'Mother student organization of the College of Computer Studies (CCS).',
+    'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=128&q=80',
+    'active',
+    'College of Computer Studies (CCS)',
+    'college_mother',
+    NULL
+  ),
+  (
+    'a1111111-0000-0000-0000-000000000002',
+    'Alliance of Leaders in G-Software and Optimization',
+    'ALGO',
+    'Sub-organization of OCTA for Computer Science Students.',
+    'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=128&q=80',
+    'active',
+    'College of Computer Studies (CCS)',
+    'program_sub_org',
+    'a1111111-0000-0000-0000-000000000001'
+  ),
+  (
+    'a1111111-0000-0000-0000-000000000003',
+    'Bachelor of Science in Information Technology Student Society',
+    'BSIT',
+    'Sub-organization of OCTA for Information Technology Students.',
+    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=128&q=80',
+    'active',
+    'College of Computer Studies (CCS)',
+    'program_sub_org',
+    'a1111111-0000-0000-0000-000000000001'
+  ),
+  (
+    'b2222222-0000-0000-0000-000000000001',
+    'College of Engineering Student Council',
+    'COESC',
+    'Apex student governing body of the College of Engineering.',
+    'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=128&q=80',
+    'active',
+    'College of Engineering (COE)',
+    'college_mother',
+    NULL
+  ),
+  (
+    'b2222222-2222-2222-2222-222222222222',
+    'University Supreme Student Council',
+    'USSC',
+    'Apex governing student body for student welfare and activities across all colleges.',
+    'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=128&q=80',
+    'active',
+    'University Wide',
+    'university_wide',
+    NULL
+  )
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  acronym = EXCLUDED.acronym,
+  description = EXCLUDED.description,
+  college = EXCLUDED.college,
+  org_type = EXCLUDED.org_type,
+  parent_org_id = EXCLUDED.parent_org_id;
 
 -- 2. Buildings
 INSERT INTO public.buildings (id, name, code, description, location_description, total_floors, map_coordinates)

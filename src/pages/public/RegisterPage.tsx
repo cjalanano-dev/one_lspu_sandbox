@@ -22,8 +22,8 @@ const ROLE_OPTIONS: RoleOption[] = [
   },
   {
     value: 'officer',
-    label: 'Organization Officer',
-    description: 'Manage organization activities and reservations',
+    label: 'Org President / Secretary',
+    description: 'Manage student organization activities and draft event proposals',
   },
 ]
 

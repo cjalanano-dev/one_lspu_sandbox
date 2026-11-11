@@ -5,6 +5,10 @@ export type UserRole =
   | 'faculty'
   | 'officer'
   | 'adviser'
+  | 'college_dean'
+  | 'osas'
+  | 'campus_director'
+  | 'university_president'
   | 'osa_staff'
   | 'facility_admin'
   | 'system_admin'
@@ -77,6 +81,9 @@ export interface Organization {
   description?: string | null
   logo_url?: string | null
   status: OrgStatus
+  college?: string | null
+  org_type?: 'college_mother' | 'program_sub_org' | 'university_wide' | string | null
+  parent_org_id?: string | null
   created_at: string
 }
 
@@ -241,7 +248,14 @@ export type EventType =
   | 'sports'
   | 'meeting'
   | 'other'
-export type ApprovalStepRole = 'adviser' | 'osa_staff' | 'facility_admin'
+export type ApprovalStepRole =
+  | 'adviser'
+  | 'college_dean'
+  | 'osas'
+  | 'campus_director'
+  | 'university_president'
+  | 'osa_staff'
+  | 'facility_admin'
 export type ApprovalStepStatus = 'waiting' | 'pending' | 'approved' | 'returned' | 'rejected'
 export type FundSource = 'org_funds' | 'student_fees' | 'sponsorship' | 'school_subsidy' | 'other'
 export type AttachmentType =

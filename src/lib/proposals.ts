@@ -90,7 +90,13 @@ export const proposalStore = {
   /** Proposals whose current pending step the given role can act on (RLS limits rows). */
   async getInbox(role: string): Promise<InboxItem[]> {
     let q = supabase.from('approval_steps').select('*').eq('status', 'pending')
-    if (role !== 'system_admin') q = q.eq('step_role', role)
+    if (role !== 'system_admin') {
+      if (role === 'osas' || role === 'osa_staff') {
+        q = q.in('step_role', ['osas', 'osa_staff'])
+      } else {
+        q = q.eq('step_role', role)
+      }
+    }
     const { data: steps, error } = await q.order('due_at')
     fail(error)
     if (!steps?.length) return []
