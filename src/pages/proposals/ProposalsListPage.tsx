@@ -27,7 +27,11 @@ export function ProposalsListPage() {
 
   useEffect(() => {
     if (!user) return
-    Promise.all([dataStore.getMyOrganizations(user.id), dataStore.getFacilities()])
+    // Only organizations where the user is an active president or secretary
+    // may file proposals - this mirrors public.is_org_officer() in the
+    // database. Picking any membership (e.g. a plain 'officer' seat) makes
+    // the INSERT fail with "new row violates row-level security policy".
+    Promise.all([dataStore.getFilingOrganizations(user.id), dataStore.getFacilities()])
       .then(([o, f]) => {
         setOrgs(o)
         setOrgId((prev) => prev || o[0]?.id || '')

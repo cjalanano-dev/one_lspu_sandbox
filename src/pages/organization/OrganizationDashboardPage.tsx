@@ -9,7 +9,7 @@ import {
   FileText,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { dataStore } from '../../lib/dataStore'
+import { dataStore, canFileForOrganization } from '../../lib/dataStore'
 import { useAuth } from '../../features/auth/AuthContext'
 import { Dialog } from '../../components/ui/Dialog'
 import { formatDateTime } from '../../lib/utils'
@@ -40,11 +40,13 @@ export function OrganizationDashboardPage() {
   const { user } = useAuth()
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null)
+  const [filingOrg, setFilingOrg] = useState<Organization | null>(null)
   const [activities, setActivities] = useState<Activity[]>([])
   const [orgReservations, setOrgReservations] = useState<Reservation[]>([])
   const [facilitiesMap, setFacilitiesMap] = useState<Record<string, Facility>>({})
 
   const [showNewActivityModal, setShowNewActivityModal] = useState(false)
+  const [activityError, setActivityError] = useState<string | null>(null)
   const [actTitle, setActTitle] = useState('')
   const [actDesc, setActDesc] = useState('')
   const [actDate, setActDate] = useState('2026-11-20')
@@ -55,6 +57,11 @@ export function OrganizationDashboardPage() {
     setOrganizations(orgs)
     const currentOrg = orgs.find((o) => o.id === user?.organization_id) || orgs[0] || null
     setSelectedOrg(currentOrg)
+
+    // Only a president or secretary may file proposals for an organization.
+    // Point the button at one of those, otherwise the insert is rejected by
+    // the database's row-level security policy.
+    setFilingOrg(orgs.find((o) => canFileForOrganization(o)) ?? null)
 
     if (currentOrg) {
       const acts = await dataStore.getActivities(currentOrg.id)
@@ -79,20 +86,29 @@ export function OrganizationDashboardPage() {
   const handleCreateActivity = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!actTitle || !actDate || !selectedOrg) return
+    if (!canFileForOrganization(selectedOrg)) {
+      setActivityError('Only a president or secretary can record activities for this organization.')
+      return
+    }
 
-    await dataStore.createActivity({
-      organization_id: selectedOrg.id,
-      title: actTitle,
-      description: actDesc,
-      activity_date: actDate,
-      expected_attendees: actAttendees,
-      created_by: (user as { id: string })?.id || '',
-    })
+    try {
+      await dataStore.createActivity({
+        organization_id: selectedOrg.id,
+        title: actTitle,
+        description: actDesc,
+        activity_date: actDate,
+        expected_attendees: actAttendees,
+        created_by: (user as { id: string })?.id || '',
+      })
 
-    setShowNewActivityModal(false)
-    setActTitle('')
-    setActDesc('')
-    await loadData()
+      setShowNewActivityModal(false)
+      setActTitle('')
+      setActDesc('')
+      setActivityError(null)
+      await loadData()
+    } catch (err) {
+      setActivityError((err as Error).message)
+    }
   }
 
   return (
@@ -136,13 +152,20 @@ export function OrganizationDashboardPage() {
           </div>
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <Link
-            to={selectedOrg ? `/proposals/new?org=${selectedOrg.id}` : '/proposals/new'}
-            className="px-5 py-3 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[var(--surface-2)] transition"
-          >
-            <FileText className="w-4 h-4" />
-            File Event Proposal
-          </Link>
+          {filingOrg && (
+            <Link
+              to={`/proposals/new?org=${filingOrg.id}`}
+              className="px-5 py-3 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[var(--surface-2)] transition"
+            >
+              <FileText className="w-4 h-4" />
+              File Event Proposal
+            </Link>
+          )}
+          {!filingOrg && (
+            <p className="text-xs text-[var(--paper)]/60">
+              Only a president or secretary can file proposals for an organization.
+            </p>
+          )}
           <Link
             to="/proposals"
             className="px-5 py-3 rounded-sm border-[var(--paper)] text-[var(--paper)] font-medium text-sm flex items-center gap-2 hover:bg-[var(--paper)]/5 transition"
@@ -167,8 +190,13 @@ export function OrganizationDashboardPage() {
               </div>
               <button
                 onClick={() => setShowNewActivityModal(true)}
-                className="p-2 rounded-sm border border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
-                title="Add Activity"
+                disabled={!canFileForOrganization(selectedOrg ?? {})}
+                className="p-2 rounded-sm border border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition disabled:opacity-40 disabled:pointer-events-none"
+                title={
+                  canFileForOrganization(selectedOrg ?? {})
+                    ? 'Add Activity'
+                    : 'Only a president or secretary can record activities for this organization'
+                }
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -271,6 +299,11 @@ export function OrganizationDashboardPage() {
           Add a new official activity to associate with facility reservations.
         </p>
         <form onSubmit={handleCreateActivity} className="space-y-4 text-[var(--ink)]" aria-describedby="create-activity-dialog-desc">
+          {activityError && (
+            <p role="alert" className="border border-[var(--line-strong)] bg-[var(--ink-dark)] text-[var(--paper)] text-xs p-3">
+              {activityError}
+            </p>
+          )}
           <div>
             <label htmlFor="org-activity-title" className="block text-sm font-medium text-[var(--ink)] mb-1">Activity Title *</label>
             <input

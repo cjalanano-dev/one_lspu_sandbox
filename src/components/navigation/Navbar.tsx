@@ -153,7 +153,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-[var(--radius)] border border-[var(--line-strong)] bg-[var(--ink-dark)] flex items-center justify-center group-hover:bg-[var(--surface-2)] transition">
+            <div className="w-9 h-9 rounded-[var(--radius)] border border-[var(--line-strong)] bg-[var(--ink-dark)] flex items-center justify-center">
               <Building2 className="w-6 h-6 text-[var(--paper)]" />
             </div>
             <div className="text-[var(--ink)] font-bold tracking-tight text-lg flex items-center gap-0.5 group-hover:text-[var(--ink-dark)] transition">

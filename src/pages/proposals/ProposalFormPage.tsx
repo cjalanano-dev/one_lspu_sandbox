@@ -99,7 +99,8 @@ export function ProposalFormPage() {
 
   useEffect(() => {
     if (!user || id) return
-    if (!orgId) dataStore.getMyOrganizations(user.id).then((o) => setOrgId(o[0]?.id ?? ''))
+    // Default to an organisation the user may actually file for.
+    if (!orgId) dataStore.getFilingOrganizations(user.id).then((o) => setOrgId(o[0]?.id ?? ''))
   }, [user, id, orgId])
 
   // Load existing draft.

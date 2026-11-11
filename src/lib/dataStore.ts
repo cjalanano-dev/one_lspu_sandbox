@@ -98,7 +98,19 @@ function mapOrganization(row: any): Organization {
     org_type: row.org_type ?? null,
     parent_org_id: row.parent_org_id ?? null,
     created_at: row.created_at,
+    organization_role: row.organization_role ?? null,
   }
+}
+
+/**
+ * The membership roles that may file and manage event proposals.
+ * Mirrors public.is_org_officer() in the database.
+ */
+export const PROPOSAL_FILING_ROLES = ['president', 'secretary'] as const
+
+/** True when the user may file proposals for this organization. */
+export function canFileForOrganization(org: Pick<Organization, 'organization_role'>): boolean {
+  return !!org.organization_role && (PROPOSAL_FILING_ROLES as readonly string[]).includes(org.organization_role)
 }
 
 // Map Supabase activity row to our Activity type
@@ -562,14 +574,24 @@ export const dataStore = {
       .eq('user_id', userId)
       .eq('membership_status', 'active')
     if (error) throw new Error(error.message)
-    const orgIds = new Set((data ?? []).map((row) => row.organization_id))
-    if (orgIds.size === 0) return []
+    const roleByOrg = new Map<string, string>(
+      (data ?? []).map((row) => [row.organization_id as string, row.organization_role as string]),
+    )
+    if (roleByOrg.size === 0) return []
     const { data: orgs, error: orgError } = await supabase
       .from('organizations')
       .select('*')
       .order('name')
     if (orgError) throw new Error(orgError.message)
-    return (orgs ?? []).filter((o) => orgIds.has(o.id)).map(mapOrganization)
+    return (orgs ?? [])
+      .filter((o) => roleByOrg.has(o.id))
+      .map((o) => mapOrganization({ ...o, organization_role: roleByOrg.get(o.id) }))
+  },
+
+  /** Organizations the user may file and manage event proposals for. */
+  async getFilingOrganizations(userId?: string | null): Promise<Organization[]> {
+    const orgs = await this.getMyOrganizations(userId)
+    return orgs.filter(canFileForOrganization)
   },
 
   /** Check if the user is an active president or secretary of an organization */

@@ -85,6 +85,12 @@ export interface Organization {
   org_type?: 'college_mother' | 'program_sub_org' | 'university_wide' | string | null
   parent_org_id?: string | null
   created_at: string
+  /**
+   * The current user's role in this organization, populated by
+   * dataStore.getMyOrganizations. Mirrors public.is_org_officer(), which only
+   * lets 'president' and 'secretary' file and manage proposals.
+   */
+  organization_role?: string | null
 }
 
 export interface OrganizationMember {

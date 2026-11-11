@@ -176,15 +176,6 @@ export function LandingPage() {
                       <ArrowRight className="w-3.5 h-3.5 ml-1" />
                     </Link>
                   )}
-                  {user && (isStudent || isOfficer || isAdmin) && (
-                    <button
-                      onClick={handleSignOut}
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-sm border-[var(--paper)]/20 text-[var(--paper)]/80 font-semibold text-sm hover:bg-[var(--paper)]/5 transition"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Sign out
-                    </button>
-                  )}
                 </div>
               ) : (
                 <div className="mt-8 flex flex-wrap gap-3">
