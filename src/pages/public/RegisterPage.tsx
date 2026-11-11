@@ -105,7 +105,7 @@ export function RegisterPage() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <h1 className="text-2xl font-extrabold text-[var(--ink)]">Create account</h1>
-            <p className="text-[var(--muted)] mt-1">Join ONE Facility as a campus user</p>
+            <p className="text-[var(--muted)] mt-1">Join ONE LSPU as a campus user</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">

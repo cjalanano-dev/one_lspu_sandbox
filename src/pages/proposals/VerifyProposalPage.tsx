@@ -56,7 +56,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <main className="min-h-screen flex items-center justify-center p-6">
       <div className="panel p-8 max-w-lg w-full text-center flex flex-col items-center">
         {children}
-        <Link to="/" className="btn-text text-xs mt-6">ONE Facility</Link>
+        <Link to="/" className="btn-text text-xs mt-6">ONE LSPU</Link>
       </div>
     </main>
   )

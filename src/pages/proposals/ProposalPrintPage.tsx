@@ -55,7 +55,7 @@ export function ProposalPrintPage() {
 
         <header className="flex justify-between items-start border-b-2 border-black pb-3 mb-4">
           <div>
-            <p className="text-[9pt] uppercase tracking-widest">ONE Facility · Event Proposal Packet</p>
+            <p className="text-[9pt] uppercase tracking-widest">ONE LSPU · Event Proposal Packet</p>
             <h1 className="text-[18pt] font-black leading-tight">{p.title}</h1>
             <p className="text-[10pt]">{organization?.name} ({organization?.acronym})</p>
           </div>

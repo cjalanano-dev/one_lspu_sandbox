@@ -61,12 +61,12 @@ export function LoginPage() {
             <BuildingIcon className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-3xl font-black text-white leading-tight">
-            ONE FACILITY<br />
+            ONE LSPU<br />
             Campus access,<br />
             from any screen.
           </h1>
           <p className="mt-6 text-white/60 text-sm leading-relaxed max-w-md">
-            Sign in to your ONE Facility account to explore buildings, check floor-plan availability,
+            Sign in to your ONE LSPU account to explore buildings, check floor-plan availability,
             and submit reservation requests.
           </p>
         </div>
@@ -100,7 +100,7 @@ export function LoginPage() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <h1 className="text-2xl font-extrabold text-[var(--ink)]">Welcome back</h1>
-            <p className="text-[var(--muted)] mt-1">Sign in to your ONE Facility account</p>
+            <p className="text-[var(--muted)] mt-1">Sign in to your ONE LSPU account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">

@@ -1,4 +1,4 @@
-// Shared TypeScript types for ONE Facility
+// Shared TypeScript types for ONE LSPU
 
 export type UserRole =
   | 'student'

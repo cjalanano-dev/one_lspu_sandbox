@@ -163,7 +163,7 @@ export function Navbar() {
               <Building2 className="w-6 h-6 text-white" />
             </div>
             <div className="text-[var(--ink)] font-bold tracking-tight text-lg flex items-center gap-0.5 group-hover:text-black transition">
-              ONE FACILITY
+              ONE LSPU
             </div>
           </Link>
 

@@ -67,7 +67,7 @@ export function LandingPage() {
             <div className="lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm border border-white/20 text-white/60 text-xs font-semibold uppercase tracking-wider mb-2">
                 <Compass className="w-3.5 h-3.5" />
-                Unified Campus Facility Platform
+                ONE LSPU · Unified Campus Platform
               </div>
               <h1 className="text-5xl lg:text-6xl font-black leading-none tracking-tighter">
                 Campus spaces,<br />

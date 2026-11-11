@@ -13,7 +13,7 @@ export function AppLayout() {
       </main>
       <footer className="border-t border-[var(--line)] py-6 text-center text-[var(--muted)] text-xs">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© 2026 ONE Facility. Unified Campus Facility Management System.</p>
+          <p>© 2026 ONE LSPU. Unified Campus Platform.</p>
           <div className="flex items-center space-x-4">
             <span className="inline-flex items-center gap-1.5 px-2 py-0.5 border border-[var(--line-strong)] rounded-[var(--radius)] text-[var(--ink)] font-medium">
               <span className="w-1.5 h-1.5 bg-[var(--line-strong)] rounded-sm"></span>
