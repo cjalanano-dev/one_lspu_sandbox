@@ -40,7 +40,7 @@
     /* Reserved for destructive actions only (sign out). Never used for
        ordinary navigation, so the meaning stays unambiguous.
        Contrast against #FFFFFF: --danger 6.57:1, --danger-strong 8.66:1. */
-    --danger: #b42318;
+    --danger: #b42218c7;
     --danger-strong: #912018;
     --danger-ink: #ffffff;
     --danger-tint: #fef3f2;
