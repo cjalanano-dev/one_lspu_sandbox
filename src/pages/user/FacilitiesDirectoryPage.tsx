@@ -83,8 +83,13 @@ export function FacilitiesDirectoryPage() {
           return (
             <div
               key={fac.id}
-              className="border border-[var(--line)] rounded-sm bg-white overflow-hidden flex flex-col justify-between transition hover:border-black"
+              className="border border-[var(--line)] rounded-sm bg-white overflow-hidden flex flex-col justify-between transition hover:border-black relative group"
             >
+              <Link
+                to={`/facilities/${fac.id}`}
+                className="absolute inset-0 z-0"
+                aria-label={`Open ${fac.name} details and booking`}
+              />
               <div>
                 <div className="relative aspect-[16/9] bg-[var(--surface-2)] overflow-hidden border-b border-[var(--line)]">
                   {fac.image_url ? (
@@ -129,7 +134,7 @@ export function FacilitiesDirectoryPage() {
                 </div>
               </div>
 
-              <div className="p-5 pt-0">
+              <div className="p-5 pt-0 relative z-10">
                 <Link
                   to={`/facilities/${fac.id}`}
                   className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition"

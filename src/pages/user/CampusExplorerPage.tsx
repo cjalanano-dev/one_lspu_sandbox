@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react'
 import { Building2, Layers, Search, Filter, Compass, MapPin } from 'lucide-react'
 import { dataStore } from '../../lib/dataStore'
 import { FloorPlanViewer } from '../../features/campus/FloorPlanViewer'
+import { useSearchParams } from 'react-router-dom'
 import type { Building, Floor, Facility } from '../../types'
 
 export function CampusExplorerPage() {
+  const [searchParams] = useSearchParams()
+  const requestedBuildingCode = searchParams.get('building')
   const [buildings, setBuildings] = useState<Building[]>([])
   const [floors, setFloors] = useState<Floor[]>([])
   const [facilities, setFacilities] = useState<Facility[]>([])
@@ -20,12 +23,18 @@ export function CampusExplorerPage() {
     async function loadData() {
       const bList = await dataStore.getBuildings()
       setBuildings(bList)
-      if (bList.length > 0) {
+      if (bList.length === 0) return
+      if (requestedBuildingCode) {
+        const match = bList.find(
+          (b) => b.code === requestedBuildingCode || b.id === requestedBuildingCode
+        )
+        setSelectedBuilding(match ?? bList[0])
+      } else {
         setSelectedBuilding(bList[0])
       }
     }
     loadData()
-  }, [])
+  }, [requestedBuildingCode])
 
   useEffect(() => {
     async function loadFloors() {
