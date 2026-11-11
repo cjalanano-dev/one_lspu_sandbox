@@ -461,12 +461,12 @@ export function CampusExplorerPage() {
                       </div>
 
                       <Link
-                        to={`/facilities/${selectedFacility.id}`}
-                        className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[var(--ink-dark)] text-[var(--paper)] font-semibold text-center text-sm duration-150 disabled:opacity-50"
-                      >
-                        View Details & Reserve
-                        <ArrowRight className="w-4 h-4 ml-1" />
-                      </Link>
+                      to={`/facilities/${selectedFacility.id}`}
+                      className="w-full inline-flex items-center justify-center gap-1.5 py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[var(--ink-dark)] text-[var(--paper)] font-semibold text-sm transition-colors duration-150"
+                    >
+                      View Details & Reserve
+                      <ArrowRight className="w-4 h-4 shrink-0" />
+                    </Link>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center h-full text-center p-8">

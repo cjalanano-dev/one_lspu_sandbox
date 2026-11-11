@@ -79,11 +79,31 @@ export function LoginPage() {
             </div>
             <div>
               <p className="font-mono font-bold text-[var(--paper)]">officer@campus.edu</p>
-              <p className="text-[var(--paper)]/50">Organization Officer</p>
+              <p className="text-[var(--paper)]/50">Organization Officer (files proposals)</p>
             </div>
             <div>
               <p className="font-mono font-bold text-[var(--paper)]">admin@campus.edu</p>
               <p className="text-[var(--paper)]/50">Facility Administrator</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-[var(--paper)]">adviser@campus.edu</p>
+              <p className="text-[var(--paper)]/50">1. Org Adviser</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-[var(--paper)]">dean@campus.edu</p>
+              <p className="text-[var(--paper)]/50">2. College Dean</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-[var(--paper)]">osas@campus.edu</p>
+              <p className="text-[var(--paper)]/50">3. Office of Student Affairs</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-[var(--paper)]">director@campus.edu</p>
+              <p className="text-[var(--paper)]/50">4. Campus Director</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-[var(--paper)]">president@campus.edu</p>
+              <p className="text-[var(--paper)]/50">5. University President</p>
             </div>
           </div>
           <p className="mt-3 text-xs text-[var(--paper)]/50">
