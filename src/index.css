@@ -36,6 +36,16 @@
     --accent-tint-2: #d6e2fa;
     --accent-line: #b9cbf5;
 
+    /* ---------- Destructive / sign-out ---------- */
+    /* Reserved for destructive actions only (sign out). Never used for
+       ordinary navigation, so the meaning stays unambiguous.
+       Contrast against #FFFFFF: --danger 6.57:1, --danger-strong 8.66:1. */
+    --danger: #b42318;
+    --danger-strong: #912018;
+    --danger-ink: #ffffff;
+    --danger-tint: #fef3f2;
+    --danger-text: #b42318;
+
     --radius: 0.125rem;
 
     /* ---------- Type scale ---------- */

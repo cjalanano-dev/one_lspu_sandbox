@@ -39,6 +39,22 @@ Zero gradients, zero blur, zero shadows.
 Contrast against `#FFFFFF`: `--accent` 4.62:1, `--accent-text` 6.39:1,
 `--accent-strong` 6.82:1, `--accent-deep` 14.03:1. All pass WCAG AA.
 
+### Destructive — red
+
+| Token | Value | Role |
+|---|---|---|
+| `--danger` | `#B42318` | Sign-out hover fill |
+| `--danger-strong` | `#912018` | Destructive pressed |
+| `--danger-ink` | `#FFFFFF` | Text on a red fill |
+| `--danger-tint` | `#FEF3F2` | Soft red wash |
+| `--danger-text` | `#B42318` | Destructive label |
+
+Contrast against `#FFFFFF`: `--danger` 6.57:1, `--danger-strong` 8.66:1.
+
+Red is reserved for destructive actions only — currently the sign-out item in
+the profile dropdown and the mobile menu. Ordinary navigation never uses it, so
+"this will end your session" is unmistakable.
+
 | Token | Value | Role |
 |---|---|---|
 | `--radius` | `0.125rem` (2px) | All corners |

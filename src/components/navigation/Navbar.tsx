@@ -140,7 +140,7 @@ export function Navbar() {
     <>
       <button
         onClick={handleSignOut}
-        className="w-full py-3 px-4 border border-[var(--line)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--muted)] hover:bg-[var(--accent-tint)] transition"
+        className="w-full py-3 px-4 border border-[var(--danger)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--danger-text)] hover:bg-[var(--danger)] hover:text-[var(--danger-ink)] transition"
       >
         Sign out
       </button>
@@ -284,9 +284,9 @@ export function Navbar() {
                       <div className="border-b border-[var(--line)] my-1" />
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-4 py-2.5 text-xs text-left text-[var(--muted)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] flex items-center gap-2"
+                        className="group w-full px-4 py-2.5 text-xs text-left text-[var(--muted)] hover:bg-[var(--danger)] hover:text-[var(--danger-ink)] flex items-center gap-2"
                       >
-                        <LogOut className="w-4 h-4 text-[var(--ink)] mr-2" />
+                        <LogOut className="w-4 h-4 text-[var(--ink)] mr-2 group-hover:text-[var(--danger-ink)]" />
                         Sign out
                       </button>
                     </div>
