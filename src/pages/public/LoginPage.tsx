@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Mail, Lock, ArrowRight, User, Eye, EyeOff } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../features/auth/AuthContext'
@@ -177,18 +177,11 @@ export function LoginPage() {
               ) : (
                 <>
                   <ArrowRight className="w-4 h-4" />
-                  Sign in
+                  Log in
                 </>
               )}
             </button>
           </form>
-
-          <div className="text-center text-xs text-[var(--muted)]">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-[var(--ink)] hover:underline">
-              Create one
-            </Link>
-          </div>
         </div>
       </div>
     </div>

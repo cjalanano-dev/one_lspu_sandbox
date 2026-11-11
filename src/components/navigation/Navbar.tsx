@@ -133,12 +133,6 @@ export function Navbar() {
       >
         Sign in
       </Link>
-      <Link
-        to="/register"
-        className="w-full py-3 px-4 border border-[var(--line)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--muted)] hover:bg-[var(--surface-2)] transition"
-      >
-        Create account
-      </Link>
     </>
   )
 
@@ -306,12 +300,6 @@ export function Navbar() {
                   className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--ink)] border border-[var(--line-strong)] hover:bg-[var(--surface-2)] transition"
                 >
                   Sign in
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--ink)] border border-[var(--line-strong)] hover:bg-[var(--surface-2)] transition"
-                >
-                  Create account
                 </Link>
               </div>
             )}

@@ -29,7 +29,7 @@ ONE Facility pairs spatial campus discovery — building directory, floor naviga
 
 Confirmed MVP scope:
 
-- Supabase Auth registration, login/logout, profile management, role-based access, and account status.
+- Supabase Auth login/logout, profile management, role-based access, and account status. Public self-registration is not offered; accounts are provisioned administratively.
 - Five roles: student, faculty, organization officer, facility administrator, system administrator.
 - Campus Explorer with building directory, building details, floor navigation, data-driven interactive SVG floor plans, clickable facility locations, search, category filters, and facility information panels.
 - Facility directory and detail pages with capacity, equipment, schedule, availability, reservation policy, and images.
@@ -52,7 +52,7 @@ Technical and scope constraints:
 
 Current build state:
 
-- Implemented routes: landing, login, register, campus explorer, facilities directory, facility detail, my reservations, organization dashboard, and admin dashboard.
+- Implemented routes: landing, login, campus explorer, facilities directory, facility detail, my reservations, organization dashboard, and admin dashboard.
 - Supabase schema and seed data exist; the app reads and writes directly to Supabase with no localStorage fallback.
 - Several specified surfaces (notifications page, profile page, building/floor detail pages, full facility management, analytics) are not yet present and must not be described as shipped.
 

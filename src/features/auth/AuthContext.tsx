@@ -5,7 +5,6 @@ import type { User, UserRole } from '../../types'
 interface AuthContextType {
   user: User | null
   signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string, meta: Record<string, string>) => Promise<void>
   signOut: () => Promise<void>
   isStudent: boolean
   isOfficer: boolean
@@ -88,21 +87,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error
   }
 
-  const signUp = async (
-    email: string,
-    password: string,
-    meta: Record<string, string>
-  ) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: meta,
-      },
-    })
-    if (error) throw error
-  }
-
   const signOut = async () => {
     await supabase.auth.signOut()
     setCurrentUser(null)
@@ -111,7 +95,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value: AuthContextType = {
     user: currentUser,
     signIn,
-    signUp,
     signOut,
     isStudent: currentUser?.primary_role === 'student',
     isOfficer: currentUser?.primary_role === 'officer',

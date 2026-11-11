@@ -4,7 +4,6 @@ import { RequireAuth, RequireRole, RedirectIfAuthed } from './guards/RequireAuth
 import { ErrorBoundary } from '../components/ui/ErrorBoundary'
 import { LandingPage } from '../pages/public/LandingPage'
 import { LoginPage } from '../pages/public/LoginPage'
-import { RegisterPage } from '../pages/public/RegisterPage'
 import { UnauthorizedPage } from '../pages/public/UnauthorizedPage'
 import { NotFoundPage } from '../pages/public/NotFoundPage'
 import { CampusExplorerPage } from '../pages/user/CampusExplorerPage'
@@ -132,14 +131,6 @@ export const router = createBrowserRouter([
     element: (
       <RedirectIfAuthed>
         <LoginPage />
-      </RedirectIfAuthed>
-    ),
-  },
-  {
-    path: 'register',
-    element: (
-      <RedirectIfAuthed>
-        <RegisterPage />
       </RedirectIfAuthed>
     ),
   },

@@ -384,12 +384,6 @@ export function FacilityDetailPage() {
                 >
                   Sign in
                 </Link>
-                <Link
-                  to="/register"
-                  className="w-full sm:w-auto px-6 py-3 rounded-sm border border-[var(--ink)] text-[var(--ink)] font-semibold text-sm hover:bg-[var(--surface-2)] transition"
-                >
-                  Create account
-                </Link>
               </div>
             </div>
           ) : (

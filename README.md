@@ -33,10 +33,10 @@ All accounts are active and linked to seeded campus data (TIC, SAC, SRH building
 src/
   app/            Router, route guards (RequireAuth, RequireRole, RedirectIfAuthed)
   components/     Navigation, UI primitives (Dialog, Skeleton, ErrorBoundary)
-  features/auth/  Supabase Auth context (sign in / sign up / sign out / session)
+  features/auth/  Supabase Auth context (sign in / sign out / session)
   features/campus/ Floor plan viewer
   lib/            dataStore (Supabase-only data layer), supabase client, utils
-  pages/          Landing, Login, Register, Unauthorized, NotFound,
+  pages/          Landing, Login, Unauthorized, NotFound,
                   user (explorer, facilities, facility detail, my reservations),
                   organization, admin
   types/          Shared TypeScript types
@@ -48,6 +48,7 @@ supabase/
 ## Key behaviors
 
 - **No localStorage fallback** — every read/write goes directly to Supabase. If env vars are missing, the app throws a clear config error instead of silently falling back to demo data.
+- **No public sign-up** — the register route and all "Create account" entry points are removed. Accounts are provisioned administratively; the `handle_new_user` trigger still creates the profile row when an account is added in the Supabase dashboard.
 - **Role-based routes** — `/admin` (facility_admin/system_admin), `/organization` (officer), `/my-reservations` (authenticated). Guests are redirected to login.
 - **Availability-first booking** — time slots are derived from `facility_schedules`, existing approved reservations, and maintenance periods. Conflicts are checked client-side and re-checked server-side via the `approve_reservation()` RPC.
 - **Notifications** — written to Supabase (not localStorage); the bell shows unread count and marks items read.

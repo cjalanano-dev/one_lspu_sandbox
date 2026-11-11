@@ -196,13 +196,6 @@ export function LandingPage() {
                     Sign in
                     <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </Link>
-                  <Link
-                    to="/register"
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-sm border-[var(--paper)] text-[var(--paper)] font-semibold text-sm hover:bg-[var(--paper)]/5 transition"
-                  >
-                    <Users className="w-4 h-4" />
-                    Create account
-                  </Link>
                 </div>
               )}
             </div>
