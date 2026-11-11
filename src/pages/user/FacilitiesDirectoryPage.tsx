@@ -58,14 +58,14 @@ export function FacilitiesDirectoryPage() {
               placeholder="Search facility name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-white focus:border-[var(--line-strong)]"
+              className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-[var(--paper)] focus:border-[var(--line-strong)]"
             />
           </div>
 
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-medium text-[var(--ink)] bg-white focus:border-[var(--line-strong)] appearance-none"
+            className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-medium text-[var(--ink)] bg-[var(--paper)] focus:border-[var(--line-strong)] appearance-none"
           >
             <option value="all">All categories</option>
             <option value="auditorium">Auditorium</option>
@@ -83,7 +83,7 @@ export function FacilitiesDirectoryPage() {
           return (
             <div
               key={fac.id}
-              className="border border-[var(--line)] rounded-sm bg-white overflow-hidden flex flex-col justify-between transition hover:border-black"
+              className="border border-[var(--line)] rounded-sm bg-[var(--paper)] overflow-hidden flex flex-col justify-between transition hover:border-[var(--line-strong)]"
             >
               <div>
                 <div className="relative aspect-[16/9] bg-[var(--surface-2)] overflow-hidden border-b border-[var(--line)]">
@@ -99,10 +99,10 @@ export function FacilitiesDirectoryPage() {
                       <Building2 className="w-12 h-12 text-[var(--faint)]" />
                     </div>
                   )}
-                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm text-xs font-mono font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
+                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm text-xs font-mono font-bold uppercase bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink)]">
                     {fac.facility_code}
                   </span>
-                  <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-white border border-[var(--ink)] text-[var(--ink)]">
+                  <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--paper)] border border-[var(--ink)] text-[var(--ink)]">
                     {fac.category.replace('_', ' ')}
                   </span>
                 </div>
@@ -132,7 +132,7 @@ export function FacilitiesDirectoryPage() {
               <div className="p-5 pt-0">
                 <Link
                   to={`/facilities/${fac.id}`}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-sm bg-[#1a1a1a] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-sm bg-[var(--ink-dark)] hover:bg-[var(--ink-dark)] text-[var(--paper)] font-semibold text-sm  transition"
                 >
                   View Details & Book
                   <ArrowRight className="w-3.5 h-3.5" />

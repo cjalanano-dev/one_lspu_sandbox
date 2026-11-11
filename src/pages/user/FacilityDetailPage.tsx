@@ -278,12 +278,12 @@ export function FacilityDetailPage() {
         <span className="font-semibold text-[var(--ink)]">{facility.name}</span>
       </div>
 
-      <div className="rounded-sm border border-[var(--line)] bg-white overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0">
+      <div className="rounded-sm border border-[var(--line)] bg-[var(--paper)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0">
         <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className="tag tag-available font-bold">{facility.facility_code}</span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-xs font-bold uppercase bg-[var(--ink)] text-white">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)]">
                 {facility.category.replace('_', ' ')}
               </span>
               <span className="tag tag-available font-bold">Active & Reservable</span>
@@ -332,7 +332,7 @@ export function FacilityDetailPage() {
                 {facility.equipment?.map((item, idx) => (
                   <span
                     key={idx}
-                    className="px-2.5 py-1 rounded-sm border border-[var(--line)] text-xs font-medium text-[var(--ink)] bg-white"
+                    className="px-2.5 py-1 rounded-sm border border-[var(--line)] text-xs font-medium text-[var(--ink)] bg-[var(--paper)]"
                   >
                     {item}
                   </span>
@@ -362,14 +362,14 @@ export function FacilityDetailPage() {
               <Building2 className="w-12 h-12 text-[var(--faint)]" />
             </div>
           )}
-          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
+          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink)]">
             {facility.facility_code}
           </span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-7 bg-white rounded-sm border border-[var(--line)] p-6 sm:p-8">
+        <div className="lg:col-span-7 bg-[var(--paper)] rounded-sm border border-[var(--line)] p-6 sm:p-8">
           {!user ? (
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
               <Lock className="w-12 h-12 text-[var(--muted)]" />
@@ -380,7 +380,7 @@ export function FacilityDetailPage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   to="/login"
-                  className="w-full sm:w-auto px-6 py-3 rounded-sm bg-[var(--ink)] text-white font-semibold text-sm hover:bg-[#1a1a1a] transition"
+                  className="w-full sm:w-auto px-6 py-3 rounded-sm bg-[var(--ink)] text-[var(--paper)] font-semibold text-sm hover:bg-[var(--ink-dark)] transition"
                 >
                   Sign in
                 </Link>
@@ -405,15 +405,15 @@ export function FacilityDetailPage() {
               </div>
 
               {errorMsg && (
-                <div id="reservation-error" className="mb-5 p-3 border border-black bg-black text-white text-xs flex items-start gap-2" role="alert">
-                  <ShieldAlert className="w-4 h-4 text-white shrink-0 mt-0.5" />
+                <div id="reservation-error" className="mb-5 p-3 border-[var(--line-strong)] bg-[var(--ink-dark)] text-[var(--paper)] text-xs flex items-start gap-2" role="alert">
+                  <ShieldAlert className="w-4 h-4 text-[var(--paper)] shrink-0 mt-0.5" />
                   <span>{errorMsg}</span>
                 </div>
               )}
 
               {successMsg && (
-                <div id="reservation-success" className="mb-5 p-3 border border-black bg-black text-white text-xs flex items-start gap-2" role="status" aria-live="polite">
-                  <CheckCircle2 className="w-4 h-4 text-white shrink-0 mt-0.5" />
+                <div id="reservation-success" className="mb-5 p-3 border-[var(--line-strong)] bg-[var(--ink-dark)] text-[var(--paper)] text-xs flex items-start gap-2" role="status" aria-live="polite">
+                  <CheckCircle2 className="w-4 h-4 text-[var(--paper)] shrink-0 mt-0.5" />
                   <span>{successMsg}</span>
                 </div>
               )}
@@ -429,7 +429,7 @@ export function FacilityDetailPage() {
                   min={new Date().toISOString().slice(0, 10)}
                   onChange={(e) => setFormDate(e.target.value)}
                   required
-                  className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+                  className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
                 />
               </div>
 
@@ -438,7 +438,7 @@ export function FacilityDetailPage() {
                   Available Time Slots *
                 </label>
                 {availableSlots.length === 0 ? (
-                  <div className="p-4 rounded-sm border border-[var(--line-strong)] bg-white text-[var(--ink)] text-xs">
+                  <div className="p-4 rounded-sm border border-[var(--line-strong)] bg-[var(--paper)] text-[var(--ink)] text-xs">
                     No available time slots on this date. The facility may be closed, fully booked,
                     or under maintenance. Try another day.
                   </div>
@@ -452,9 +452,9 @@ export function FacilityDetailPage() {
                         aria-pressed={selectedSlot?.start === slot.start && selectedSlot?.end === slot.end}
                         className={`px-3 py-2.5 rounded-sm text-xs font-medium border transition ${
                           selectedSlot?.start === slot.start && selectedSlot?.end === slot.end
-                            ? 'bg-[var(--line-strong)] border-[var(--line-strong)] text-white '
+                            ? 'bg-[var(--line-strong)] border-[var(--line-strong)] text-[var(--paper)] '
                             : slot.available
-                            ? 'bg-white border-[var(--line-strong)] text-[var(--ink)] hover:bg-[var(--surface-2)] hover:border-[var(--ink)]'
+                            ? 'bg-[var(--paper)] border-[var(--line-strong)] text-[var(--ink)] hover:bg-[var(--surface-2)] hover:border-[var(--ink)]'
                             : 'bg-[var(--surface-2)] border-[var(--line)] text-[var(--faint)] cursor-not-allowed'
                         }`}
                       >
@@ -486,7 +486,7 @@ export function FacilityDetailPage() {
                       value={form.title}
                       onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
                       required
-                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
                     />
                   </div>
 
@@ -501,7 +501,7 @@ export function FacilityDetailPage() {
                       value={form.purpose}
                       onChange={(e) => setForm((prev) => ({ ...prev, purpose: e.target.value }))}
                       required
-                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
                     />
                   </div>
 
@@ -519,7 +519,7 @@ export function FacilityDetailPage() {
                             onChange={(e) =>
                               setForm((prev) => ({ ...prev, selectedOrgId: e.target.value }))
                             }
-                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] font-medium focus:border-[var(--line-strong)]"
+                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] font-medium focus:border-[var(--line-strong)]"
                             aria-label="Student Organization"
                           >
                             {organizations.map((org) => (
@@ -539,7 +539,7 @@ export function FacilityDetailPage() {
                             onChange={(e) =>
                               setForm((prev) => ({ ...prev, selectedActivityId: e.target.value }))
                             }
-                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] font-medium focus:border-[var(--line-strong)]"
+                            className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] font-medium focus:border-[var(--line-strong)]"
                             aria-label="Associated Org Activity"
                           >
                             <option value="">-- Standalone Reservation --</option>
@@ -567,7 +567,7 @@ export function FacilityDetailPage() {
                       max={facility.capacity}
                       value={form.attendeeCount}
                       onChange={(e) => setForm((prev) => ({ ...prev, attendeeCount: Number(e.target.value) || 1 }))}
-                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+                      className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
                     />
                   </div>
 
@@ -582,7 +582,7 @@ export function FacilityDetailPage() {
                           const id = `equipment-${item.replace(/\s+/g, '-')}`
                           return (
                             <div key={item} className={`flex items-center gap-2 p-2 rounded-sm cursor-pointer transition border ${
-                              checked ? 'border-black bg-black' : 'border-[var(--line)] hover:bg-[var(--surface-2)]'
+                              checked ? 'border-[var(--ink-dark)] bg-[var(--ink-dark)]' : 'border-[var(--line)] hover:bg-[var(--surface-2)]'
                             }`}>
                               <input
                                 id={id}
@@ -590,7 +590,7 @@ export function FacilityDetailPage() {
                                 checked={checked}
                                 onChange={() => toggleEquipment(item)}
                                 className={`w-4 h-4 shrink-0 ${
-                                  checked ? 'bg-black text-white border-black' : 'text-[var(--ink)] border-[var(--line)]'
+                                  checked ? 'bg-[var(--ink-dark)] text-[var(--paper)] border-[var(--ink-dark)]' : 'text-[var(--ink)] border-[var(--line)]'
                                 } focus:ring-2 focus:ring-[var(--line-strong)]`}
                                 aria-label={item}
                               />
@@ -608,7 +608,7 @@ export function FacilityDetailPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[var(--ink-dark)] text-[var(--paper)] font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {submitting ? 'Validating Conflicts...' : 'Confirm & Request Reservation'}
                     </button>
@@ -625,7 +625,7 @@ export function FacilityDetailPage() {
           )}
         </div>
 
-        <div className="lg:col-span-5 bg-white rounded-sm border border-[var(--line)] p-6 space-y-4">
+        <div className="lg:col-span-5 bg-[var(--paper)] rounded-sm border border-[var(--line)] p-6 space-y-4">
           <div className="border-b border-[var(--line)] pb-3">
             <h3 className="font-bold text-[var(--ink)] text-base flex items-center gap-2">
               <Clock className="w-4 h-4 text-[var(--ink)]" />
@@ -645,7 +645,7 @@ export function FacilityDetailPage() {
               existingReservations.map((res) => (
                 <div
                   key={res.id}
-                  className="p-3 rounded-sm border border-[var(--line)] bg-white flex flex-col gap-1.5"
+                  className="p-3 rounded-sm border border-[var(--line)] bg-[var(--paper)] flex flex-col gap-1.5"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <span className="font-bold text-[var(--ink)] text-xs">{res.title}</span>

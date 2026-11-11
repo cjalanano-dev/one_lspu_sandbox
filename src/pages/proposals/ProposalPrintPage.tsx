@@ -36,7 +36,7 @@ export function ProposalPrintPage() {
   const approved = p.status === 'approved'
 
   return (
-    <div className="min-h-screen bg-[hsl(var(--surface))] print:bg-white">
+    <div className="min-h-screen bg-[var(--surface)] print:bg-[var(--paper)]">
       <div className="print:hidden max-w-[210mm] mx-auto flex justify-between items-center py-4 px-2">
         <Link to={`/proposals/${p.id}`} className="btn-text inline-flex items-center gap-1 text-sm">
           <ArrowLeft className="w-4 h-4" /> Back to proposal
@@ -46,14 +46,14 @@ export function ProposalPrintPage() {
         </button>
       </div>
 
-      <article className="relative max-w-[210mm] mx-auto bg-white p-[15mm] text-[11pt] leading-snug shadow print:shadow-none print:p-0 text-black">
+      <article className="relative max-w-[210mm] mx-auto bg-[var(--paper)] p-[15mm] text-[11pt] leading-snug shadow print:shadow-none print:p-0 text-[var(--ink)]">
         {!approved && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden>
-            <span className="text-[64pt] font-black text-black/5 -rotate-30 uppercase">{PROPOSAL_STATUS_LABEL[p.status]}</span>
+            <span className="text-[64pt] font-black text-[var(--ink)]/5 -rotate-30 uppercase">{PROPOSAL_STATUS_LABEL[p.status]}</span>
           </div>
         )}
 
-        <header className="flex justify-between items-start border-b-2 border-black pb-3 mb-4">
+        <header className="flex justify-between items-start border-b-2 border-[var(--line-strong)] pb-3 mb-4">
           <div>
             <p className="text-[9pt] uppercase tracking-widest">ONE LSPU · Event Proposal Packet</p>
             <h1 className="text-[18pt] font-black leading-tight">{p.title}</h1>
@@ -97,13 +97,13 @@ export function ProposalPrintPage() {
           ) : (
             <table className="w-full text-[10pt] border-collapse">
               <thead>
-                <tr className="border-b border-black text-left">
+                <tr className="border-b border-[var(--line-strong)] text-left">
                   <th className="py-1">Item</th><th>Qty</th><th>Unit cost</th><th>Source</th><th className="text-right">Subtotal</th>
                 </tr>
               </thead>
               <tbody>
                 {budget.map((b) => (
-                  <tr key={b.id} className="border-b border-black/20">
+                  <tr key={b.id} className="border-b border-[var(--line-strong)]/20">
                     <td className="py-1">{b.description}</td>
                     <td>{b.quantity}</td>
                     <td>{formatPeso(b.unit_cost)}</td>
@@ -127,7 +127,7 @@ export function ProposalPrintPage() {
         <Section title="6. Approvals">
           <div className="grid grid-cols-3 gap-3 break-inside-avoid">
             {steps.map((s) => (
-              <div key={s.id} className="border border-black p-2 min-h-[34mm] flex flex-col">
+              <div key={s.id} className="border-[var(--line-strong)] p-2 min-h-[34mm] flex flex-col">
                 <p className="text-[8pt] uppercase tracking-wider">Step {s.step_order}</p>
                 <p className="font-bold text-[10pt]">{s.label}</p>
                 {s.status === 'approved' ? (
@@ -144,7 +144,7 @@ export function ProposalPrintPage() {
           </div>
         </Section>
 
-        <footer className="mt-6 pt-2 border-t border-black text-[8pt] flex justify-between">
+        <footer className="mt-6 pt-2 border-t border-[var(--line-strong)] text-[8pt] flex justify-between">
           <span>Verify this document: {verifyUrl}</span>
           <span>Generated {formatDateTime(new Date().toISOString())}</span>
         </footer>
@@ -156,7 +156,7 @@ export function ProposalPrintPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-4 break-inside-avoid">
-      <h2 className="text-[10pt] font-black uppercase tracking-wider border-b border-black mb-1.5">{title}</h2>
+      <h2 className="text-[10pt] font-black uppercase tracking-wider border-b border-[var(--line-strong)] mb-1.5">{title}</h2>
       {children}
     </section>
   )

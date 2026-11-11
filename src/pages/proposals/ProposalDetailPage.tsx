@@ -44,12 +44,12 @@ export function ProposalDetailPage() {
     return proposalStore.subscribe(id, load)
   }, [id, load])
 
-  if (loading) return <p className="text-sm text-[hsl(var(--muted))]">Loading proposal…</p>
+  if (loading) return <p className="text-sm text-[var(--muted)]">Loading proposal…</p>
   if (!packet)
     return (
       <div className="panel p-8 text-center">
         <p className="font-semibold">Proposal not found</p>
-        <p className="text-sm text-[hsl(var(--muted))]">It may not exist, or it hasn't reached your approval step yet.</p>
+        <p className="text-sm text-[var(--muted)]">It may not exist, or it hasn't reached your approval step yet.</p>
         <Link to="/proposals" className="btn-outline inline-block mt-4">Back</Link>
       </div>
     )
@@ -111,10 +111,10 @@ export function ProposalDetailPage() {
             <div className="flex flex-wrap items-center gap-2 mb-1">
               <span className={proposalTagClass(p.status)}>{PROPOSAL_STATUS_LABEL[p.status]}</span>
               {p.reference_no && <span className="text-xs font-mono">{p.reference_no}</span>}
-              <span className="text-xs font-mono text-[hsl(var(--muted))]">rev {p.revision}</span>
+              <span className="text-xs font-mono text-[var(--muted)]">rev {p.revision}</span>
             </div>
             <h1 className="text-2xl font-black">{p.title}</h1>
-            <p className="text-sm text-[hsl(var(--muted))]">
+            <p className="text-sm text-[var(--muted)]">
               {organization?.name} · {EVENT_TYPE_LABEL[p.event_type]} · filed by {people[p.submitted_by]?.full_name ?? '—'}
             </p>
           </div>
@@ -142,10 +142,10 @@ export function ProposalDetailPage() {
       {error && <p role="alert" className="panel p-4 text-sm font-semibold">{error}</p>}
 
       {canAct && current && (
-        <section className="panel p-5 border-2 border-[hsl(var(--ink))] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <section className="panel p-5 border-2 border-[var(--ink)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest">Your action · {current.label}</p>
-            <p className="text-sm text-[hsl(var(--muted))]">
+            <p className="text-sm text-[var(--muted)]">
               Due {formatDateTime(current.due_at)}. Approving adds your digital signature to the packet.
             </p>
           </div>
@@ -185,17 +185,17 @@ export function ProposalDetailPage() {
           <section className="panel p-5">
             <h2 className="text-xs font-bold uppercase tracking-widest mb-3">Budget · {formatPeso(total)}</h2>
             {budget.length === 0 ? (
-              <p className="text-sm text-[hsl(var(--muted))]">No expenses declared.</p>
+              <p className="text-sm text-[var(--muted)]">No expenses declared.</p>
             ) : (
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-xs uppercase text-[hsl(var(--muted))]">
+                  <tr className="text-left text-xs uppercase text-[var(--muted)]">
                     <th className="py-1">Item</th><th>Qty</th><th>Unit</th><th>Source</th><th className="text-right">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody>
                   {budget.map((b) => (
-                    <tr key={b.id} className="border-t border-[hsl(var(--line))]">
+                    <tr key={b.id} className="border-t border-[var(--line)]">
                       <td className="py-1.5">{b.description}</td>
                       <td>{b.quantity}</td>
                       <td className="font-mono">{formatPeso(b.unit_cost)}</td>
@@ -211,7 +211,7 @@ export function ProposalDetailPage() {
           <section className="panel p-5">
             <h2 className="text-xs font-bold uppercase tracking-widest mb-3">Attachments</h2>
             {attachments.length === 0 ? (
-              <p className="text-sm text-[hsl(var(--muted))]">No attachments.</p>
+              <p className="text-sm text-[var(--muted)]">No attachments.</p>
             ) : (
               <ul className="space-y-2">
                 {attachments.map((a) => (
@@ -219,7 +219,7 @@ export function ProposalDetailPage() {
                     <button className="btn-text inline-flex items-center gap-2 text-sm text-left" onClick={() => openAttachment(a)}>
                       <Paperclip className="w-4 h-4" />
                       <span className="underline">{a.file_name}</span>
-                      <span className="text-xs text-[hsl(var(--muted))]">· {ATTACHMENT_LABEL[a.doc_type]}</span>
+                      <span className="text-xs text-[var(--muted)]">· {ATTACHMENT_LABEL[a.doc_type]}</span>
                     </button>
                   </li>
                 ))}

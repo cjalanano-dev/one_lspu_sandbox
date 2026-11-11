@@ -24,7 +24,7 @@ export function VerifyProposalPage() {
       <Shell>
         <ShieldAlert className="w-10 h-10 mb-3" />
         <h1 className="text-xl font-black">No record found</h1>
-        <p className="text-sm text-[hsl(var(--muted))]">Reference <span className="font-mono">{reference}</span> does not match any filed proposal. Treat this document as invalid.</p>
+        <p className="text-sm text-[var(--muted)]">Reference <span className="font-mono">{reference}</span> does not match any filed proposal. Treat this document as invalid.</p>
       </Shell>
     )
 
@@ -34,16 +34,16 @@ export function VerifyProposalPage() {
       {valid ? <ShieldCheck className="w-10 h-10 mb-3" /> : <ShieldAlert className="w-10 h-10 mb-3" />}
       <p className="text-xs font-bold uppercase tracking-widest">{valid ? 'Verified: fully approved' : `Status: ${PROPOSAL_STATUS_LABEL[result.status]}`}</p>
       <h1 className="text-xl font-black">{result.title}</h1>
-      <p className="text-sm text-[hsl(var(--muted))]">
+      <p className="text-sm text-[var(--muted)]">
         {result.organization} · <span className="font-mono">{result.reference_no}</span> · rev {result.revision}
       </p>
       <p className="text-sm mt-1">{formatDateTime(result.start_datetime)} – {formatDateTime(result.end_datetime)}</p>
-      <ul className="mt-4 divide-y divide-[hsl(var(--line))] border border-[hsl(var(--line))] text-left">
+      <ul className="mt-4 divide-y divide-[var(--line)] border border-[var(--line)] text-left">
         {result.steps.map((s) => (
           <li key={s.label} className="p-3 text-sm">
             <p className="font-bold">{s.label}: <span className="uppercase text-xs">{s.status}</span></p>
             {s.approver && <p>{s.approver} · {formatDateTime(s.acted_at)}</p>}
-            {s.signature && <p className="font-mono text-xs break-all text-[hsl(var(--muted))]">SIG {s.signature}</p>}
+            {s.signature && <p className="font-mono text-xs break-all text-[var(--muted)]">SIG {s.signature}</p>}
           </li>
         ))}
       </ul>

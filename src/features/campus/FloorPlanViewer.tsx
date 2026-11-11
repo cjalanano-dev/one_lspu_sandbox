@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Building2, Info, Users, Cpu, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Info } from 'lucide-react'
 import type { Facility, Floor } from '../../types'
 
 interface FloorPlanViewerProps {
@@ -27,23 +26,31 @@ function normalizePosition(pos: any) {
 }
 
 function roomFill(facility: Facility, isSelected: boolean, isHovered: boolean) {
-  if (facility.status === 'maintenance') return '#F5F5F5' // hatched
-  if (isSelected) return '#0A0A0A' // black
-  if (isHovered) return '#F5F5F5' // light gray
-  return '#FFFFFF' // white
+  if (isSelected) return 'var(--ink)' // black fill, paper text
+  if (facility.status === 'maintenance') return 'var(--surface-2)' // light gray, hatched
+  if (facility.status === 'unavailable') return 'var(--gray-medium)' // medium gray
+  if (isHovered) return 'var(--surface-2)' // light gray
+  return 'var(--paper)' // white
 }
 
-function roomStroke(facility: Facility, isSelected: boolean, isHovered: boolean) {
-  if (isSelected) return '#0A0A0A'
-  if (facility.status === 'maintenance') return '#0A0A0A'
-  if (isHovered) return '#0A0A0A'
-  return '#0A0A0A'
+function roomStroke() {
+  return 'var(--ink)' // black hairline stroke for every room
+}
+
+function roomText(isSelected: boolean) {
+  return isSelected ? 'var(--paper)' : 'var(--ink)'
 }
 
 export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectFacility }: FloorPlanViewerProps) {
   const [hoveredFacility, setHoveredFacility] = useState<Facility | null>(null)
 
   const floorFacilities = facilities.filter((f) => f.floor_id === floor.id)
+  const plottedFacilities = floorFacilities.filter(
+    (f) =>
+      f.map_position &&
+      typeof f.map_position === 'object' &&
+      f.map_position.x != null,
+  )
 
   const handleRoomKeyDown = (e: React.KeyboardEvent, facility: Facility) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -55,7 +62,7 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
   return (
     <div className="flex flex-col lg:flex-row gap-6 items-start">
       {/* Interactive SVG Canvas */}
-      <div className="w-full lg:flex-1 bg-white rounded-sm border border-[var(--line)] p-4 sm:p-6 overflow-hidden">
+      <div className="w-full lg:flex-1 bg-[var(--paper)] rounded-sm border border-[var(--line)] p-4 sm:p-6 overflow-hidden">
         <div className="flex items-center justify-between pb-4 border-b border-[var(--line)] mb-4">
           <div>
             <h3 className="font-bold text-[var(--ink)] text-base flex items-center gap-2">
@@ -67,11 +74,11 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
             </p>
           </div>
           <span className="text-xs font-mono font-bold text-[var(--muted)] px-2 py-1 border border-[var(--line)] rounded-sm uppercase tracking-widest">
-            Interactive 2D Plan
+            Schematic floor plan
           </span>
         </div>
 
-        <div className="relative aspect-[16/10] bg-white rounded-sm border border-[var(--line)] overflow-hidden  flex items-center justify-center">
+        <div className="relative aspect-[16/10] bg-[var(--paper)] rounded-sm border border-[var(--line)] overflow-hidden  flex items-center justify-center">
           <svg
             viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`}
             className="w-full h-full select-none"
@@ -87,7 +94,7 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
               height={VIEWBOX_H - 10}
               rx="2"
               fill="none"
-              stroke="#0A0A0A"
+              stroke="var(--ink)"
               strokeWidth="1.2"
               strokeDasharray="2,2"
             />
@@ -99,24 +106,25 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
               width={VIEWBOX_W - 20}
               height={VIEWBOX_H * 0.12}
               fill="none"
-              stroke="#0A0A0A"
+              stroke="var(--ink)"
               strokeWidth="0.6"
             />
             <text
               x={VIEWBOX_W / 2}
               y={VIEWBOX_H * 0.5}
-              fill="#525252"
-              fontSize="2.5"
+              fill="var(--muted)"
+              fontSize="2.6"
               fontFamily="monospace"
+              fontWeight="bold"
               textAnchor="middle"
               dominantBaseline="middle"
-              className="tracking-widest uppercase font-semibold pointer-events-none text-[var(--muted)]"
+              className="tracking-widest uppercase pointer-events-none text-[var(--muted)]"
             >
-              Main Central Concourse
+              Central Corridor
             </text>
 
             {/* Render Facility Rooms */}
-            {floorFacilities.map((facility) => {
+            {plottedFacilities.map((facility) => {
               const pos = normalizePosition(facility.map_position)
               const isSelected = selectedFacility?.id === facility.id
               const isHovered = hoveredFacility?.id === facility.id
@@ -131,7 +139,7 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
                   onKeyDown={(e) => handleRoomKeyDown(e, facility)}
                   onMouseEnter={() => setHoveredFacility(facility)}
                   onMouseLeave={() => setHoveredFacility(null)}
-                  className="cursor-pointer transition-all duration-150 focus-visible:outline-none"
+                  className="cursor-pointer transition-colors duration-150"
                   tabIndex={0}
                   role="button"
                   aria-label={`${facility.name}, ${facility.facility_code}, ${facility.capacity} seats, ${facility.status}`}
@@ -145,9 +153,9 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
                     height={pos.height}
                     rx="1"
                     fill={roomFill(facility, isSelected, isHovered)}
-                    stroke={roomStroke(facility, isSelected, isHovered)}
+                    stroke={roomStroke()}
                     strokeWidth={isSelected ? '1' : isHovered ? '0.7' : '0.5'}
-                    className="transition-colors duration-100"
+                    className="transition-colors duration-150"
                   />
 
                   {/* Maintenance hatch */}
@@ -158,7 +166,7 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
                         y1={pos.y}
                         x2={pos.x + pos.width}
                         y2={pos.y + pos.height}
-                        stroke="#0A0A0A"
+                        stroke="var(--ink)"
                         strokeWidth="0.5"
                         strokeDasharray="1,1"
                       />
@@ -167,7 +175,7 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
                         y1={pos.y}
                         x2={pos.x}
                         y2={pos.y + pos.height}
-                        stroke="#0A0A0A"
+                        stroke="var(--ink)"
                         strokeWidth="0.5"
                         strokeDasharray="1,1"
                       />
@@ -178,8 +186,8 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
                   <text
                     x={centerX}
                     y={centerY - 1.5}
-                    fill={isSelected || facility.status === 'maintenance' ? '#FFFFFF' : '#0A0A0A'}
-                    fontSize="2.4"
+                    fill={roomText(isSelected)}
+                    fontSize="3"
                     fontWeight="bold"
                     fontFamily="monospace"
                     textAnchor="middle"
@@ -193,8 +201,8 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
                   <text
                     x={centerX}
                     y={centerY + 2.5}
-                    fill={isSelected || facility.status === 'maintenance' ? '#FFFFFF' : '#525252'}
-                    fontSize="1.7"
+                    fill={roomText(isSelected) === 'var(--paper)' ? 'var(--paper)' : 'var(--muted)'}
+                    fontSize="2.1"
                     fontFamily="monospace"
                     textAnchor="middle"
                     dominantBaseline="middle"
@@ -208,118 +216,56 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
                     cx={pos.x + pos.width - 2.5}
                     cy={pos.y + 2.5}
                     r="1"
-                    fill={facility.status === 'maintenance' ? '#525252' : '#0A0A0A'}
+                    fill={facility.status === 'maintenance' ? 'var(--muted)' : 'var(--ink)'}
                   />
                 </g>
               )
             })}
           </svg>
 
-          {floorFacilities.length === 0 && (
+          {floorFacilities.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center p-8">
               <Info className="w-10 h-10 text-[var(--muted)] mb-3" />
               <h4 className="text-sm font-medium text-[var(--ink)]">No facilities on this floor</h4>
               <p className="text-xs text-[var(--muted)] mt-1 max-w-xs">
-                {floor.name} doesn't have any rooms drawn yet. Use the facility list below instead.
+                {floor.name} doesn't have any facilities yet.
               </p>
             </div>
-          )}
+          ) : plottedFacilities.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center p-8">
+              <Info className="w-10 h-10 text-[var(--muted)] mb-3" />
+              <h4 className="text-sm font-medium text-[var(--ink)]">No floor-plan locations yet</h4>
+              <p className="text-xs text-[var(--muted)] mt-1 max-w-xs">
+                Facilities exist on {floor.name}, but none have a floor-plan position set. Use the facility list to view them all.
+              </p>
+            </div>
+          ) : null}
         </div>
 
         {/* Legend */}
         <div className="mt-4 pt-3 border-t border-[var(--line)] flex flex-wrap items-center justify-between text-xs text-[var(--muted)] gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 bg-[var(--ink)] border border-[var(--ink)] inline-block" />
               Selected
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 bg-white border border-[var(--ink)] inline-block" />
+              <span className="w-3 h-3 bg-[var(--paper)] border border-[var(--ink)] inline-block" />
               Available facility
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 bg-[var(--surface-2)] border border-[var(--ink)] inline-block" />
-              Under maintenance
+              Under maintenance (hatched)
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm bg-[var(--gray-medium)] border border-[var(--ink)] inline-block" />
+              Unavailable
             </span>
           </div>
-          <span className="text-[var(--ink)]">
-            {floorFacilities.length} facilities on this level
+          <span className="text-[var(--ink)] font-medium">
+            {plottedFacilities.length} on plan{floorFacilities.length > plottedFacilities.length ? ` · ${floorFacilities.length - plottedFacilities.length} not on plan` : ''}
           </span>
         </div>
-      </div>
-
-      {/* Selected Facility Detail Preview Panel */}
-      <div className="w-full lg:w-96 bg-white rounded-sm border border-[var(--line)] p-6 flex flex-col justify-between">
-        {selectedFacility ? (
-          <div className="space-y-5">
-            <div className="relative rounded-sm overflow-hidden aspect-video bg-[var(--surface-2)] border border-[var(--line)]">
-              {selectedFacility.image_url ? (
-                <img
-                  src={selectedFacility.image_url}
-                  alt={selectedFacility.name}
-                  className="w-full h-full object-cover grayscale"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full h-full bg-[var(--surface-2)] flex items-center justify-center border border-[var(--line)]">
-                  <Building2 className="w-12 h-12 text-[var(--faint)]" />
-                </div>
-              )}
-              <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-white border border-[var(--ink)]">
-                {selectedFacility.facility_code}
-              </span>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between gap-2">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-xs font-bold uppercase bg-[var(--ink)] text-white">
-                  {selectedFacility.category.replace('_', ' ')}
-                </span>
-                <span className="flex items-center gap-1 text-[var(--ink)] font-medium">
-                  <CheckCircle2 className="w-3 h-3" />
-                  Reservable
-                </span>
-              </div>
-              <h4 className="text-lg font-bold text-[var(--ink)] mt-2">{selectedFacility.name}</h4>
-              <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">
-                {selectedFacility.description}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[var(--line)] text-xs">
-              <div className="border border-[var(--line)] p-2.5 rounded-sm bg-[var(--surface)]">
-                <span className="text-[var(--faint)] block font-medium">Capacity</span>
-                <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
-                  <Users className="w-3 h-3 text-[var(--ink)]" />
-                  {selectedFacility.capacity} Seats
-                </span>
-              </div>
-              <div className="border border-[var(--line)] p-2.5 rounded-sm bg-[var(--surface)]">
-                <span className="text-[var(--faint)] block font-medium">Equipment</span>
-                <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
-                  <Cpu className="w-3 h-3 text-[var(--ink)]" />
-                  {selectedFacility.equipment?.length || 0} Listed
-                </span>
-              </div>
-            </div>
-
-            <Link
-              to={`/facilities/${selectedFacility.id}`}
-              className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-center text-sm  transition disabled:opacity-50"
-            >
-              View Details & Reserve
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Link>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center p-8">
-            <Info className="w-10 h-10 text-[var(--muted)] mb-3" />
-            <h4 className="text-sm font-medium text-[var(--ink)]">No facility selected</h4>
-            <p className="text-xs text-[var(--muted)] mt-1 max-w-xs">
-              Tap a room on the plan above to see its details and start a reservation request.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   )

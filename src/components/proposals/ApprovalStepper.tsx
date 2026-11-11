@@ -28,7 +28,7 @@ export function ApprovalStepper({
   compact?: boolean
 }) {
   if (steps.length === 0) {
-    return <p className="text-xs text-[hsl(var(--muted))]">Not yet submitted. Routing starts on submit.</p>
+    return <p className="text-xs text-[var(--muted)]">Not yet submitted. Routing starts on submit.</p>
   }
   return (
     <ol className={cn('flex gap-2', compact ? 'items-center' : 'flex-col sm:flex-row')} aria-label="Approval progress">
@@ -41,10 +41,10 @@ export function ApprovalStepper({
             <span
               className={cn(
                 'shrink-0 w-7 h-7 rounded-full border flex items-center justify-center',
-                done && 'bg-[hsl(var(--ink))] text-white border-[hsl(var(--ink))]',
-                active && 'border-[hsl(var(--ink))] border-2',
-                bad && 'bg-[hsl(var(--surface))] border-dashed border-[hsl(var(--ink))]',
-                s.status === 'waiting' && 'border-[hsl(var(--line))] text-[hsl(var(--faint))]',
+                done && 'bg-[var(--ink)] text-[var(--paper)] border-[var(--ink)]',
+                active && 'border-[var(--ink)] border-2',
+                bad && 'bg-[var(--surface)] border-dashed border-[var(--ink)]',
+                s.status === 'waiting' && 'border-[var(--line)] text-[var(--faint)]',
               )}
               title={`${s.label}: ${s.status}`}
             >
@@ -53,7 +53,7 @@ export function ApprovalStepper({
             {!compact && (
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-wider truncate">{s.label}</p>
-                <p className="text-xs text-[hsl(var(--muted))] truncate">
+                <p className="text-xs text-[var(--muted)] truncate">
                   {s.status === 'pending'
                     ? isOverdue(s)
                       ? `Overdue since ${formatDateTime(s.due_at)}`
@@ -64,7 +64,7 @@ export function ApprovalStepper({
                 </p>
               </div>
             )}
-            {compact && i < steps.length - 1 && <span className="w-4 h-px bg-[hsl(var(--line))]" />}
+            {compact && i < steps.length - 1 && <span className="w-4 h-px bg-[var(--line)]" />}
           </li>
         )
       })}
@@ -95,7 +95,7 @@ export function ProposalTimeline({
 }) {
   const stepLabel = (order?: number | null) => steps.find((s) => s.step_order === order)?.label
   return (
-    <ol className="relative border-l border-[hsl(var(--line))] ml-2 space-y-5">
+    <ol className="relative border-l border-[var(--line)] ml-2 space-y-5">
       {[...events].reverse().map((e) => {
         const who = e.actor_id ? people[e.actor_id]?.full_name ?? 'Someone' : 'System'
         const label = ['approved', 'final_approved', 'returned', 'rejected'].includes(e.action)
@@ -103,21 +103,21 @@ export function ProposalTimeline({
           : null
         return (
           <li key={e.id} className="ml-5">
-            <span className="absolute -left-[5px] mt-1.5 w-2.5 h-2.5 rounded-full bg-[hsl(var(--ink))]" />
+            <span className="absolute -left-[5px] mt-1.5 w-2.5 h-2.5 rounded-full bg-[var(--ink)]" />
             <p className="text-sm">
               {e.action === 'reminder_sent' ? (
                 <span className="font-semibold">{ACTION_TEXT[e.action]}</span>
               ) : (
                 <>
                   <span className="font-semibold">{who}</span>
-                  {label && <span className="text-[hsl(var(--muted))]"> ({label})</span>} {ACTION_TEXT[e.action] ?? e.action}
+                  {label && <span className="text-[var(--muted)]"> ({label})</span>} {ACTION_TEXT[e.action] ?? e.action}
                 </>
               )}
-              {e.revision ? <span className="ml-2 text-xs font-mono text-[hsl(var(--muted))]">rev {e.revision}</span> : null}
+              {e.revision ? <span className="ml-2 text-xs font-mono text-[var(--muted)]">rev {e.revision}</span> : null}
             </p>
-            <time className="text-xs text-[hsl(var(--muted))]">{formatDateTime(e.created_at)}</time>
+            <time className="text-xs text-[var(--muted)]">{formatDateTime(e.created_at)}</time>
             {e.comment && (
-              <blockquote className="mt-1.5 text-sm border-l-2 border-[hsl(var(--ink))] pl-3 py-1 bg-[hsl(var(--surface))]">
+              <blockquote className="mt-1.5 text-sm border-l-2 border-[var(--ink)] pl-3 py-1 bg-[var(--surface)]">
                 {e.comment}
               </blockquote>
             )}

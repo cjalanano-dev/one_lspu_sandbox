@@ -97,40 +97,40 @@ export function OrganizationDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-[var(--ink)] text-white rounded-sm border border-[var(--ink)] p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="bg-[var(--ink)] text-[var(--paper)] rounded-sm border border-[var(--ink)] p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           {selectedOrg?.logo_url ? (
             <img
               src={selectedOrg.logo_url}
               alt={selectedOrg.name}
-              className="w-14 h-14 rounded-sm object-cover border border-white/10 grayscale"
+              className="w-14 h-14 rounded-sm object-cover border-[var(--paper)]/10 grayscale"
             />
           ) : (
-            <div className="w-14 h-14 rounded-sm bg-white/10 flex items-center justify-center border border-white/10 grayscale">
-              <Compass className="w-8 h-8 text-white" />
+            <div className="w-14 h-14 rounded-sm bg-[var(--paper)]/10 flex items-center justify-center border-[var(--paper)]/10 grayscale">
+              <Compass className="w-8 h-8 text-[var(--paper)]" />
             </div>
           )}
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="px-2 py-0.5 rounded-sm border border-white text-xs font-mono font-bold uppercase bg-white text-[var(--ink)]">
+              <span className="px-2 py-0.5 rounded-sm border-[var(--paper)] text-xs font-mono font-bold uppercase bg-[var(--paper)] text-[var(--ink)]">
                 {selectedOrg?.acronym}
               </span>
               {selectedOrg?.college && (
-                <span className="px-2 py-0.5 rounded-sm border border-white/20 text-xs font-medium uppercase bg-white/10 text-white">
+                <span className="px-2 py-0.5 rounded-sm border-[var(--paper)]/20 text-xs font-medium uppercase bg-[var(--paper)]/10 text-[var(--paper)]">
                   {selectedOrg.college}
                 </span>
               )}
               {selectedOrg?.parent_org_id && (
-                <span className="text-xs text-white/60 font-medium uppercase tracking-wider">
+                <span className="text-xs text-[var(--paper)]/60 font-medium uppercase tracking-wider">
                   · Sub-org under OCTA
                 </span>
               )}
-              <span className="text-xs text-white/50 font-medium uppercase tracking-widest">
+              <span className="text-xs text-[var(--paper)]/50 font-medium uppercase tracking-widest">
                 Student Organization
               </span>
             </div>
-            <h1 className="text-2xl font-black text-white">{selectedOrg?.name}</h1>
-            <p className="text-xs text-white/60 mt-1 max-w-2xl leading-relaxed uppercase tracking-wider font-medium">
+            <h1 className="text-2xl font-black text-[var(--paper)]">{selectedOrg?.name}</h1>
+            <p className="text-xs text-[var(--paper)]/60 mt-1 max-w-2xl leading-relaxed uppercase tracking-wider font-medium">
               {selectedOrg?.description}
             </p>
           </div>
@@ -138,14 +138,14 @@ export function OrganizationDashboardPage() {
         <div className="flex items-center gap-3 w-full md:w-auto">
           <Link
             to={selectedOrg ? `/proposals/new?org=${selectedOrg.id}` : '/proposals/new'}
-            className="px-5 py-3 rounded-sm bg-white text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[var(--surface-2)] transition"
+            className="px-5 py-3 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[var(--surface-2)] transition"
           >
             <FileText className="w-4 h-4" />
             File Event Proposal
           </Link>
           <Link
             to="/proposals"
-            className="px-5 py-3 rounded-sm border border-white text-white font-medium text-sm flex items-center gap-2 hover:bg-white/5 transition"
+            className="px-5 py-3 rounded-sm border-[var(--paper)] text-[var(--paper)] font-medium text-sm flex items-center gap-2 hover:bg-[var(--paper)]/5 transition"
           >
             View Proposals
           </Link>
@@ -153,7 +153,7 @@ export function OrganizationDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <div className="lg:col-span-6 bg-white rounded-sm border border-[var(--line)] p-6 space-y-4">
+        <div className="lg:col-span-6 bg-[var(--paper)] rounded-sm border border-[var(--line)] p-6 space-y-4">
           <div className="border-b border-[var(--line)] pb-4">
             <div className="flex items-start justify-between gap-2">
               <div>
@@ -184,7 +184,7 @@ export function OrganizationDashboardPage() {
               activities.map((act) => (
                 <div
                   key={act.id}
-                  className="p-3 rounded-sm border border-[var(--line)] bg-[var(--surface)] space-y-2 hover:border-black transition"
+                  className="p-3 rounded-sm border border-[var(--line)] bg-[var(--surface)] space-y-2 hover:border-[var(--line-strong)] transition"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <h4 className="font-bold text-[var(--ink)] text-sm">{act.title}</h4>
@@ -204,7 +204,7 @@ export function OrganizationDashboardPage() {
           </div>
         </div>
 
-        <div className="lg:col-span-6 bg-white rounded-sm border border-[var(--line)] p-6 space-y-4">
+        <div className="lg:col-span-6 bg-[var(--paper)] rounded-sm border border-[var(--line)] p-6 space-y-4">
           <div className="border-b border-[var(--line)] pb-4">
             <div className="flex items-start justify-between gap-2">
               <div>
@@ -230,7 +230,7 @@ export function OrganizationDashboardPage() {
                 return (
                   <div
                     key={res.id}
-                    className="p-3 rounded-sm border border-[var(--line)] bg-white space-y-2 hover:border-black transition"
+                    className="p-3 rounded-sm border border-[var(--line)] bg-[var(--paper)] space-y-2 hover:border-[var(--line-strong)] transition"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
@@ -280,7 +280,7 @@ export function OrganizationDashboardPage() {
               value={actTitle}
               onChange={(e) => setActTitle(e.target.value)}
               required
-              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
             />
           </div>
           <div>
@@ -291,7 +291,7 @@ export function OrganizationDashboardPage() {
               placeholder="Event agenda and target outcomes..."
               value={actDesc}
               onChange={(e) => setActDesc(e.target.value)}
-              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -303,7 +303,7 @@ export function OrganizationDashboardPage() {
                 value={actDate}
                 onChange={(e) => setActDate(e.target.value)}
                 required
-                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
               />
             </div>
             <div>
@@ -313,7 +313,7 @@ export function OrganizationDashboardPage() {
                 type="number"
                 value={actAttendees}
                 onChange={(e) => setActAttendees(Number(e.target.value) || 0)}
-                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+                className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
               />
             </div>
           </div>
@@ -327,7 +327,7 @@ export function OrganizationDashboardPage() {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-sm bg-[var(--ink)] text-white font-semibold hover:bg-[#1a1a1a] transition"
+              className="px-4 py-2 rounded-sm bg-[var(--ink)] text-[var(--paper)] font-semibold hover:bg-[var(--ink-dark)] transition"
             >
               Save Activity
             </button>

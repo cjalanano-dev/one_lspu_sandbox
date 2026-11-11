@@ -51,11 +51,11 @@ export function ApprovalsInboxPage() {
     <div className="space-y-6">
       <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-[hsl(var(--muted))]">
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
             {ROLE_LABEL[user?.primary_role ?? ''] ?? 'Approver'}
           </p>
           <h1 className="text-2xl font-black">Approvals inbox</h1>
-          <p className="text-sm text-[hsl(var(--muted))] mt-1">Event proposals waiting on your signature.</p>
+          <p className="text-sm text-[var(--muted)] mt-1">Event proposals waiting on your signature.</p>
         </div>
         {canRemind && overdue.length > 0 && (
           <button className="btn-outline inline-flex items-center gap-2" onClick={remind}>
@@ -73,12 +73,12 @@ export function ApprovalsInboxPage() {
       {notice && <p role="status" className="panel p-4 text-sm">{notice}</p>}
 
       {loading ? (
-        <p className="text-sm text-[hsl(var(--muted))]">Loading…</p>
+        <p className="text-sm text-[var(--muted)]">Loading…</p>
       ) : items.length === 0 ? (
         <div className="panel p-10 text-center">
-          <Inbox className="w-8 h-8 mx-auto mb-2 text-[hsl(var(--faint))]" />
+          <Inbox className="w-8 h-8 mx-auto mb-2 text-[var(--faint)]" />
           <p className="font-semibold">Inbox zero</p>
-          <p className="text-sm text-[hsl(var(--muted))]">No proposals are waiting on you right now.</p>
+          <p className="text-sm text-[var(--muted)]">No proposals are waiting on you right now.</p>
         </div>
       ) : (
         <ul className="space-y-3">
@@ -88,13 +88,13 @@ export function ApprovalsInboxPage() {
               <li key={step.id}>
                 <Link
                   to={`/proposals/${p.id}`}
-                  className="panel p-4 sm:p-5 flex flex-col md:flex-row md:items-center gap-4 hover:border-[hsl(var(--ink))] transition-colors"
+                  className="panel p-4 sm:p-5 flex flex-col md:flex-row md:items-center gap-4 hover:border-[var(--ink)] transition-colors"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
                       <span className="tag tag-pending">Step {step.step_order} · {step.label}</span>
                       <span className="text-xs font-mono">{p.reference_no}</span>
-                      {p.revision > 1 && <span className="text-xs font-mono text-[hsl(var(--muted))]">rev {p.revision}</span>}
+                      {p.revision > 1 && <span className="text-xs font-mono text-[var(--muted)]">rev {p.revision}</span>}
                       {late && (
                         <span className="tag tag-approved inline-flex items-center gap-1">
                           <AlertTriangle className="w-3 h-3" /> Overdue
@@ -102,14 +102,14 @@ export function ApprovalsInboxPage() {
                       )}
                     </div>
                     <p className="font-bold truncate">{p.title}</p>
-                    <p className="text-xs text-[hsl(var(--muted))] flex flex-wrap gap-x-4 mt-1">
+                    <p className="text-xs text-[var(--muted)] flex flex-wrap gap-x-4 mt-1">
                       <span>{organization?.acronym ?? organization?.name}</span>
                       <span className="inline-flex items-center gap-1"><CalendarDays className="w-3.5 h-3.5" />{formatDateTime(p.start_datetime)}</span>
                       <span className="inline-flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{facility?.name ?? '—'}</span>
                     </p>
                   </div>
                   <div className="text-xs text-right">
-                    <p className="text-[hsl(var(--muted))]">Due</p>
+                    <p className="text-[var(--muted)]">Due</p>
                     <p className={late ? 'font-bold' : ''}>{formatDateTime(step.due_at)}</p>
                   </div>
                 </Link>

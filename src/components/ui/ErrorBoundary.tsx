@@ -31,8 +31,8 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback({ error: this.state.error, reset: this.reset })
       }
       return (
-        <div className="min-h-screen flex items-center justify-center bg-white p-6">
-          <div className="w-full max-w-md p-6 rounded-sm border border-[var(--line)] bg-white  text-center">
+        <div className="min-h-screen flex items-center justify-center bg-[var(--paper)] p-6">
+          <div className="w-full max-w-md p-6 rounded-sm border border-[var(--line)] bg-[var(--paper)]  text-center">
             <AlertTriangle className="w-10 h-10 text-[var(--ink)] mx-auto mb-4" />
             <h2 className="text-lg font-bold text-[var(--ink)] mb-2">Something went wrong</h2>
             <p className="text-sm text-[var(--muted)] mb-4">
@@ -40,7 +40,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </p>
             <button
               onClick={this.reset}
-              className="px-4 py-2 rounded-sm bg-[var(--ink)] text-white font-medium hover:bg-[#1a1a1a] transition"
+              className="px-4 py-2 rounded-sm bg-[var(--ink)] text-[var(--paper)] font-medium hover:bg-[var(--ink-dark)] transition"
             >
               Try again
             </button>

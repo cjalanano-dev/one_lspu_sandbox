@@ -144,15 +144,15 @@ export function AdminDashboardPage() {
 
       {/* Action Feedback */}
       {actionError || actionSuccess ? (
-        <div className="p-3 border border-[var(--line-strong)] bg-[var(--ink)] text-white text-xs flex items-start gap-2" role="status" aria-live="polite">
+        <div className="p-3 border border-[var(--line-strong)] bg-[var(--ink)] text-[var(--paper)] text-xs flex items-start gap-2" role="status" aria-live="polite">
           {actionError ? (
             <>
-              <AlertTriangle className="w-4 h-4 text-white shrink-0 mt-0.5" />
+              <AlertTriangle className="w-4 h-4 text-[var(--paper)] shrink-0 mt-0.5" />
               <span>{actionError}</span>
             </>
           ) : (
             <>
-              <CheckCircle2 className="w-4 h-4 text-white shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-4 h-4 text-[var(--paper)] shrink-0 mt-0.5" />
               <span>{actionSuccess}</span>
             </>
           )}
@@ -160,7 +160,7 @@ export function AdminDashboardPage() {
       ) : null}
 
       {/* Overview — ruled stat strip instead of floating cards */}
-      <div className="border border-[var(--line)] rounded-sm bg-white overflow-hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="border border-[var(--line)] rounded-sm bg-[var(--paper)] overflow-hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {[{
           label: 'Pending Review',
           value: pendingRequests.length,
@@ -191,7 +191,7 @@ export function AdminDashboardPage() {
       </div>
 
       {/* Main Review Section Tabs */}
-      <div className="border border-[var(--line)] rounded-sm bg-white overflow-hidden">
+      <div className="border border-[var(--line)] rounded-sm bg-[var(--paper)] overflow-hidden">
         <div className="border-b border-[var(--line)] px-6 pt-4 flex items-center gap-6">
           <button
             onClick={() => setActiveTab('pending')}
@@ -233,7 +233,7 @@ export function AdminDashboardPage() {
                   placeholder="Search title, purpose, or facility..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-white focus:border-[var(--line-strong)]"
+                  className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-[var(--paper)] focus:border-[var(--line-strong)]"
                   aria-label="Search pending reservations"
                 />
               </div>
@@ -244,7 +244,7 @@ export function AdminDashboardPage() {
                   id="admin-status-filter"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as any)}
-                  className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-bold text-[var(--ink)] bg-white focus:border-[var(--line-strong)] appearance-none"
+                  className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-bold text-[var(--ink)] bg-[var(--paper)] focus:border-[var(--line-strong)] appearance-none"
                 >
                   <option value="all">All statuses</option>
                   <option value="pending">Pending only</option>
@@ -270,7 +270,7 @@ export function AdminDashboardPage() {
                   return (
                     <div
                       key={res.id}
-                      className="p-4 rounded-sm border border-[var(--line)] bg-white flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4"
+                      className="p-4 rounded-sm border border-[var(--line)] bg-[var(--paper)] flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4"
                     >
                       <div className="space-y-2 flex-1 min-w-0">
                         <div className="flex items-center gap-2">
@@ -311,7 +311,7 @@ export function AdminDashboardPage() {
                           <div className="text-xs text-[var(--muted)] flex items-center gap-1 flex-wrap mt-3 uppercase tracking-widest font-bold">
                             Equipment Setup:
                             {res.requested_equipment.map((eq, i) => (
-                              <span key={i} className="px-2 py-0.5 rounded-sm border border-[var(--line)] text-[var(--ink)] bg-white text-xs">
+                              <span key={i} className="px-2 py-0.5 rounded-sm border border-[var(--line)] text-[var(--ink)] bg-[var(--paper)] text-xs">
                                 {eq}
                               </span>
                             ))}
@@ -329,7 +329,7 @@ export function AdminDashboardPage() {
                         </button>
                         <button
                           onClick={() => handleApprove(res.id)}
-                          className="px-5 py-2.5 rounded-sm bg-[var(--ink)] text-white text-xs font-bold  transition flex items-center gap-1.5"
+                          className="px-5 py-2.5 rounded-sm bg-[var(--ink)] text-[var(--paper)] text-xs font-bold  transition flex items-center gap-1.5"
                         >
                           <CheckCircle2 className="w-4 h-4" />
                           Approve
@@ -396,7 +396,7 @@ export function AdminDashboardPage() {
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
               required
-              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+              className="w-full px-3 py-2 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
             />
           </div>
 
@@ -410,7 +410,7 @@ export function AdminDashboardPage() {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-sm bg-[var(--ink)] text-white font-semibold hover:bg-[#1a1a1a] transition"
+              className="px-4 py-2 rounded-sm bg-[var(--ink)] text-[var(--paper)] font-semibold hover:bg-[var(--ink-dark)] transition"
             >
               Confirm Decline
             </button>

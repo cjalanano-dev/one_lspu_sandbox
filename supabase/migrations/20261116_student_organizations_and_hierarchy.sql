@@ -17,21 +17,32 @@ CREATE INDEX IF NOT EXISTS idx_organizations_college ON public.organizations(col
 -- ALGO (CCS - Computer Science Sub-org)
 -- BSIT (CCS - Information Technology Sub-org)
 -- COESC (College of Engineering - Student Body)
+-- OCTA first so sub-organizations can resolve its id by acronym (no hardcoded ids).
+INSERT INTO public.organizations (id, name, acronym, description, logo_url, status, college, org_type, parent_org_id)
+VALUES (
+  gen_random_uuid(),
+  'Organization of Computer Total Achievers',
+  'OCTA',
+  'Mother student organization of the College of Computer Studies (CCS).',
+  'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=128&q=80',
+  'active',
+  'College of Computer Studies (CCS)',
+  'college_mother',
+  NULL
+)
+ON CONFLICT (acronym) DO UPDATE SET
+  name = EXCLUDED.name,
+  acronym = EXCLUDED.acronym,
+  description = EXCLUDED.description,
+  college = EXCLUDED.college,
+  org_type = EXCLUDED.org_type,
+  parent_org_id = EXCLUDED.parent_org_id;
+
+-- Sub-organizations resolve their parent by acronym (no hardcoded ids).
 INSERT INTO public.organizations (id, name, acronym, description, logo_url, status, college, org_type, parent_org_id)
 VALUES
   (
-    'a1111111-0000-0000-0000-000000000001',
-    'Organization of Computer Total Achievers',
-    'OCTA',
-    'Mother student organization of the College of Computer Studies (CCS).',
-    'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=128&q=80',
-    'active',
-    'College of Computer Studies (CCS)',
-    'college_mother',
-    NULL
-  ),
-  (
-    'a1111111-0000-0000-0000-000000000002',
+    gen_random_uuid(),
     'Alliance of Leaders in G-Software and Optimization',
     'ALGO',
     'Sub-organization of OCTA for Computer Science Students.',
@@ -39,10 +50,10 @@ VALUES
     'active',
     'College of Computer Studies (CCS)',
     'program_sub_org',
-    'a1111111-0000-0000-0000-000000000001'
+    (SELECT id FROM public.organizations WHERE acronym = 'OCTA')
   ),
   (
-    'a1111111-0000-0000-0000-000000000003',
+    gen_random_uuid(),
     'Bachelor of Science in Information Technology Student Society',
     'BSIT',
     'Sub-organization of OCTA for Information Technology Students.',
@@ -50,10 +61,10 @@ VALUES
     'active',
     'College of Computer Studies (CCS)',
     'program_sub_org',
-    'a1111111-0000-0000-0000-000000000001'
+    (SELECT id FROM public.organizations WHERE acronym = 'OCTA')
   ),
   (
-    'b2222222-0000-0000-0000-000000000001',
+    gen_random_uuid(),
     'College of Engineering Student Council',
     'COESC',
     'Apex student governing body of the College of Engineering.',
@@ -62,8 +73,19 @@ VALUES
     'College of Engineering (COE)',
     'college_mother',
     NULL
+  ),
+  (
+    gen_random_uuid(),
+    'University Supreme Student Council',
+    'USSC',
+    'Apex governing student body for student welfare and activities across all colleges.',
+    'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=128&q=80',
+    'active',
+    'University Wide',
+    'university_wide',
+    NULL
   )
-ON CONFLICT (id) DO UPDATE SET
+ON CONFLICT (acronym) DO UPDATE SET
   name = EXCLUDED.name,
   acronym = EXCLUDED.acronym,
   description = EXCLUDED.description,

@@ -53,59 +53,59 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left — black panel */}
-      <div className="hidden lg:flex w-1/2 bg-black flex-col justify-between p-12 lg:p-16">
+      <div className="hidden lg:flex w-1/2 bg-[var(--ink-dark)] flex-col justify-between p-12 lg:p-16">
         <div>
-          <div className="w-10 h-10 rounded-sm border border-white bg-black flex items-center justify-center mb-6">
-            <BuildingIcon className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 rounded-sm border-[var(--line-strong)] bg-[var(--ink-dark)] flex items-center justify-center mb-6">
+            <BuildingIcon className="w-6 h-6 text-[var(--paper)]" />
           </div>
-          <h1 className="text-3xl font-black text-white leading-tight">
+          <h1 className="text-3xl font-black text-[var(--paper)] leading-tight">
             ONE LSPU<br />
             Campus access,<br />
             from any screen.
           </h1>
-          <p className="mt-6 text-white/60 text-sm leading-relaxed max-w-md">
+          <p className="mt-6 text-[var(--paper)]/60 text-sm leading-relaxed max-w-md">
             Sign in to your ONE LSPU account to explore buildings, check floor-plan availability,
             and submit reservation requests.
           </p>
         </div>
         <div className="mt-8">
-          <p className="text-xs text-white/40 uppercase tracking-widest font-semibold mb-3">
+          <p className="text-xs text-[var(--paper)]/40 uppercase tracking-widest font-semibold mb-3">
             Demo & Testing Accounts
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs text-white/80">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs text-[var(--paper)]/80">
             <div>
-              <p className="font-mono font-bold text-white">officer@campus.edu</p>
-              <p className="text-white/50">OCTA President / Secretary</p>
+              <p className="font-mono font-bold text-[var(--paper)]">officer@campus.edu</p>
+              <p className="text-[var(--paper)]/50">OCTA President / Secretary</p>
             </div>
             <div>
-              <p className="font-mono font-bold text-white">adviser@campus.edu</p>
-              <p className="text-white/50">1. Org Adviser</p>
+              <p className="font-mono font-bold text-[var(--paper)]">adviser@campus.edu</p>
+              <p className="text-[var(--paper)]/50">1. Org Adviser</p>
             </div>
             <div>
-              <p className="font-mono font-bold text-white">dean@campus.edu</p>
-              <p className="text-white/50">2. College Dean (CCS)</p>
+              <p className="font-mono font-bold text-[var(--paper)]">dean@campus.edu</p>
+              <p className="text-[var(--paper)]/50">2. College Dean (CCS)</p>
             </div>
             <div>
-              <p className="font-mono font-bold text-white">osas@campus.edu</p>
-              <p className="text-white/50">3. OSAS Staff</p>
+              <p className="font-mono font-bold text-[var(--paper)]">osas@campus.edu</p>
+              <p className="text-[var(--paper)]/50">3. OSAS Staff</p>
             </div>
             <div>
-              <p className="font-mono font-bold text-white">director@campus.edu</p>
-              <p className="text-white/50">4. Campus Director</p>
+              <p className="font-mono font-bold text-[var(--paper)]">director@campus.edu</p>
+              <p className="text-[var(--paper)]/50">4. Campus Director</p>
             </div>
             <div>
-              <p className="font-mono font-bold text-white">president@campus.edu</p>
-              <p className="text-white/50">5. University President</p>
+              <p className="font-mono font-bold text-[var(--paper)]">president@campus.edu</p>
+              <p className="text-[var(--paper)]/50">5. University President</p>
             </div>
           </div>
-          <p className="mt-3 text-xs text-white/50">
-            Default password for demo accounts: <span className="font-mono font-bold text-white">Demo1234!</span>
+          <p className="mt-3 text-xs text-[var(--paper)]/50">
+            Default password for demo accounts: <span className="font-mono font-bold text-[var(--paper)]">Demo1234!</span>
           </p>
         </div>
       </div>
 
       {/* Right — white form */}
-      <div className="flex-1 flex items-center justify-center bg-white p-8 sm:p-12">
+      <div className="flex-1 flex items-center justify-center bg-[var(--paper)] p-8 sm:p-12">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <h1 className="text-2xl font-extrabold text-[var(--ink)]">Welcome back</h1>
@@ -124,7 +124,7 @@ export function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)]"
+                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
                 placeholder="e.g. student@campus.edu"
                 aria-describedby={error ? 'login-error' : undefined}
               />
@@ -142,7 +142,7 @@ export function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-white text-[var(--ink)] focus:border-[var(--line-strong)] pr-10"
+                  className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)] pr-10"
                   placeholder="••••••••"
                   aria-describedby={error ? 'login-error' : undefined}
                 />
@@ -158,8 +158,8 @@ export function LoginPage() {
             </div>
 
             {error && (
-              <div id="login-error" className="rounded-sm border border-black p-3.5 bg-black text-white text-xs flex items-start gap-2" role="alert">
-                <span className="text-white shrink-0 mt-0.5">✕</span>
+              <div id="login-error" className="rounded-sm border-[var(--line-strong)] p-3.5 bg-[var(--ink-dark)] text-[var(--paper)] text-xs flex items-start gap-2" role="alert">
+                <span className="text-[var(--paper)] shrink-0 mt-0.5">✕</span>
                 <span>{error}</span>
               </div>
             )}
@@ -167,7 +167,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-[#1a1a1a] rounded-sm border border-[var(--line-strong)] hover:bg-[#1a1a1a] hover:border-[var(--ink)] text-white font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 bg-[var(--ink-dark)] rounded-sm border border-[var(--line-strong)] hover:bg-[var(--ink-dark)] hover:border-[var(--ink)] text-[var(--paper)] font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>

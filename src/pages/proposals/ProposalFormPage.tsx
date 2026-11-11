@@ -259,25 +259,25 @@ export function ProposalFormPage() {
         <Link to="/proposals" className="btn-text inline-flex items-center gap-1 text-sm">
           <ArrowLeft className="w-4 h-4" /> All proposals
         </Link>
-        <span className="text-xs text-[hsl(var(--muted))]" aria-live="polite">
+        <span className="text-xs text-[var(--muted)]" aria-live="polite">
           {busy ? 'Saving…' : savedAt ? `Draft saved ${savedAt.toLocaleTimeString()}` : ''}
         </span>
       </div>
 
       <header>
-        <p className="text-xs font-bold uppercase tracking-widest text-[hsl(var(--muted))]">
+        <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
           {status === 'returned' ? 'Revise & resubmit' : 'New event proposal'}
         </p>
         <h1 className="text-2xl font-black">{title || 'Untitled event'}</h1>
       </header>
 
       {returnNote && status === 'returned' && (
-        <div className="panel p-4 border-[hsl(var(--ink))] flex gap-3">
+        <div className="panel p-4 border-[var(--ink)] flex gap-3">
           <CornerUpLeft className="w-5 h-5 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-bold">Returned for revision · {formatDateTime(returnNote.created_at)}</p>
             <p className="text-sm mt-1">{returnNote.comment}</p>
-            <p className="text-xs text-[hsl(var(--muted))] mt-1">
+            <p className="text-xs text-[var(--muted)] mt-1">
               Update the proposal and resubmit. Approval restarts from step 1.
             </p>
           </div>
@@ -295,7 +295,7 @@ export function ProposalFormPage() {
               aria-current={i === step ? 'step' : undefined}
               className={cn(
                 'w-full text-left border-t-4 pt-2 text-xs font-bold uppercase tracking-wider',
-                i <= step ? 'border-[hsl(var(--ink))]' : 'border-[hsl(var(--line))] text-[hsl(var(--faint))]',
+                i <= step ? 'border-[var(--ink)]' : 'border-[var(--line)] text-[var(--faint)]',
               )}
             >
               <span className="font-mono mr-1">{i + 1}</span>
@@ -374,7 +374,7 @@ export function ProposalFormPage() {
               </div>
             </div>
             {facilityId && start && end && (
-              <p className={cn('text-sm p-3 border', conflicts.length ? 'border-[hsl(var(--ink))] font-semibold' : 'border-[hsl(var(--line))]')}>
+              <p className={cn('text-sm p-3 border', conflicts.length ? 'border-[var(--ink)] font-semibold' : 'border-[var(--line)]')}>
                 {conflicts.length ? `Slot unavailable: ${conflicts.join('; ')}` : '✓ Slot is currently free. It is held while your proposal is reviewed and confirmed at final approval.'}
               </p>
             )}
@@ -386,7 +386,7 @@ export function ProposalFormPage() {
                     const name = typeof eq === 'string' ? eq : String((eq as any)?.name ?? eq)
                     const on = equipment.includes(name)
                     return (
-                      <label key={name} className={cn('px-3 py-1.5 border text-sm cursor-pointer', on ? 'bg-[hsl(var(--ink))] text-white border-[hsl(var(--ink))]' : 'border-[hsl(var(--line))]')}>
+                      <label key={name} className={cn('px-3 py-1.5 border text-sm cursor-pointer', on ? 'bg-[var(--ink)] text-[var(--paper)] border-[var(--ink)]' : 'border-[var(--line)]')}>
                         <input type="checkbox" className="sr-only" checked={on} onChange={() => setEquipment((l) => (on ? l.filter((x) => x !== name) : [...l, name]))} />
                         {name}
                       </label>
@@ -403,7 +403,7 @@ export function ProposalFormPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-xs uppercase tracking-wider text-[hsl(var(--muted))]">
+                  <tr className="text-left text-xs uppercase tracking-wider text-[var(--muted)]">
                     <th className="py-2 pr-2">Item</th>
                     <th className="py-2 pr-2 w-20">Qty</th>
                     <th className="py-2 pr-2 w-28">Unit cost</th>
@@ -416,7 +416,7 @@ export function ProposalFormPage() {
                   {budget.map((b, i) => {
                     const set = (patch: Partial<BudgetItem>) => setBudget((l) => l.map((x, j) => (j === i ? { ...x, ...patch } : x)))
                     return (
-                      <tr key={i} className="border-t border-[hsl(var(--line))]">
+                      <tr key={i} className="border-t border-[var(--line)]">
                         <td className="py-2 pr-2"><input aria-label="Item" className="field-input w-full" value={b.description} onChange={(e) => set({ description: e.target.value })} placeholder="e.g. Snacks for participants" /></td>
                         <td className="py-2 pr-2"><input aria-label="Quantity" type="number" min={1} className="field-input w-full" value={b.quantity} onChange={(e) => set({ quantity: Number(e.target.value) })} /></td>
                         <td className="py-2 pr-2"><input aria-label="Unit cost" type="number" min={0} step="0.01" className="field-input w-full" value={b.unit_cost} onChange={(e) => set({ unit_cost: Number(e.target.value) })} /></td>
@@ -432,7 +432,7 @@ export function ProposalFormPage() {
                   })}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t-2 border-[hsl(var(--ink))]">
+                  <tr className="border-t-2 border-[var(--ink)]">
                     <td colSpan={4} className="py-2 font-bold uppercase text-xs tracking-wider">Total</td>
                     <td className="py-2 pr-2 text-right font-mono font-bold">{formatPeso(total)}</td>
                     <td />
@@ -443,13 +443,13 @@ export function ProposalFormPage() {
             <button type="button" className="btn-outline inline-flex items-center gap-2 text-sm" onClick={() => setBudget((l) => [...l, emptyBudgetRow()])}>
               <Plus className="w-4 h-4" /> Add line item
             </button>
-            <p className="text-xs text-[hsl(var(--muted))]">Leave the budget empty if the event has no expenses.</p>
+            <p className="text-xs text-[var(--muted)]">Leave the budget empty if the event has no expenses.</p>
           </>
         )}
 
         {step === 3 && (
           <>
-            <p className="text-sm text-[hsl(var(--muted))]">
+            <p className="text-sm text-[var(--muted)]">
               Attach supporting documents (PDF, DOCX, JPG/PNG, max 10 MB): signed letter, program flow, waivers, etc.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
@@ -465,15 +465,15 @@ export function ProposalFormPage() {
               </label>
             </div>
             {attachments.length === 0 ? (
-              <p className="text-sm border border-dashed border-[hsl(var(--line))] p-6 text-center text-[hsl(var(--muted))]">No files attached yet.</p>
+              <p className="text-sm border border-dashed border-[var(--line)] p-6 text-center text-[var(--muted)]">No files attached yet.</p>
             ) : (
-              <ul className="divide-y divide-[hsl(var(--line))] border border-[hsl(var(--line))]">
+              <ul className="divide-y divide-[var(--line)] border border-[var(--line)]">
                 {attachments.map((a) => (
                   <li key={a.id} className="flex items-center gap-3 p-3 text-sm">
                     <Paperclip className="w-4 h-4 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="truncate font-medium">{a.file_name}</p>
-                      <p className="text-xs text-[hsl(var(--muted))]">{ATTACHMENT_LABEL[a.doc_type]} · {((a.size_bytes ?? 0) / 1024).toFixed(0)} KB</p>
+                      <p className="text-xs text-[var(--muted)]">{ATTACHMENT_LABEL[a.doc_type]} · {((a.size_bytes ?? 0) / 1024).toFixed(0)} KB</p>
                     </div>
                     <button type="button" className="btn-text" aria-label={`Remove ${a.file_name}`} onClick={async () => { await proposalStore.removeAttachment(a); setAttachments((l) => l.filter((x) => x.id !== a.id)) }}>
                       <Trash2 className="w-4 h-4" />
@@ -496,7 +496,7 @@ export function ProposalFormPage() {
             <Review label="Budget" value={`${formatPeso(total)} · ${budget.filter((b) => b.description.trim()).length} item(s)`} />
             <Review label="Attachments" value={`${attachments.length} file(s)`} />
             <div className="sm:col-span-2"><Review label="Description" value={description} /></div>
-            <div className="sm:col-span-2 panel p-4 bg-[hsl(var(--surface))]">
+            <div className="sm:col-span-2 panel p-4 bg-[var(--surface)]">
               <p className="text-xs font-bold uppercase tracking-wider mb-1">Routing on submit</p>
               <p>Organization Adviser → Office of Student Affairs → Facility Administrator. Each approver has 48 hours; you'll be notified at every step.</p>
             </div>
@@ -539,7 +539,7 @@ export function ProposalFormPage() {
 function Review({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs font-bold uppercase tracking-wider text-[hsl(var(--muted))]">{label}</dt>
+      <dt className="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">{label}</dt>
       <dd className="mt-0.5 whitespace-pre-line">{value || '—'}</dd>
     </div>
   )

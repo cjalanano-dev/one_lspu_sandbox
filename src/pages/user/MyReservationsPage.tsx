@@ -116,7 +116,7 @@ export function MyReservationsPage() {
                 onClick={() => setFilterStatus(st as any)}
                 className={`px-3 py-1.5 rounded-sm text-xs font-bold capitalize transition ${
                   filterStatus === st
-                    ? 'bg-[var(--line-strong)] text-white'
+                    ? 'bg-[var(--line-strong)] text-[var(--paper)]'
                     : 'border border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'
                 }`}
               >
@@ -128,11 +128,11 @@ export function MyReservationsPage() {
       </div>
 
       {actionMsg.text && (
-        <div className="p-3 border border-[var(--line-strong)] bg-[var(--ink)] text-white text-xs flex items-start gap-2" role="status" aria-live="polite">
+        <div className="p-3 border border-[var(--line-strong)] bg-[var(--ink)] text-[var(--paper)] text-xs flex items-start gap-2" role="status" aria-live="polite">
           {actionMsg.type === 'success' ? (
-            <CheckCircle2 className="w-4 h-4 text-white shrink-0 mt-0.5" />
+            <CheckCircle2 className="w-4 h-4 text-[var(--paper)] shrink-0 mt-0.5" />
           ) : (
-            <AlertCircle className="w-4 h-4 text-white shrink-0 mt-0.5" />
+            <AlertCircle className="w-4 h-4 text-[var(--paper)] shrink-0 mt-0.5" />
           )}
           <span>{actionMsg.text}</span>
         </div>
@@ -140,7 +140,7 @@ export function MyReservationsPage() {
 
       <div className="space-y-6">
         {filtered.length === 0 ? (
-          <div className="border border-[var(--line)] rounded-sm bg-white p-12 text-center">
+          <div className="border border-[var(--line)] rounded-sm bg-[var(--paper)] p-12 text-center">
             <Calendar className="w-12 h-12 text-[var(--faint)] mx-auto mb-3" />
             <h3 className="font-bold text-[var(--ink)] text-base">
               {filterStatus === 'upcoming' ? 'No Upcoming Reservations' : filterStatus === 'past' ? 'No Past Reservations' : 'No Reservations Found'}
@@ -167,7 +167,7 @@ export function MyReservationsPage() {
               return (
                 <div
                   key={res.id}
-                  className="border border-[var(--line)] rounded-sm bg-white p-5 sm:p-6 transition hover:border-black flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+                  className="border border-[var(--line)] rounded-sm bg-[var(--paper)] p-5 sm:p-6 transition hover:border-[var(--line-strong)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
                 >
                   <div className="space-y-2 flex-1">
                     <div className="flex flex-wrap items-center gap-2.5">
@@ -225,7 +225,7 @@ export function MyReservationsPage() {
                             <span>Cancel this request?</span>
                             <button
                               onClick={() => handleConfirmCancel(res.id)}
-                              className="ml-2 px-3 py-1.5 rounded-sm bg-[var(--ink)] text-white text-xs font-bold hover:bg-[#1a1a1a] transition"
+                              className="ml-2 px-3 py-1.5 rounded-sm bg-[var(--ink)] text-[var(--paper)] text-xs font-bold hover:bg-[var(--ink-dark)] transition"
                             >
                               Yes
                             </button>

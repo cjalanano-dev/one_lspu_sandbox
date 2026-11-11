@@ -70,7 +70,7 @@ export function Dialog({ isOpen, onClose, title, titleId, children }: DialogProp
   return createPortal(
     <>
       <div
-        className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+        className="fixed inset-0 z-50 bg-[var(--line-strong)]/60 flex items-center justify-center p-4"
         role="presentation"
         onClick={(e) => {
           if (e.target === e.currentTarget) onClose()
@@ -78,7 +78,7 @@ export function Dialog({ isOpen, onClose, title, titleId, children }: DialogProp
       >
         <div
           ref={containerRef}
-          className="bg-white rounded-[var(--radius)] max-w-md w-full p-6  border border-[var(--line)] relative"
+          className="bg-[var(--paper)] rounded-[var(--radius)] max-w-md w-full p-6  border border-[var(--line)] relative"
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}

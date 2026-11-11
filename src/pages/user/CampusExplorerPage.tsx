@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import {
   Building2,
   Layers,
@@ -6,378 +7,360 @@ import {
   Filter,
   Compass,
   MapPin,
+  Info,
+  ArrowRight,
 } from 'lucide-react'
 
 import { dataStore } from '../../lib/dataStore'
 import { FloorPlanViewer } from '../../features/campus/FloorPlanViewer'
 import type { Building, Floor, Facility } from '../../types'
 
+const MAX_CHIPS_PER_CARD = 5
+
 export function CampusExplorerPage() {
+  const location = useLocation()
+
   const [buildings, setBuildings] = useState<Building[]>([])
   const [floors, setFloors] = useState<Floor[]>([])
-  const [facilities, setFacilities] = useState<Facility[]>([])
-
+  const [allFacilities, setAllFacilities] = useState<Facility[]>([])
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null)
   const [selectedFloor, setSelectedFloor] = useState<Floor | null>(null)
   const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null)
 
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [viewTab, setViewTab] = useState<'this-floor' | 'building'>('this-floor')
 
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // One-time load of every building, floor, and facility from Supabase.
+  // Switching buildings is then instant (no extra round trips).
   useEffect(() => {
     async function loadData() {
-      const bList = await dataStore.getBuildings()
-      setBuildings(bList)
+      setLoading(true)
+      setError(null)
+      try {
+        const [bList, fList, facList] = await Promise.all([
+          dataStore.getBuildings(),
+          dataStore.getFloors(),
+          dataStore.getFacilities(),
+        ])
+        setBuildings(bList)
+        setFloors(fList)
+        setAllFacilities(facList)
 
-      if (bList.length > 0) {
-        setSelectedBuilding(bList[0])
+        const params = new URLSearchParams(location.search)
+        const code = params.get('building')
+        const found = code ? bList.find((b) => b.code === code) : null
+        setSelectedBuilding(found ?? bList[0])
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load campus data.')
+      } finally {
+        setLoading(false)
       }
     }
-
     loadData()
-  }, [])
+  }, [location.search])
 
-  useEffect(() => {
-    async function loadFloors() {
-      if (!selectedBuilding) return
+  const buildingFloors = useMemo(() => {
+    if (!selectedBuilding) return []
+    return floors
+      .filter((f) => f.building_id === selectedBuilding.id)
+      .sort((a, b) => a.floor_number - b.floor_number)
+  }, [floors, selectedBuilding])
 
-      const fList = await dataStore.getFloors(selectedBuilding.id)
-      setFloors(fList)
+  const floorById = useMemo(() => new Map(floors.map((f) => [f.id, f])), [floors])
 
-      if (fList.length > 0) {
-        setSelectedFloor(fList[0])
-      } else {
-        setSelectedFloor(null)
+  const facilitiesByBuilding = useMemo(() => {
+    const map = new Map<string, Facility[]>()
+    allFacilities.forEach((f) => {
+      const list = map.get(f.building_id) ?? []
+      list.push(f)
+      map.set(f.building_id, list)
+    })
+    return map
+  }, [allFacilities])
+
+  const filteredFacilities = useMemo(() => {
+    return allFacilities.filter((f) => {
+      if (f.building_id !== selectedBuilding?.id) return false
+      if (categoryFilter !== 'all' && f.category !== categoryFilter) return false
+      if (searchQuery) {
+        const term = searchQuery.toLowerCase()
+        return (
+          f.name.toLowerCase().includes(term) ||
+          f.facility_code.toLowerCase().includes(term) ||
+          f.description?.toLowerCase().includes(term)
+        )
       }
+      return true
+    })
+  }, [allFacilities, selectedBuilding, categoryFilter, searchQuery])
+
+  const facilitiesOnFloor = useMemo(() => {
+    if (!selectedFloor) return []
+    return filteredFacilities.filter((f) => f.floor_id === selectedFloor.id)
+  }, [filteredFacilities, selectedFloor])
+
+  const facilitiesByFloor = useMemo(() => {
+    const byFloor = new Map<string, { floor: Floor; facilities: Facility[] }>()
+    buildingFloors.forEach((fl) => byFloor.set(fl.id, { floor: fl, facilities: [] }))
+    filteredFacilities.forEach((f) => {
+      const entry = byFloor.get(f.floor_id)
+      if (entry) entry.facilities.push(f)
+    })
+    return [...byFloor.values()].sort(
+      (a, b) => a.floor.floor_number - b.floor.floor_number,
+    )
+  }, [filteredFacilities, buildingFloors])
+
+  const buildingFacilityCount = useMemo(() => filteredFacilities.length, [filteredFacilities])
+
+  const hasMapPosition = (f: Facility) =>
+    Boolean(
+      f.map_position &&
+        typeof f.map_position === 'object' &&
+        f.map_position.x != null,
+    )
+
+  const plottedCount = useMemo(
+    () => facilitiesOnFloor.filter(hasMapPosition).length,
+    [facilitiesOnFloor],
+  )
+
+  const statusTag = (status: Facility['status']) => {
+    switch (status) {
+      case 'available': return 'tag tag-available'
+      case 'reserved': return 'tag tag-reserved'
+      case 'occupied': return 'tag tag-occupied'
+      case 'maintenance': return 'tag tag-maintenance'
+      default: return 'tag tag-rejected'
     }
+  }
 
-    loadFloors()
-  }, [selectedBuilding])
+  const floorLabel = (floor: Floor) =>
+    floor.name.split(' - ')[0]?.trim() || floor.name
 
-  useEffect(() => {
-    async function loadFacilities() {
-      if (!selectedBuilding) return
-
-      const facList = await dataStore.getFacilities({
-        buildingId: selectedBuilding.id,
-        floorId: selectedFloor?.id ?? undefined,
-        category: categoryFilter,
-        search: searchQuery,
-      })
-
-      setFacilities(facList)
-
-      if (facList.length > 0) {
-        setSelectedFacility(facList[0])
-      } else {
-        setSelectedFacility(null)
-      }
+  const handleBuildingKeyDown = (e: React.KeyboardEvent, b: Building) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      setSelectedBuilding(b)
     }
+  }
 
-    loadFacilities()
-  }, [selectedBuilding, selectedFloor, categoryFilter, searchQuery])
+  const openFacilityAction = (b: Building, f: Facility) => {
+    setSelectedBuilding(b)
+    const floor = floorById.get(f.floor_id)
+    if (floor) setSelectedFloor(floor)
+    setSelectedFacility(f)
+    setViewTab('this-floor')
+  }
 
-  return (
-    <div className="relative min-h-screen space-y-7 overflow-hidden">
+  const openFacility = (b: Building, f: Facility) => (e: React.MouseEvent) => {
+    e.stopPropagation()
+    openFacilityAction(b, f)
+  }
 
-      {/* ATMOSPHERIC BACKGROUND */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background: `
-            radial-gradient(ellipse at 8% 5%, rgba(98, 123, 108, 0.19), transparent 35%),
-            radial-gradient(ellipse at 90% 38%, rgba(183, 194, 157, 0.09), transparent 35%),
-            radial-gradient(ellipse at 50% 100%, rgba(20, 39, 45, 0.7), transparent 60%)
-          `,
-        }}
-      />
+  const selectFacility = (f: Facility) => {
+    setSelectedFacility(f)
+    if (selectedFloor && f.floor_id !== selectedFloor.id) {
+      const floor = floors.find((fl) => fl.id === f.floor_id)
+      if (floor) setSelectedFloor(floor)
+    }
+    setViewTab('this-floor')
+  }
 
-      {/* HEADER */}
-      <section className="relative overflow-hidden rounded-sm border border-[#627B6C]/30 bg-[#14272D]/70 p-6 sm:p-8">
-
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(149, 167, 144, 0.045) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(149, 167, 144, 0.045) 1px, transparent 1px)
-            `,
-            backgroundSize: '35px 35px',
-          }}
-        />
-
-        <div
-          className="pointer-events-none absolute -right-20 -top-28 h-72 w-72 rounded-full blur-3xl"
-          style={{
-            background: 'rgba(98, 123, 108, 0.22)',
-          }}
-        />
-
-        <div className="relative z-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-
-          <div className="max-w-2xl">
-
-            <div className="mb-4 inline-flex items-center gap-2 rounded-sm border border-[#95A790]/30 bg-[#08151C]/60 px-3 py-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#95A790] shadow-[0_0_8px_rgba(149,167,144,0.8)]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#B7C29D]">
-                ONE LSPU / Campus Directory
-              </span>
-            </div>
-
-            <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-[#F3F5F0] sm:text-4xl">
-              <Compass className="h-8 w-8 shrink-0 text-[#95A790]" />
-              Campus Explorer
-            </h1>
-
-            <p className="mt-3 max-w-xl text-sm leading-7 text-[#B7C0B8] sm:text-base">
-              Find your way around campus. Explore buildings, browse floor
-              layouts, and discover the facilities available in each space.
-            </p>
-
-          </div>
-
-          {/* DECORATIVE ACCENT DETAILS */}
-          <div className="flex items-center gap-4 rounded-sm border border-[#627B6C]/25 bg-[#08151C]/50 px-4 py-3">
-
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#95A790]" />
-              <span className="text-[10px] font-medium uppercase tracking-wider text-[#B7C29D]">
-                Explore
-              </span>
-            </div>
-
-            <span className="h-4 w-px bg-[#627B6C]/40" />
-
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#C6A66B]" />
-              <span className="text-[10px] font-medium uppercase tracking-wider text-[#D6C39B]">
-                Discover
-              </span>
-            </div>
-
-            <span className="h-4 w-px bg-[#627B6C]/40" />
-
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#B97878]" />
-              <span className="text-[10px] font-medium uppercase tracking-wider text-[#D5A3A0]">
-                Navigate
-              </span>
-            </div>
-
-          </div>
+  if (error) {
+    return (
+      <div className="space-y-6 p-6">
+        <div className="rounded-sm border border-[var(--line)] bg-[var(--paper)] p-6 text-center">
+          <Info className="w-10 h-10 text-[var(--muted)] mx-auto mb-3" />
+          <h3 className="font-bold text-[var(--ink)]">Something went wrong</h3>
+          <p className="text-sm text-[var(--muted)] mt-1">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-sm border border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] text-xs font-semibold duration-150 hover:bg-[var(--ink-dark)]"
+          >
+            Try again
+          </button>
         </div>
-      </section>
+      </div>
+    )
+  }
 
-      {/* BUILDING SELECTION */}
-      <section className="space-y-3">
-
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#95A790]">
-              Step 01 / Select location
-            </p>
-            <h2 className="mt-1 text-lg font-bold text-[#F0F3ED]">
-              Explore campus buildings
-            </h2>
-          </div>
-
-          <p className="text-xs text-[#87958D]">
-            {buildings.length} buildings listed
+  if (loading || !selectedBuilding) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
+        <div className="flex flex-col items-center gap-3">
+          <Compass className="w-8 h-8 text-[var(--ink)]" />
+          <p className="text-xs text-[var(--muted)] uppercase tracking-widest font-medium">
+            Loading campus…
           </p>
         </div>
+      </div>
+    )
+  }
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+  const isSelectedBuilding = (b: Building) => selectedBuilding?.id === b.id
 
-          {buildings.map((b, index) => {
-            const isSelected = selectedBuilding?.id === b.id
-
-            return (
-              <button
-                key={b.id}
-                type="button"
-                onClick={() => setSelectedBuilding(b)}
-                className={`group relative overflow-hidden rounded-sm border p-4 text-left transition-all duration-300 ${
-                  isSelected
-                    ? 'border-[#95A790]/70 bg-[#1C3738] shadow-[0_0_24px_rgba(98,123,108,0.13)]'
-                    : 'border-[#627B6C]/25 bg-[#14272D]/65 hover:border-[#95A790]/50 hover:bg-[#1A3033]'
-                }`}
-              >
-
-                {/* SELECTED CARD GLOW */}
-                {isSelected && (
-                  <div
-                    className="pointer-events-none absolute -right-12 -top-16 h-36 w-36 rounded-full blur-3xl"
-                    style={{
-                      background: 'rgba(149, 167, 144, 0.19)',
-                    }}
-                  />
-                )}
-
-                <div className="relative flex items-center gap-3">
-
-                  <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border transition-colors ${
-                      isSelected
-                        ? 'border-[#95A790]/50 bg-[#95A790]/15 text-[#B7C29D]'
-                        : 'border-[#627B6C]/30 bg-[#08151C]/60 text-[#95A790] group-hover:border-[#95A790]/50'
-                    }`}
-                  >
-                    <Building2 className="h-5 w-5" />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#B7C29D]">
-                        {b.code}
-                      </span>
-
-                      {isSelected && (
-                        <span className="rounded-sm bg-[#95A790]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#B7C29D]">
-                          Selected
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="mt-1 truncate text-sm font-bold text-[#F0F3ED]">
-                      {b.name}
-                    </h3>
-
-                    <p className="mt-1 flex items-center gap-1 truncate text-xs text-[#9BA99F]">
-                      <MapPin className="h-3 w-3 shrink-0 text-[#95A790]" />
-                      {b.location_description}
-                    </p>
-
-                  </div>
-
-                  <div className="text-[#95A790] opacity-60 transition-all group-hover:translate-x-1 group-hover:opacity-100">
-                    →
-                  </div>
-
-                </div>
-
-                {/* SMALL DECORATIVE ACCENT */}
-                <div
-                  className={`absolute bottom-0 left-0 h-[2px] transition-all duration-300 ${
-                    isSelected
-                      ? 'w-full bg-[#95A790]'
-                      : index % 3 === 0
-                        ? 'w-0 bg-[#95A790] group-hover:w-full'
-                        : index % 3 === 1
-                          ? 'w-0 bg-[#C6A66B] group-hover:w-full'
-                          : 'w-0 bg-[#B97878] group-hover:w-full'
-                  }`}
-                />
-
-              </button>
-            )
-          })}
-
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)] tracking-tighter leading-none flex items-center gap-2.5">
+            <Compass className="w-7 h-7 text-[var(--ink)]" />
+            Campus Explorer
+          </h1>
+          <p className="text-sm text-[var(--muted)] mt-1">
+            Navigate buildings, explore floor layouts, and inspect university spaces.
+          </p>
         </div>
-      </section>
+      </div>
 
-      {/* FLOOR AND FILTER TOOLBAR */}
-      <section className="relative overflow-hidden rounded-sm border border-[#627B6C]/30 bg-[#14272D]/75">
+      {/* Buildings */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {buildings.map((b) => {
+          const isSelected = isSelectedBuilding(b)
+          const buildingFacs = facilitiesByBuilding.get(b.id) ?? []
+          const visible = buildingFacs.slice(0, MAX_CHIPS_PER_CARD)
+          const more = buildingFacs.length - MAX_CHIPS_PER_CARD
+          const textColor = isSelected ? 'text-[var(--paper)]' : 'text-[var(--ink)]'
+          const mutedColor = isSelected ? 'text-[var(--faint)]' : 'text-[var(--muted)]'
 
-        <div
-          className="pointer-events-none absolute right-0 top-0 h-32 w-64 opacity-30 blur-3xl"
-          style={{
-            background: 'radial-gradient(ellipse, #627B6C, transparent 70%)',
-          }}
-        />
-
-        <div className="relative flex flex-col gap-5 p-4 sm:p-5">
-
-          {/* FLOOR SELECTOR */}
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-
-            <div className="flex items-center gap-3">
-
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-[#627B6C]/40 bg-[#08151C]/70 text-[#B7C29D]">
-                <Layers className="h-4 w-4" />
+          return (
+            <div
+              key={b.id}
+              role="button"
+              tabIndex={0}
+              aria-label={`Building ${b.code} — ${b.name}, ${buildingFacs.length} facilities`}
+              onKeyDown={(e) => handleBuildingKeyDown(e, b)}
+              onClick={() => setSelectedBuilding(b)}
+              className={`p-4 rounded-sm border cursor-pointer transition duration-150 flex flex-col gap-3 min-h-[12rem] ${isSelected ? 'border-[var(--line-strong)] bg-[var(--line-strong)]' : 'border-[var(--line)] bg-[var(--paper)]'} ${textColor}`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-sm flex items-center justify-center shrink-0 ${isSelected ? 'bg-[var(--paper)]' : 'bg-[var(--surface-2)] border border-[var(--line)]'}`}>
+                  <Building2 className="w-5 h-5 text-[var(--ink)]" />
+                </div>
+                <div className="overflow-hidden flex-1 min-w-0">
+                  <span className={`text-xs font-mono font-bold uppercase tracking-widest ${textColor}`}>
+                    {b.code}
+                  </span>
+                  <h3 className={`font-bold text-sm truncate ${textColor}`}>{b.name}</h3>
+                  <p className={`text-xs ${mutedColor} truncate flex items-center gap-1 mt-0.5`}>
+                    <MapPin className="w-3 h-3 shrink-0" />
+                    {b.location_description ?? 'Campus location'}
+                  </p>
+                </div>
+                <span
+                  className={`text-xs font-mono font-bold uppercase px-2 py-0.5 rounded-sm border shrink-0 ${isSelected ? 'border-[var(--paper)] text-[var(--ink)] bg-[var(--paper)]' : 'border-[var(--line)] text-[var(--ink)] bg-[var(--paper)]'}`}
+                >
+                  {buildingFacs.length}
+                </span>
               </div>
 
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#95A790]">
-                  Step 02 / Floor selection
-                </p>
-                <h3 className="text-sm font-bold text-[#F0F3ED]">
-                  Choose a floor level
-                </h3>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {visible.map((f) => {
+                  const floor = floorById.get(f.floor_id)
+                  const badge = floor ? `${floor.floor_number}F` : '—'
+                  return (
+                    <span
+                      key={f.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Open ${f.name} (${f.facility_code})`}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          openFacilityAction(b, f)
+                        }
+                      }}
+                      onClick={(e) => openFacility(b, f)(e as React.MouseEvent)}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-sm text-xs border shrink-0 ${isSelected ? 'border-[var(--paper)] text-[var(--ink)] bg-[var(--paper)]' : 'border-[var(--line)] bg-[var(--surface-2)] text-[var(--ink)]'}`}
+                    >
+                      <span className="truncate">{f.name}</span>
+                      <span className={`text-xs leading-none font-mono font-bold uppercase opacity-60 ${textColor}`}>
+                        {badge}
+                      </span>
+                    </span>
+                  )
+                })}
+                {more > 0 && (
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View all ${buildingFacs.length} facilities in ${b.name}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setSelectedBuilding(b)
+                        setViewTab('building')
+                      }
+                    }}
+                    onClick={() => {
+                      setSelectedBuilding(b)
+                      setViewTab('building')
+                    }}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-sm text-xs border shrink-0 ${isSelected ? 'border-[var(--paper)] text-[var(--ink)] bg-[var(--paper)]' : 'border-[var(--line)] bg-[var(--surface-2)] text-[var(--ink)]'}`}
+                  >
+                    +{more}
+                  </span>
+                )}
               </div>
-
             </div>
+          )
+        })}
+      </div>
 
-            <div className="flex max-w-full items-center gap-2 overflow-x-auto pb-1">
-
-              {floors.map((floor) => {
+      {selectedBuilding && (
+        <>
+          {/* Floors + search + filters + view tabs */}
+          <div className="rounded-sm border border-[var(--line)] bg-[var(--paper)] p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+              <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mr-1 flex items-center gap-1">
+                <Layers className="w-3.5 h-3.5" />
+                Levels:
+              </span>
+              {buildingFloors.map((floor) => {
                 const isSelected = selectedFloor?.id === floor.id
-
                 return (
                   <button
                     key={floor.id}
-                    type="button"
-                    onClick={() => setSelectedFloor(floor)}
-                    className={`shrink-0 rounded-sm border px-4 py-2 text-xs font-bold transition-all ${
-                      isSelected
-                        ? 'border-[#95A790] bg-[#95A790] text-[#08151C] shadow-[0_0_14px_rgba(149,167,144,0.16)]'
-                        : 'border-[#627B6C]/35 bg-[#08151C]/50 text-[#B7C0B8] hover:border-[#95A790]/60 hover:text-[#F0F3ED]'
-                    }`}
+                    onClick={() => {
+                      setSelectedFloor(floor)
+                      setSelectedFacility(null)
+                    }}
+                    aria-pressed={isSelected}
+                    className={`px-3.5 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition duration-150 ${isSelected ? 'bg-[var(--line-strong)] text-[var(--paper)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
                   >
-                    {floor.name.split('-')[0]}
+                    {floorLabel(floor)}
                   </button>
                 )
               })}
-
-              {floors.length === 0 && (
-                <span className="text-xs text-[#87958D]">
-                  No floors available for this building.
-                </span>
-              )}
-
-            </div>
-          </div>
-
-          <div className="h-px bg-gradient-to-r from-transparent via-[#627B6C]/40 to-transparent" />
-
-          {/* SEARCH AND CATEGORY FILTER */}
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#95A790]">
-                Step 03 / Find a facility
-              </p>
-              <h3 className="text-sm font-bold text-[#F0F3ED]">
-                Search and filter spaces
-              </h3>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-
-              {/* SEARCH INPUT */}
-              <div className="relative min-w-0 sm:w-64">
-
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#95A790]" />
-
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="relative flex-1 sm:w-48">
+                <Search className="w-4 h-4 text-[var(--faint)] absolute left-3 top-2.5" />
                 <input
                   type="text"
                   placeholder="Search room, code..."
+                  aria-label="Search facilities"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-sm border border-[#627B6C]/35 bg-[#08151C]/70 py-2.5 pl-10 pr-3 text-xs text-[#F0F3ED] outline-none transition placeholder:text-[#718078] focus:border-[#95A790] focus:ring-1 focus:ring-[#95A790]/30"
+                  className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-[var(--paper)] focus:border-[var(--line-strong)]"
                 />
-
               </div>
 
-              {/* CATEGORY SELECT */}
-              <div className="relative flex items-center gap-2">
-
-                <Filter className="h-4 w-4 shrink-0 text-[#95A790]" />
-
+              <div className="flex items-center gap-1.5">
+                <Filter className="w-3.5 h-3.5 text-[var(--faint)]" />
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="w-full cursor-pointer appearance-none rounded-sm border border-[#627B6C]/35 bg-[#08151C]/70 px-3 py-2.5 pr-8 text-xs font-medium text-[#E7ECE5] outline-none transition focus:border-[#95A790] sm:w-48"
+                  aria-label="Category filter"
+                  className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-medium text-[var(--ink)] bg-[var(--paper)] focus:border-[var(--line-strong)] appearance-none"
                 >
                   <option value="all">All categories</option>
                   <option value="auditorium">Auditorium</option>
@@ -385,99 +368,203 @@ export function CampusExplorerPage() {
                   <option value="laboratory">Laboratory</option>
                   <option value="lecture_hall">Lecture Hall</option>
                   <option value="multipurpose">Multipurpose</option>
+                  <option value="sports_gym">Sports Gym</option>
                 </select>
-
-                <span className="pointer-events-none absolute right-3 text-[10px] text-[#95A790]">
-                  ▼
-                </span>
-
               </div>
 
+              <div className="flex items-center gap-2 ml-auto">
+                <button
+                  onClick={() => setViewTab('this-floor')}
+                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'this-floor' ? 'bg-[var(--line-strong)] text-[var(--paper)] border-[var(--line-strong)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                >
+                  This floor ({facilitiesOnFloor.length})
+                </button>
+                <button
+                  onClick={() => setViewTab('building')}
+                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'building' ? 'bg-[var(--line-strong)] text-[var(--paper)] border-[var(--line-strong)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                >
+                  Entire building ({buildingFacilityCount})
+                </button>
+              </div>
             </div>
           </div>
 
-        </div>
-      </section>
+          {/* Floor plan + detail panel */}
+          {viewTab === 'this-floor' && selectedFloor && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-7">
+                <FloorPlanViewer
+                  floor={selectedFloor}
+                  facilities={allFacilities}
+                  selectedFacility={selectedFacility}
+                  onSelectFacility={selectFacility}
+                />
+              </div>
+              <div className="lg:col-span-5">
+                <div className="rounded-sm border border-[var(--line)] p-6 flex flex-col justify-between">
+                  {selectedFacility ? (
+                    <div className="space-y-5">
+                      <div className="relative rounded-sm overflow-hidden aspect-video bg-[var(--surface-2)] border border-[var(--line)]">
+                        {selectedFacility.image_url ? (
+                          <img
+                            src={selectedFacility.image_url}
+                            alt={selectedFacility.name}
+                            className="w-full h-full object-cover grayscale"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center border border-[var(--line)]">
+                            <Building2 className="w-12 h-12 text-[var(--faint)]" aria-hidden={true} />
+                          </div>
+                        )}
+                        {hasMapPosition(selectedFacility) ? null : (
+                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm border border-[var(--muted)] text-[var(--muted)] text-xs font-bold uppercase">
+                            Not on floor plan
+                          </span>
+                        )}
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink)]">
+                          {selectedFacility.facility_code}
+                        </span>
+                      </div>
 
-      {/* FLOOR PLAN SECTION */}
-      <section className="space-y-3">
+                      <div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)]">
+                            {selectedFacility.category.replace('_', ' ')}
+                          </span>
+                          <span className={`flex items-center gap-1 ${statusTag(selectedFacility.status)}`}>
+                            {selectedFacility.status}
+                          </span>
+                        </div>
+                        <h4 className="text-lg font-bold text-[var(--ink)] mt-2">
+                          {selectedFacility.name}
+                        </h4>
+                        <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">
+                          {selectedFacility.description}
+                        </p>
+                      </div>
 
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[var(--line)] text-xs">
+                        <div className="border border-[var(--line)] p-2.5 rounded-sm bg-[var(--surface)]">
+                          <span className="text-[var(--faint)] block font-medium">Capacity</span>
+                          <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
+                            {selectedFacility.capacity} Seats
+                          </span>
+                        </div>
+                        <div className="border border-[var(--line)] p-2.5 rounded-sm bg-[var(--surface)]">
+                          <span className="text-[var(--faint)] block font-medium">Equipment</span>
+                          <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
+                            {selectedFacility.equipment?.length || 0} Listed
+                          </span>
+                        </div>
+                      </div>
 
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#95A790]">
-              Campus map / Facility layout
-            </p>
-
-            <h2 className="mt-1 text-lg font-bold text-[#F0F3ED]">
-              {selectedFloor
-                ? `${selectedBuilding?.name ?? 'Campus'} — ${selectedFloor.name}`
-                : 'Floor plan'}
-            </h2>
-          </div>
-
-          <div className="flex items-center gap-2 self-start rounded-sm border border-[#627B6C]/30 bg-[#14272D]/70 px-3 py-2 sm:self-auto">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#95A790]" />
-            <span className="text-xs text-[#B7C0B8]">
-              {facilities.length} {facilities.length === 1 ? 'facility' : 'facilities'} found
-            </span>
-          </div>
-
-        </div>
-
-        {selectedFloor ? (
-          <div className="relative overflow-hidden rounded-sm border border-[#627B6C]/30 bg-[#14272D]/60 p-2 sm:p-4">
-
-            <div
-              className="pointer-events-none absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: `
-                  radial-gradient(circle at 10% 20%, rgba(98,123,108,0.15), transparent 35%),
-                  radial-gradient(circle at 90% 80%, rgba(183,194,157,0.08), transparent 35%)
-                `,
-              }}
-            />
-
-            <div className="relative z-10">
-              <FloorPlanViewer
-                floor={selectedFloor}
-                facilities={facilities}
-                selectedFacility={selectedFacility}
-                onSelectFacility={setSelectedFacility}
-              />
+                      <Link
+                        to={`/facilities/${selectedFacility.id}`}
+                        className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[var(--ink-dark)] text-[var(--paper)] font-semibold text-center text-sm duration-150 disabled:opacity-50"
+                      >
+                        View Details & Reserve
+                        <ArrowRight className="w-4 h-4 ml-1" />
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-center p-8">
+                      <Info className="w-10 h-10 text-[var(--muted)] mb-3" />
+                      <h4 className="text-sm font-medium text-[var(--ink)]">No facility selected</h4>
+                      <p className="text-xs text-[var(--muted)] mt-1 max-w-xs">
+                        Tap a room on the plan above to see its details and start a reservation request.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
+          )}
 
-          </div>
-        ) : (
-          <div className="flex min-h-64 flex-col items-center justify-center rounded-sm border border-dashed border-[#627B6C]/40 bg-[#14272D]/50 px-5 text-center">
-
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-sm border border-[#627B6C]/40 bg-[#08151C]/60 text-[#95A790]">
-              <Building2 className="h-6 w-6" />
+          {/* Facility roster — real facility data, not a demo list */}
+          {viewTab === 'building' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold text-[var(--ink)] uppercase tracking-widest">
+                  All facilities in {selectedBuilding.name}
+                </h2>
+                <p className="text-xs text-[var(--muted)]">
+                  {buildingFacilityCount} facility{buildingFacilityCount !== 1 ? 'ies' : ''}
+                </p>
+              </div>
+              {buildingFloors.length === 0 ? (
+                <div className="rounded-sm border border-[var(--line)] bg-[var(--paper)] p-6 text-center">
+                  <Info className="w-8 h-8 text-[var(--muted)] mx-auto mb-3" />
+                  <p className="text-sm text-[var(--muted)]">No floors found for this building.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {facilitiesByFloor.map(({ floor, facilities: floorFacs }) => {
+                    const plotted = floorFacs.filter(hasMapPosition).length
+                    return (
+                      <div key={floor.id} className="border border-[var(--line)] rounded-sm overflow-hidden">
+                        <div className="border-b border-[var(--line)] bg-[var(--surface-2)] px-4 py-2.5 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="w-1 h-4 rounded-sm bg-[var(--ink)]" />
+                            <span className={`text-xs font-bold text-[var(--ink)] uppercase tracking-widest`}>
+                              {floorLabel(floor)}
+                            </span>
+                          </div>
+                          <span className="text-xs font-mono text-[var(--muted)]">
+                            {plotted}/{floorFacs.length} on plan
+                          </span>
+                        </div>
+                        <div className="divide-y divide-[var(--line)]">
+                          {floorFacs.length === 0 ? (
+                            <div className="px-4 py-3 text-center">
+                              <p className="text-xs text-[var(--muted)]">No facilities</p>
+                            </div>
+                          ) : (
+                            floorFacs.map((f) => (
+                              <button
+                                key={f.id}
+                                onClick={() => selectFacility(f)}
+                                className={`w-full px-4 py-3 flex items-center justify-between border-b border-[var(--line)] last:border-0 hover:bg-[var(--surface-2)] transition duration-150 text-left ${selectedFacility?.id === f.id ? 'bg-[var(--surface-2)]' : ''}`}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <span className={statusTag(f.status)}>{f.status}</span>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="font-bold text-[var(--ink)] text-sm truncate">
+                                      {f.facility_code} — {f.name}
+                                    </div>
+                                    <div className="text-xs text-[var(--muted)] truncate">
+                                      {f.category.replace('_', ' ')} · {f.capacity} seats
+                                    </div>
+                                  </div>
+                                </div>
+                                <span className={`text-xs font-bold uppercase ${hasMapPosition(f) ? 'text-[var(--ink)]' : 'text-[var(--muted)]'}`}>
+                                  {hasMapPosition(f) ? 'On plan' : 'No plan location'}
+                                </span>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
+          )}
 
-            <h3 className="text-sm font-bold text-[#F0F3ED]">
-              No floor selected
-            </h3>
-
-            <p className="mt-2 max-w-sm text-xs leading-6 text-[#9BA99F]">
-              Select a campus building with available floors to view its layout
-              and explore its facilities.
-            </p>
-
-          </div>
-        )}
-
-      </section>
-
-      {/* BOTTOM ACCENT */}
-      <div className="flex items-center justify-center gap-3 pb-2 pt-2">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#627B6C]/40" />
-        <span className="text-[9px] font-medium uppercase tracking-[0.25em] text-[#718078]">
-          ONE LSPU · Explore your campus
-        </span>
-        <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#627B6C]/40" />
-      </div>
-
+          {/* Empty / no-plan-location state for the plan view */}
+          {viewTab === 'this-floor' && selectedFloor && facilitiesOnFloor.length > 0 && plottedCount === 0 && (
+            <div className="rounded-sm border border-[var(--line)] bg-[var(--surface-2)] p-6 text-center">
+              <Info className="w-10 h-10 text-[var(--muted)] mx-auto mb-3" />
+              <h4 className="text-sm font-medium text-[var(--ink)] mb-1">No floor-plan locations yet</h4>
+              <p className="text-xs text-[var(--muted)] max-w-xs mx-auto">
+                The facilities on {floorLabel(selectedFloor)} don't have floor-plan positions set. Use the
+                <strong>Entire building</strong> tab to see them all.
+              </p>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }

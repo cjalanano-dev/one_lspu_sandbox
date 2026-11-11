@@ -1,7 +1,5 @@
-
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-
 import {
   Building2,
   Compass,
@@ -17,16 +15,13 @@ import {
   FileText,
   Inbox,
 } from 'lucide-react'
-
 import { useAuth } from '../../features/auth/AuthContext'
 import { dataStore } from '../../lib/dataStore'
 
 export function Navbar() {
   const { user, signOut, isAdmin, isOfficer, isApprover, isLoading } = useAuth()
-
   const location = useLocation()
   const navigate = useNavigate()
-
   const [notifications, setNotifications] = useState<any[]>([])
   const [showNotifs, setShowNotifs] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -57,21 +52,17 @@ export function Navbar() {
         setProfileMenuOpen(false)
       }
     }
-
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node
       if (!target) return
-
       if (!(target as Element).closest('header')) {
         setMobileMenuOpen(false)
         setShowNotifs(false)
         setProfileMenuOpen(false)
       }
     }
-
     window.addEventListener('keydown', handleEscape)
     window.addEventListener('mousedown', handleClickOutside)
-
     return () => {
       window.removeEventListener('keydown', handleEscape)
       window.removeEventListener('mousedown', handleClickOutside)
@@ -100,14 +91,13 @@ export function Navbar() {
 
   const navItem = (path: string, label: string, icon: React.ReactNode, extra?: string) => {
     const active = isActive(path)
-
     return (
       <Link
         to={path}
         className={`px-3 py-2 rounded-[var(--radius)] text-sm font-medium transition flex items-center gap-2 border border-transparent ${
           active
-            ? 'bg-[#425C56] text-[#F1F3EF] border-[#5E7769] font-bold shadow-[0_0_16px_rgba(130,151,122,0.15)]'
-            : 'text-[#A1ADA5] hover:bg-[#22383C] hover:text-[#F1F3EF] hover:border-[#425C56]'
+            ? 'bg-[var(--ink-dark)] text-[var(--paper)] border-[var(--line-strong)] font-bold'
+            : 'text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] hover:border-[var(--line-strong)]'
         } ${extra || ''}`}
       >
         {icon}
@@ -139,14 +129,13 @@ export function Navbar() {
     <>
       <Link
         to="/login"
-        className="w-full py-3 px-4 border border-[#5E7769] rounded-[var(--radius)] text-center text-sm font-medium text-[#F1F3EF] hover:bg-[#22383C] transition"
+        className="w-full py-3 px-4 border border-[var(--line-strong)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
       >
         Sign in
       </Link>
-
       <Link
         to="/register"
-        className="w-full py-3 px-4 border border-[#344D4C] rounded-[var(--radius)] text-center text-sm font-medium text-[#A1ADA5] hover:bg-[#22383C] transition"
+        className="w-full py-3 px-4 border border-[var(--line)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--muted)] hover:bg-[var(--surface-2)] transition"
       >
         Create account
       </Link>
@@ -157,7 +146,7 @@ export function Navbar() {
     <>
       <button
         onClick={handleSignOut}
-        className="w-full py-3 px-4 border border-[#344D4C] rounded-[var(--radius)] text-center text-sm font-medium text-[#A1ADA5] hover:bg-[#22383C] transition"
+        className="w-full py-3 px-4 border border-[var(--line)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--muted)] hover:bg-[var(--surface-2)] transition"
       >
         Sign out
       </button>
@@ -165,17 +154,15 @@ export function Navbar() {
   )
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#425C56]/50 bg-[radial-gradient(ellipse_at_18%_10%,rgba(112,143,117,0.25),transparent_45%),radial-gradient(ellipse_at_85%_100%,rgba(183,194,157,0.10),transparent_40%),linear-gradient(110deg,#08151C_0%,#14272D_50%,#08151C_100%)] backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.20)]">
+    <header className="sticky top-0 z-50 bg-[var(--paper)] border-b border-[var(--line)] ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-[var(--radius)] border border-[#82977A]/50 bg-[linear-gradient(145deg,#627B6C,#22383C)] shadow-[0_0_18px_rgba(130,151,122,0.18)] flex items-center justify-center group-hover:shadow-[0_0_22px_rgba(130,151,122,0.35)] transition">
-              <Building2 className="w-6 h-6 text-[#F1F3EF]" />
+            <div className="w-9 h-9 rounded-[var(--radius)] border border-[var(--line-strong)] bg-[var(--ink-dark)] flex items-center justify-center group-hover:bg-[var(--surface-2)] transition">
+              <Building2 className="w-6 h-6 text-[var(--paper)]" />
             </div>
-
-            <div className="text-[#F1F3EF] font-bold tracking-tight text-lg flex items-center gap-0.5 group-hover:text-[#95A790] transition">
+            <div className="text-[var(--ink)] font-bold tracking-tight text-lg flex items-center gap-0.5 group-hover:text-[var(--ink-dark)] transition">
               ONE LSPU
             </div>
           </Link>
@@ -189,41 +176,31 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             {user ? (
               <div className="flex items-center gap-3">
-
                 {/* Notification Bell */}
                 <div className="relative">
                   <button
                     onClick={() => setShowNotifs(!showNotifs)}
-                    className="relative p-3 rounded-[var(--radius)] text-[#F1F3EF] hover:bg-[#22383C] transition"
+                    className="relative p-3 rounded-[var(--radius)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
                     aria-label="View notifications"
                     aria-expanded={showNotifs}
                     aria-controls="notifications-dropdown"
                   >
                     <Bell className="w-5 h-5" />
-
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 w-2 h-2 bg-[#B36B65] rounded-full" />
+                      <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
                     )}
                   </button>
 
                   {showNotifs && (
-                    <div
-                      id="notifications-dropdown"
-                      className="absolute right-0 mt-2 w-80 sm:w-96 bg-[radial-gradient(ellipse_at_top_left,rgba(112,143,117,0.18),transparent_55%),linear-gradient(145deg,#14272D,#08151C)] text-[#F1F3EF] rounded-[var(--radius)] border border-[#425C56]/70 py-2 z-50 shadow-[0_15px_45px_rgba(0,0,0,0.35)] backdrop-blur-xl"
-                    >
-                      <div className="flex items-center justify-between px-4 py-2 border-b border-[#344D4C]">
-                        <span className="font-semibold text-sm text-[#F1F3EF]">
-                          Notifications
-                        </span>
-
-                        <span className="text-xs text-[#95A790]">
-                          {notifications.length} total
-                        </span>
+                    <div id="notifications-dropdown" className="absolute right-0 mt-2 w-80 sm:w-96 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)]  border border-[var(--line)] py-2 z-50">
+                      <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--line)]">
+                        <span className="font-semibold text-sm text-[var(--ink)]">Notifications</span>
+                        <span className="text-xs text-[var(--faint)]">{notifications.length} total</span>
                       </div>
 
-                      <div className="max-h-80 overflow-y-auto divide-y divide-[#344D4C]">
+                      <div className="max-h-80 overflow-y-auto divide-y divide-[var(--line)]">
                         {notifications.length === 0 ? (
-                          <div className="p-6 text-center text-[#A1ADA5] text-sm">
+                          <div className="p-6 text-center text-[var(--muted)] text-sm">
                             No notifications yet.
                           </div>
                         ) : (
@@ -231,39 +208,31 @@ export function Navbar() {
                             <div
                               key={n.id}
                               onClick={() => handleMarkRead(n.id)}
-                              className={`p-3 text-xs cursor-pointer transition hover:bg-[#22383C] flex items-start gap-3 ${
-                                !n.is_read ? 'bg-[#22383C]' : ''
+                              className={`p-3 text-xs cursor-pointer transition hover:bg-[var(--surface-2)] flex items-start gap-3 ${
+                                !n.is_read ? 'bg-[var(--surface-2)]' : ''
                               }`}
                             >
                               <div className="mt-0.5">
                                 {n.notification_type === 'reservation_approved' ? (
-                                  <CheckCircle2 className="w-4 h-4 text-[#82977A]" />
+                                  <CheckCircle2 className="w-4 h-4 text-[var(--ink)]" />
                                 ) : n.notification_type === 'reservation_rejected' ? (
-                                  <Clock className="w-4 h-4 text-[#B36B65]" />
+                                  <Clock className="w-4 h-4 text-[var(--muted)]" />
                                 ) : (
-                                  <Clock className="w-4 h-4 text-[#A1ADA5]" />
+                                  <Clock className="w-4 h-4 text-[var(--muted)]" />
                                 )}
                               </div>
-
                               <div className="flex-1">
-                                <p className="font-semibold text-[#F1F3EF]">
-                                  {n.title}
-                                </p>
-
-                                <p className="text-[#A1ADA5] mt-0.5 leading-relaxed">
-                                  {n.message}
-                                </p>
-
-                                <span className="text-xs text-[#95A790] mt-1 block">
+                                <p className="font-semibold text-[var(--ink)]">{n.title}</p>
+                                <p className="text-[var(--muted)] mt-0.5 leading-relaxed">{n.message}</p>
+                                <span className="text-xs text-[var(--faint)] mt-1 block">
                                   {new Date(n.created_at).toLocaleTimeString([], {
                                     hour: '2-digit',
                                     minute: '2-digit',
                                   })}
                                 </span>
                               </div>
-
                               {!n.is_read && (
-                                <span className="w-2 h-2 rounded-sm bg-[#95A790] mt-1.5 shrink-0" />
+                                <span className="w-2 h-2 rounded-sm bg-[var(--line-strong)] mt-1.5 shrink-0" />
                               )}
                             </div>
                           ))
@@ -274,67 +243,56 @@ export function Navbar() {
                 </div>
 
                 {/* Profile Avatar & Dropdown */}
-                <div className="relative flex items-center gap-2 pl-2 border-l border-[#344D4C]">
+                <div className="relative flex items-center gap-2 pl-2 border-l border-[var(--line)]">
                   <img
                     src={user?.avatar_url || '/user-placeholder.svg'}
                     alt={user?.full_name || 'User'}
-                    className="w-9 h-9 rounded-sm object-cover border border-[#344D4C]"
+                    className="w-9 h-9 rounded-sm object-cover border border-[var(--line)]"
                     loading="lazy"
                   />
-
-                  <div
-                    className="hidden lg:block text-left text-xs cursor-pointer"
-                    onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                  >
-                    <div className="font-medium text-[#F1F3EF]">
-                      {user?.full_name}
-                    </div>
-
-                    <div className="text-[#A1ADA5] capitalize">
+                  <div className="hidden lg:block text-left text-xs cursor-pointer" onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
+                    <div className="font-medium text-[var(--ink)]">{user?.full_name}</div>
+                    <div className="text-[var(--muted)] capitalize">
                       {user?.primary_role?.replace('_', ' ')}
                     </div>
                   </div>
 
                   {profileMenuOpen && (
-                    <div className="absolute right-0 mt-5 w-48 bg-[radial-gradient(ellipse_at_top_left,rgba(112,143,117,0.18),transparent_60%),linear-gradient(145deg,#14272D,#08151C)] text-[#F1F3EF] rounded-[var(--radius)] border border-[#425C56]/70 py-2 z-50 shadow-[0_15px_45px_rgba(0,0,0,0.35)]">
+                    <div className="absolute right-0 mt-5 w-48 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line)] py-2 z-50">
                       <Link
                         to="/my-reservations"
                         onClick={() => setProfileMenuOpen(false)}
-                        className="px-4 py-2.5 text-xs text-[#A1ADA5] hover:bg-[#22383C] hover:text-[#F1F3EF] flex items-center gap-2"
+                        className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
                       >
-                        <Calendar className="w-4 h-4 text-[#95A790] mr-2" />
+                        <Calendar className="w-4 h-4 text-[var(--faint)] mr-2" />
                         My Reservations
                       </Link>
-
                       {isOfficer && (
                         <Link
                           to="/proposals"
                           onClick={() => setProfileMenuOpen(false)}
-                          className="px-4 py-2.5 text-xs text-[#A1ADA5] hover:bg-[#22383C] hover:text-[#F1F3EF] flex items-center gap-2"
+                          className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
                         >
-                          <FileText className="w-4 h-4 text-[#95A790] mr-2" />
+                          <FileText className="w-4 h-4 text-[var(--faint)] mr-2" />
                           Event Proposals
                         </Link>
                       )}
-
                       {isApprover && (
                         <Link
                           to="/approvals"
                           onClick={() => setProfileMenuOpen(false)}
-                          className="px-4 py-2.5 text-xs text-[#A1ADA5] hover:bg-[#22383C] hover:text-[#F1F3EF] flex items-center gap-2"
+                          className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
                         >
-                          <Inbox className="w-4 h-4 text-[#95A790] mr-2" />
+                          <Inbox className="w-4 h-4 text-[var(--faint)] mr-2" />
                           Approvals Inbox
                         </Link>
                       )}
-
-                      <div className="border-b border-[#344D4C] my-1" />
-
+                      <div className="border-b border-[var(--line)] my-1" />
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-4 py-2.5 text-xs text-left text-[#A1ADA5] hover:bg-[#22383C] hover:text-[#F1F3EF] flex items-center gap-2"
+                        className="w-full px-4 py-2.5 text-xs text-left text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
                       >
-                        <LogOut className="w-4 h-4 text-[#B36B65] mr-2" />
+                        <LogOut className="w-4 h-4 text-[var(--ink)] mr-2" />
                         Sign out
                       </button>
                     </div>
@@ -345,14 +303,13 @@ export function Navbar() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[#F1F3EF] border border-[#5E7769] hover:bg-[#22383C] transition"
+                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--ink)] border border-[var(--line-strong)] hover:bg-[var(--surface-2)] transition"
                 >
                   Sign in
                 </Link>
-
                 <Link
                   to="/register"
-                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[#F1F3EF] border border-[#5E7769] hover:bg-[#22383C] transition"
+                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--ink)] border border-[var(--line-strong)] hover:bg-[var(--surface-2)] transition"
                 >
                   Create account
                 </Link>
@@ -362,7 +319,7 @@ export function Navbar() {
             {/* Mobile menu toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-[var(--radius)] border border-[#344D4C] text-[#F1F3EF] hover:bg-[#22383C] transition"
+              className="md:hidden p-2 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
@@ -379,34 +336,27 @@ export function Navbar() {
 
       {/* Mobile menu panel */}
       {mobileMenuOpen && (
-        <div
-          id="mobile-menu"
-          className="fixed inset-0 z-40 bg-[radial-gradient(ellipse_at_15%_15%,rgba(112,143,117,0.30),transparent_45%),radial-gradient(ellipse_at_90%_85%,rgba(183,194,157,0.12),transparent_40%),linear-gradient(145deg,#08151C,#14272D_55%,#08151C)]"
-        >
+        <div id="mobile-menu" className="fixed inset-0 z-40 bg-[var(--paper)]">
           <div className="absolute top-0 right-0 p-4">
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2 rounded-[var(--radius)] border border-[#344D4C] text-[#F1F3EF] hover:bg-[#22383C] transition"
+              className="p-2 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
               aria-label="Close menu"
             >
               <CloseIcon className="w-6 h-6" />
             </button>
           </div>
-
           <div className="max-w-md w-full mx-auto pt-20 pb-12 px-6 space-y-6">
             <nav className="space-y-3">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-[#95A790] mb-4">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-4">
                 Explore
               </h2>
-
               {user ? authedLinks : guestLinks}
             </nav>
-
-            <div className="space-y-3 pt-6 border-t border-[#344D4C]">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-[#95A790] mb-4">
+            <div className="space-y-3 pt-6 border-t border-[var(--line)]">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-4">
                 Account
               </h2>
-
               {user ? mobileAuthedActions : mobileGuestActions}
             </div>
           </div>
