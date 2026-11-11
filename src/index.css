@@ -251,8 +251,8 @@
     transition: all 0.12s;
   }
   .btn-outline:hover {
-    background: var(--surface-2);
-    border-color: var(--ink);
+    background: var(--accent-tint);
+    border-color: var(--accent-line);
   }
 
   .btn-text {
@@ -270,7 +270,7 @@
     transition: background 0.12s;
   }
   .btn-text:hover {
-    background: var(--surface-2);
+    background: var(--accent-tint);
   }
 
   /* ---------- Panel ---------- */

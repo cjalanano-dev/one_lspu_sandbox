@@ -198,7 +198,7 @@ export function AdminDashboardPage() {
             className={`pb-4 text-xs font-bold transition border-b-2 flex items-center gap-2 ${
               activeTab === 'pending'
                 ? 'border-[var(--line-strong)] text-[var(--ink)]'
-                : 'border-transparent text-[var(--muted)] hover:text-[var(--ink)]'
+                : 'border-transparent text-[var(--muted)] hover:text-[var(--accent-text)]'
             }`}
           >
             <Clock className="w-3 h-3" />
@@ -213,7 +213,7 @@ export function AdminDashboardPage() {
             className={`pb-4 text-xs font-bold transition border-b-2 flex items-center gap-2 ${
               activeTab === 'all'
                 ? 'border-[var(--line-strong)] text-[var(--ink)]'
-                : 'border-transparent text-[var(--muted)] hover:text-[var(--ink)]'
+                : 'border-transparent text-[var(--muted)] hover:text-[var(--accent-text)]'
             }`}
           >
             <Calendar className="w-3 h-3" />
@@ -322,7 +322,7 @@ export function AdminDashboardPage() {
                       <div className="flex items-center gap-3 w-full lg:w-auto justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-[var(--line)]">
                         <button
                           onClick={() => setRejectModalRes(res)}
-                          className="px-4 py-2.5 rounded-sm border border-[var(--ink)] text-[var(--ink)] text-xs font-bold hover:bg-[var(--surface-2)] transition flex items-center gap-1.5"
+                          className="px-4 py-2.5 rounded-sm border border-[var(--ink)] text-[var(--ink)] text-xs font-bold hover:bg-[var(--accent-tint)] transition flex items-center gap-1.5"
                         >
                           <XCircle className="w-4 h-4" />
                           Decline
@@ -354,7 +354,7 @@ export function AdminDashboardPage() {
               reservations.map((res) => {
                 const fac = facilitiesMap[res.facility_id]
                 return (
-                  <div key={res.id} className="p-3 sm:p-4 flex items-center justify-between text-xs hover:bg-[var(--surface-2)] transition">
+                  <div key={res.id} className="p-3 sm:p-4 flex items-center justify-between text-xs hover:bg-[var(--accent-tint)] transition">
                     <div className="space-y-1 min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className={`tag ${statusTagClass(res.status)} text-xs`}>
@@ -404,7 +404,7 @@ export function AdminDashboardPage() {
             <button
               type="button"
               onClick={() => setRejectModalRes(null)}
-              className="px-4 py-2 rounded-sm text-[var(--muted)] font-medium hover:bg-[var(--surface-2)] transition"
+              className="px-4 py-2 rounded-sm text-[var(--muted)] font-medium hover:bg-[var(--accent-tint)] transition"
             >
               Cancel
             </button>

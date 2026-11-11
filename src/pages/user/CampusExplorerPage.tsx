@@ -334,7 +334,7 @@ export function CampusExplorerPage() {
                       setSelectedFacility(null)
                     }}
                     aria-pressed={isSelected}
-                    className={`px-3.5 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition duration-150 ${isSelected ? 'bg-[var(--accent)] text-[var(--accent-ink)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                    className={`px-3.5 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition duration-150 ${isSelected ? 'bg-[var(--accent)] text-[var(--accent-ink)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--accent-tint)]'}`}
                   >
                     {floorLabel(floor)}
                   </button>
@@ -376,13 +376,13 @@ export function CampusExplorerPage() {
               <div className="flex items-center gap-2 ml-auto">
                 <button
                   onClick={() => setViewTab('this-floor')}
-                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'this-floor' ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'this-floor' ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--accent-tint)]'}`}
                 >
                   This floor ({facilitiesOnFloor.length})
                 </button>
                 <button
                   onClick={() => setViewTab('building')}
-                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'building' ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'building' ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--accent-tint)]'}`}
                 >
                   Entire building ({buildingFacilityCount})
                 </button>
@@ -525,7 +525,7 @@ export function CampusExplorerPage() {
                               <button
                                 key={f.id}
                                 onClick={() => selectFacility(f)}
-                                className={`w-full px-4 py-3 flex items-center justify-between border-b border-[var(--line)] last:border-0 hover:bg-[var(--surface-2)] transition duration-150 text-left ${selectedFacility?.id === f.id ? 'bg-[var(--surface-2)]' : ''}`}
+                                className={`w-full px-4 py-3 flex items-center justify-between border-b border-[var(--line)] last:border-0 hover:bg-[var(--accent-tint)] transition duration-150 text-left ${selectedFacility?.id === f.id ? 'bg-[var(--surface-2)]' : ''}`}
                               >
                                 <div className="flex items-center gap-3">
                                   <span className={statusTag(f.status)}>{f.status}</span>

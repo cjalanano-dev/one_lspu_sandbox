@@ -88,7 +88,7 @@ export function ApprovalsInboxPage() {
               <li key={step.id}>
                 <Link
                   to={`/proposals/${p.id}`}
-                  className="panel p-4 sm:p-5 flex flex-col md:flex-row md:items-center gap-4 hover:border-[var(--ink)] transition-colors"
+                  className="panel p-4 sm:p-5 flex flex-col md:flex-row md:items-center gap-4 hover:border-[var(--accent)] transition-colors"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">

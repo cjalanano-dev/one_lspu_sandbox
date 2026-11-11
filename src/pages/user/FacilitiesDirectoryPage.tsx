@@ -84,7 +84,7 @@ export function FacilitiesDirectoryPage() {
           return (
             <div
               key={fac.id}
-              className="border border-[var(--line)] rounded-sm bg-[var(--paper)] overflow-hidden flex flex-col justify-between transition hover:border-[var(--line-strong)]"
+              className="border border-[var(--line)] rounded-sm bg-[var(--paper)] overflow-hidden flex flex-col justify-between transition hover:border-[var(--accent)]"
             >
               <div>
                 <div className="relative aspect-[16/9] bg-[var(--surface-2)] overflow-hidden border-b border-[var(--line)]">

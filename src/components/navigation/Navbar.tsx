@@ -97,7 +97,7 @@ export function Navbar() {
         className={`px-3 py-2 rounded-[var(--radius)] text-sm font-medium transition flex items-center gap-2 border border-transparent ${
           active
             ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)] font-bold'
-            : 'text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] hover:border-[var(--line-strong)]'
+            : 'text-[var(--muted)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] hover:border-[var(--accent-line)]'
         } ${extra || ''}`}
       >
         {icon}
@@ -129,7 +129,7 @@ export function Navbar() {
     <>
       <Link
         to="/login"
-        className="w-full py-3 px-4 border border-[var(--line-strong)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
+        className="w-full py-3 px-4 border border-[var(--line-strong)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--ink)] hover:bg-[var(--accent-tint)] transition"
       >
         Sign in
       </Link>
@@ -140,7 +140,7 @@ export function Navbar() {
     <>
       <button
         onClick={handleSignOut}
-        className="w-full py-3 px-4 border border-[var(--line)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--muted)] hover:bg-[var(--surface-2)] transition"
+        className="w-full py-3 px-4 border border-[var(--line)] rounded-[var(--radius)] text-center text-sm font-medium text-[var(--muted)] hover:bg-[var(--accent-tint)] transition"
       >
         Sign out
       </button>
@@ -174,7 +174,7 @@ export function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowNotifs(!showNotifs)}
-                    className="relative p-3 rounded-[var(--radius)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
+                    className="relative p-3 rounded-[var(--radius)] text-[var(--ink)] hover:bg-[var(--accent-tint)] transition"
                     aria-label="View notifications"
                     aria-expanded={showNotifs}
                     aria-controls="notifications-dropdown"
@@ -202,7 +202,7 @@ export function Navbar() {
                             <div
                               key={n.id}
                               onClick={() => handleMarkRead(n.id)}
-                              className={`p-3 text-xs cursor-pointer transition hover:bg-[var(--surface-2)] flex items-start gap-3 ${
+                              className={`p-3 text-xs cursor-pointer transition hover:bg-[var(--accent-tint)] flex items-start gap-3 ${
                                 !n.is_read ? 'bg-[var(--surface-2)]' : ''
                               }`}
                             >
@@ -256,7 +256,7 @@ export function Navbar() {
                       <Link
                         to="/my-reservations"
                         onClick={() => setProfileMenuOpen(false)}
-                        className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
+                        className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] flex items-center gap-2"
                       >
                         <Calendar className="w-4 h-4 text-[var(--faint)] mr-2" />
                         My Reservations
@@ -265,7 +265,7 @@ export function Navbar() {
                         <Link
                           to="/proposals"
                           onClick={() => setProfileMenuOpen(false)}
-                          className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
+                          className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] flex items-center gap-2"
                         >
                           <FileText className="w-4 h-4 text-[var(--faint)] mr-2" />
                           Event Proposals
@@ -275,7 +275,7 @@ export function Navbar() {
                         <Link
                           to="/approvals"
                           onClick={() => setProfileMenuOpen(false)}
-                          className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
+                          className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] flex items-center gap-2"
                         >
                           <Inbox className="w-4 h-4 text-[var(--faint)] mr-2" />
                           Approvals Inbox
@@ -284,7 +284,7 @@ export function Navbar() {
                       <div className="border-b border-[var(--line)] my-1" />
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-4 py-2.5 text-xs text-left text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
+                        className="w-full px-4 py-2.5 text-xs text-left text-[var(--muted)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] flex items-center gap-2"
                       >
                         <LogOut className="w-4 h-4 text-[var(--ink)] mr-2" />
                         Sign out
@@ -297,7 +297,7 @@ export function Navbar() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--ink)] border border-[var(--line-strong)] hover:bg-[var(--surface-2)] transition"
+                  className="px-3 py-2 rounded-[var(--radius)] text-sm font-medium text-[var(--ink)] border border-[var(--line-strong)] hover:bg-[var(--accent-tint)] transition"
                 >
                   Sign in
                 </Link>
@@ -307,7 +307,7 @@ export function Navbar() {
             {/* Mobile menu toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
+              className="md:hidden p-2 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--accent-tint)] transition"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
@@ -328,7 +328,7 @@ export function Navbar() {
           <div className="absolute top-0 right-0 p-4">
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
+              className="p-2 rounded-[var(--radius)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--accent-tint)] transition"
               aria-label="Close menu"
             >
               <CloseIcon className="w-6 h-6" />

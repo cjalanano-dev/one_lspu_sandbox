@@ -181,7 +181,7 @@ export function LandingPage() {
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
                     to="/login"
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-semibold text-sm hover:bg-[var(--ink-dark)] transition"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-semibold text-sm hover:bg-[var(--accent)] hover:text-[var(--accent-ink)] transition"
                   >
                     <Compass className="w-4 h-4" />
                     Sign in
@@ -365,7 +365,7 @@ export function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4">
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-semibold hover:bg-[var(--ink-dark)] transition"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-semibold transition"
               >
                 <Compass className="w-5 h-5" />
                 Sign in and explore

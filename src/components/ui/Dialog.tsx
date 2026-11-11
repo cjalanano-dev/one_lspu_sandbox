@@ -90,7 +90,7 @@ export function Dialog({ isOpen, onClose, title, titleId, children }: DialogProp
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-3 right-3 p-1 rounded-sm text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-2)] transition"
+            className="absolute top-3 right-3 p-1 rounded-sm text-[var(--muted)] hover:text-[var(--accent-text)] hover:bg-[var(--accent-tint)] transition"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />

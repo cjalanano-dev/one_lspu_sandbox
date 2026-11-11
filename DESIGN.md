@@ -90,6 +90,12 @@ represents an identity, an action, or a selected state.
 - Photo badges (facility code, category)
 - Text links, focus rings, input focus borders
 
+**Hover — blue everywhere**
+Every interactive hover carries the accent: `--accent-tint` wash, `--accent-text`
+label, `--accent-line` / `--accent` border. Nav items, dropdown rows, outline and
+text buttons, list rows, cards, the bell, notification rows, menu toggles and the
+password reveal all hover blue. There is no grey hover left in the app.
+
 **Monochrome**
 - Body text, surfaces, borders, metadata
 - Secondary outline buttons

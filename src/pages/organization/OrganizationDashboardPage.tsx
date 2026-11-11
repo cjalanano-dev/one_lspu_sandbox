@@ -155,7 +155,7 @@ export function OrganizationDashboardPage() {
           {filingOrg && (
             <Link
               to={`/proposals/new?org=${filingOrg.id}`}
-              className="px-5 py-3 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[var(--surface-2)] transition"
+              className="px-5 py-3 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[var(--accent-tint)] transition"
             >
               <FileText className="w-4 h-4" />
               File Event Proposal
@@ -191,7 +191,7 @@ export function OrganizationDashboardPage() {
               <button
                 onClick={() => setShowNewActivityModal(true)}
                 disabled={!canFileForOrganization(selectedOrg ?? {})}
-                className="p-2 rounded-sm border border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--surface-2)] transition disabled:opacity-40 disabled:pointer-events-none"
+                className="p-2 rounded-sm border border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--accent-tint)] transition disabled:opacity-40 disabled:pointer-events-none"
                 title={
                   canFileForOrganization(selectedOrg ?? {})
                     ? 'Add Activity'
@@ -212,7 +212,7 @@ export function OrganizationDashboardPage() {
               activities.map((act) => (
                 <div
                   key={act.id}
-                  className="p-3 rounded-sm border border-[var(--line)] bg-[var(--surface)] space-y-2 hover:border-[var(--line-strong)] transition"
+                  className="p-3 rounded-sm border border-[var(--line)] bg-[var(--surface)] space-y-2 hover:border-[var(--accent-line)] transition"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <h4 className="font-bold text-[var(--ink)] text-sm">{act.title}</h4>
@@ -258,7 +258,7 @@ export function OrganizationDashboardPage() {
                 return (
                   <div
                     key={res.id}
-                    className="p-3 rounded-sm border border-[var(--line)] bg-[var(--paper)] space-y-2 hover:border-[var(--line-strong)] transition"
+                    className="p-3 rounded-sm border border-[var(--line)] bg-[var(--paper)] space-y-2 hover:border-[var(--accent-line)] transition"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
@@ -354,7 +354,7 @@ export function OrganizationDashboardPage() {
             <button
               type="button"
               onClick={() => setShowNewActivityModal(false)}
-              className="px-4 py-2 rounded-sm text-[var(--muted)] font-medium hover:bg-[var(--surface-2)] transition"
+              className="px-4 py-2 rounded-sm text-[var(--muted)] font-medium hover:bg-[var(--accent-tint)] transition"
             >
               Cancel
             </button>

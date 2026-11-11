@@ -268,7 +268,7 @@ export function FacilityDetailPage() {
       <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
         <button
           onClick={() => navigate('/explorer')}
-          className="hover:text-[var(--ink)] flex items-center gap-1 font-medium transition"
+          className="hover:text-[var(--accent-text)] flex items-center gap-1 font-medium transition"
         >
           <ArrowLeft className="w-3 h-3" />
           Campus Explorer
@@ -449,7 +449,7 @@ export function FacilityDetailPage() {
                           selectedSlot?.start === slot.start && selectedSlot?.end === slot.end
                             ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--accent-ink)] '
                             : slot.available
-                            ? 'bg-[var(--paper)] border-[var(--line-strong)] text-[var(--ink)] hover:bg-[var(--surface-2)] hover:border-[var(--ink)]'
+                            ? 'bg-[var(--paper)] border-[var(--line-strong)] text-[var(--ink)] hover:bg-[var(--accent-tint)] hover:border-[var(--accent)]'
                             : 'bg-[var(--surface-2)] border-[var(--line)] text-[var(--faint)] cursor-not-allowed'
                         }`}
                       >
@@ -577,7 +577,7 @@ export function FacilityDetailPage() {
                           const id = `equipment-${item.replace(/\s+/g, '-')}`
                           return (
                             <div key={item} className={`flex items-center gap-2 p-2 rounded-sm cursor-pointer transition border ${
-                              checked ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--line)] hover:bg-[var(--surface-2)]'
+                              checked ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--line)] hover:bg-[var(--accent-tint)]'
                             }`}>
                               <input
                                 id={id}
