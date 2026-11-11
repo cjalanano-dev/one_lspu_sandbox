@@ -192,7 +192,7 @@ export function Navbar() {
                   </button>
 
                   {showNotifs && (
-                    <div id="notifications-dropdown" className="absolute right-0 mt-2 w-80 sm:w-96 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)]  border border-[var(--line)] py-2 z-50">
+                    <div id="notifications-dropdown" className="absolute right-0 top-full mt-1 w-80 sm:w-96 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)]  border border-[var(--line)] py-2 z-50">
                       <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--line)]">
                         <span className="font-semibold text-sm text-[var(--ink)]">Notifications</span>
                         <span className="text-xs text-[var(--faint)]">{notifications.length} total</span>
@@ -258,7 +258,7 @@ export function Navbar() {
                   </div>
 
                   {profileMenuOpen && (
-                    <div className="absolute right-0 mt-5 w-48 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line)] py-2 z-50">
+                    <div className="absolute right-0 top-full mt-1 w-48 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line)] py-2 z-50">
                       <Link
                         to="/my-reservations"
                         onClick={() => setProfileMenuOpen(false)}
