@@ -20,20 +20,16 @@
        the accent never becomes a wash.
 
        Contrast (WCAG 2.1, measured against #FFFFFF):
-         --accent        #4274D9  4.44:1 with white  - fills, borders, marks
-         --accent-text   #2F5FC0  5.97:1 with white  - accent TEXT on light surfaces
-         --accent-strong #2F5FC0  5.97:1 with white  - hover fill
+         --accent        #006BFF  4.62:1 with white  - fills, borders, marks
+         --accent-text   #0057D1  6.39:1 with white  - accent TEXT on light surfaces
+         --accent-strong #0052CC  6.82:1 with white  - hover fill
+         --accent-deep   #0B2A5B  14.03:1 with white - bands and banners
        Use --accent-text wherever the blue is the text colour; keep --accent
        for fills and non-text marks. */
     --accent: #006BFF;
---accent-text: #0057D1;   /* mas dark ng konti para pasado sa contrast sa puting bg */
---accent-strong: #0052CC; /* hover / pressed */
---accent-deep: #0B2A5B;   /* headers, dark sections */
-
-    /* --accent: #9a4455;
---accent-text: #8a2f45;
---accent-strong: #b85c6e;
---accent-deep: #5e2230; */
+    --accent-text: #0057D1;   /* slightly darker so accent text passes contrast on white */
+    --accent-strong: #0052CC; /* hover / pressed */
+    --accent-deep: #0B2A5B;   /* headers, dark sections */
 
     --accent-ink: #ffffff;
     --accent-tint: #eaf0fd;

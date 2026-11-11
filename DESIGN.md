@@ -27,13 +27,17 @@ Zero gradients, zero blur, zero shadows.
 
 | Token | Value | Role |
 |---|---|---|
-| `--accent` | `#4274D9` | Primary buttons, selected states, active nav, links |
-| `--accent-strong` | `#2F5FC0` | Accent hover / pressed |
-| `--accent-deep` | `#1B2A4A` | Reserved for deep brand bands |
+| `--accent` | `#006BFF` | Primary buttons, selected states, active nav, links |
+| `--accent-text` | `#0057D1` | Accent TEXT on light surfaces |
+| `--accent-strong` | `#0052CC` | Accent hover / pressed |
+| `--accent-deep` | `#0B2A5B` | Deep brand bands, banners |
 | `--accent-ink` | `#FFFFFF` | Text on accent fill |
 | `--accent-tint` | `#EAF0FD` | Selected / hover wash |
 | `--accent-tint-2` | `#D6E2FA` | Accent tint hover |
 | `--accent-line` | `#B9CBF5` | Hairline border on accent tint |
+
+Contrast against `#FFFFFF`: `--accent` 4.62:1, `--accent-text` 6.39:1,
+`--accent-strong` 6.82:1, `--accent-deep` 14.03:1. All pass WCAG AA.
 
 | Token | Value | Role |
 |---|---|---|
