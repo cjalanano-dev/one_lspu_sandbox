@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 
 -- 2. ORGANIZATIONS
 CREATE TABLE IF NOT EXISTS public.organizations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   acronym TEXT NOT NULL,
   description TEXT,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS public.organizations (
 
 -- 3. ORGANIZATION MEMBERS
 CREATE TABLE IF NOT EXISTS public.organization_members (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   organization_role TEXT NOT NULL DEFAULT 'member' CHECK (organization_role IN ('president', 'vice_president', 'secretary', 'treasurer', 'officer', 'member')),
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS public.organization_members (
 
 -- 4. BUILDINGS
 CREATE TABLE IF NOT EXISTS public.buildings (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   code TEXT NOT NULL UNIQUE,
   description TEXT,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS public.buildings (
 
 -- 5. FLOORS
 CREATE TABLE IF NOT EXISTS public.floors (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   building_id UUID NOT NULL REFERENCES public.buildings(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   floor_number INT NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS public.floors (
 
 -- 6. FACILITIES
 CREATE TABLE IF NOT EXISTS public.facilities (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   building_id UUID NOT NULL REFERENCES public.buildings(id) ON DELETE CASCADE,
   floor_id UUID NOT NULL REFERENCES public.floors(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS public.facilities (
 
 -- 7. FACILITY SCHEDULES (Default weekly hours)
 CREATE TABLE IF NOT EXISTS public.facility_schedules (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   facility_id UUID NOT NULL REFERENCES public.facilities(id) ON DELETE CASCADE,
   day_of_week INT NOT NULL CHECK (day_of_week BETWEEN 0 AND 6), -- 0=Sunday, 6=Saturday
   opening_time TIME NOT NULL DEFAULT '08:00:00',
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS public.facility_schedules (
 
 -- 8. MAINTENANCE PERIODS
 CREATE TABLE IF NOT EXISTS public.maintenance_periods (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   facility_id UUID NOT NULL REFERENCES public.facilities(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT,
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS public.maintenance_periods (
 
 -- 9. ACTIVITIES (Student Organization Events)
 CREATE TABLE IF NOT EXISTS public.activities (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT,
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS public.activities (
 
 -- 10. RESERVATIONS
 CREATE TABLE IF NOT EXISTS public.reservations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   facility_id UUID NOT NULL REFERENCES public.facilities(id) ON DELETE CASCADE,
   requester_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   organization_id UUID REFERENCES public.organizations(id) ON DELETE SET NULL,
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS public.reservations (
 
 -- 11. NOTIFICATIONS
 CREATE TABLE IF NOT EXISTS public.notifications (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   message TEXT NOT NULL,
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 
 -- 12. AUDIT LOGS
 CREATE TABLE IF NOT EXISTS public.audit_logs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   actor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   action TEXT NOT NULL,
   entity_type TEXT NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
 
 -- 13. FACILITY ADMINISTRATORS ASSIGNMENTS
 CREATE TABLE IF NOT EXISTS public.facility_administrators (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   facility_id UUID NOT NULL REFERENCES public.facilities(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
@@ -311,3 +311,4 @@ BEGIN
   RETURN jsonb_build_object('success', true);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
