@@ -13,6 +13,12 @@ import { FacilitiesDirectoryPage } from '../pages/user/FacilitiesDirectoryPage'
 import { MyReservationsPage } from '../pages/user/MyReservationsPage'
 import { OrganizationDashboardPage } from '../pages/organization/OrganizationDashboardPage'
 import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage'
+import { ProposalsListPage } from '../pages/proposals/ProposalsListPage'
+import { ProposalFormPage } from '../pages/proposals/ProposalFormPage'
+import { ProposalDetailPage } from '../pages/proposals/ProposalDetailPage'
+import { ApprovalsInboxPage } from '../pages/proposals/ApprovalsInboxPage'
+import { ProposalPrintPage } from '../pages/proposals/ProposalPrintPage'
+import { VerifyProposalPage } from '../pages/proposals/VerifyProposalPage'
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +44,46 @@ export const router = createBrowserRouter([
       {
         path: 'facilities/:id',
         element: <FacilityDetailPage />,
+      },
+      {
+        path: 'proposals',
+        element: (
+          <RequireRole allowedRoles={['officer', 'adviser', 'osa_staff', 'facility_admin', 'system_admin']}>
+            <ProposalsListPage />
+          </RequireRole>
+        ),
+      },
+      {
+        path: 'proposals/new',
+        element: (
+          <RequireRole allowedRoles={['officer']}>
+            <ProposalFormPage />
+          </RequireRole>
+        ),
+      },
+      {
+        path: 'proposals/:id/edit',
+        element: (
+          <RequireRole allowedRoles={['officer']}>
+            <ProposalFormPage />
+          </RequireRole>
+        ),
+      },
+      {
+        path: 'proposals/:id',
+        element: (
+          <RequireAuth>
+            <ProposalDetailPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'approvals',
+        element: (
+          <RequireRole allowedRoles={['adviser', 'osa_staff', 'facility_admin', 'system_admin']}>
+            <ApprovalsInboxPage />
+          </RequireRole>
+        ),
       },
       {
         path: 'my-reservations',
@@ -68,6 +114,18 @@ export const router = createBrowserRouter([
         element: <NotFoundPage />,
       },
     ],
+  },
+  {
+    path: 'proposals/:id/print',
+    element: (
+      <RequireAuth>
+        <ProposalPrintPage />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: 'verify/:reference',
+    element: <VerifyProposalPage />,
   },
   {
     path: 'login',

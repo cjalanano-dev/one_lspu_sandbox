@@ -12,12 +12,14 @@ import {
   Clock,
   X as CloseIcon,
   Menu,
+  FileText,
+  Inbox,
 } from 'lucide-react'
 import { useAuth } from '../../features/auth/AuthContext'
 import { dataStore } from '../../lib/dataStore'
 
 export function Navbar() {
-  const { user, signOut, isAdmin, isOfficer, isLoading } = useAuth()
+  const { user, signOut, isAdmin, isOfficer, isApprover, isLoading } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
   const [notifications, setNotifications] = useState<any[]>([])
@@ -116,6 +118,8 @@ export function Navbar() {
       {navItem('/explorer', 'Campus Explorer', <Compass className="w-4 h-4" />)}
       {navItem('/facilities', 'Facilities', <Building2 className="w-4 h-4" />)}
       {navItem('/my-reservations', 'My Reservations', <Calendar className="w-4 h-4" />)}
+      {isOfficer && navItem('/proposals', 'Proposals', <FileText className="w-4 h-4" />)}
+      {isApprover && navItem('/approvals', 'Approvals', <Inbox className="w-4 h-4" />)}
       {isOfficer && navItem('/organization', 'Org Dashboard', <Users className="w-4 h-4" />)}
       {isAdmin && navItem('/admin', 'Admin Panel', <ShieldCheck className="w-4 h-4" />)}
     </>
@@ -258,11 +262,32 @@ export function Navbar() {
                       <Link
                         to="/my-reservations"
                         onClick={() => setProfileMenuOpen(false)}
-                        className="px-4 py-3 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2 border-b border-[var(--line)] pb-3"
+                        className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
                       >
                         <Calendar className="w-4 h-4 text-[var(--faint)] mr-2" />
                         My Reservations
                       </Link>
+                      {isOfficer && (
+                        <Link
+                          to="/proposals"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
+                        >
+                          <FileText className="w-4 h-4 text-[var(--faint)] mr-2" />
+                          Event Proposals
+                        </Link>
+                      )}
+                      {isApprover && (
+                        <Link
+                          to="/approvals"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="px-4 py-2.5 text-xs text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"
+                        >
+                          <Inbox className="w-4 h-4 text-[var(--faint)] mr-2" />
+                          Approvals Inbox
+                        </Link>
+                      )}
+                      <div className="border-b border-[var(--line)] my-1" />
                       <button
                         onClick={handleSignOut}
                         className="w-full px-4 py-2.5 text-xs text-left text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] flex items-center gap-2"

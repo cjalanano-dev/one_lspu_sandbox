@@ -9,6 +9,9 @@ interface AuthContextType {
   signOut: () => Promise<void>
   isStudent: boolean
   isOfficer: boolean
+  isAdviser: boolean
+  isOsa: boolean
+  isApprover: boolean
   isAdmin: boolean
   isSystemAdmin: boolean
   isLoading: boolean
@@ -109,6 +112,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signOut,
     isStudent: currentUser?.primary_role === 'student',
     isOfficer: currentUser?.primary_role === 'officer',
+    isAdviser: currentUser?.primary_role === 'adviser',
+    isOsa: currentUser?.primary_role === 'osa_staff',
+    isApprover:
+      currentUser?.primary_role === 'adviser' ||
+      currentUser?.primary_role === 'osa_staff' ||
+      currentUser?.primary_role === 'facility_admin' ||
+      currentUser?.primary_role === 'system_admin',
     isAdmin:
       currentUser?.primary_role === 'facility_admin' ||
       currentUser?.primary_role === 'system_admin',
