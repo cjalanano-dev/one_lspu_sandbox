@@ -113,7 +113,7 @@ export function OrganizationDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-[var(--ink)] text-[var(--paper)] rounded-sm border border-[var(--ink)] p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="bg-[var(--accent-deep)] text-[var(--paper)] rounded-sm border border-[var(--accent-deep)] p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           {selectedOrg?.logo_url ? (
             <img

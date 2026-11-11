@@ -153,10 +153,10 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-[var(--radius)] border border-[var(--line-strong)] bg-[var(--ink-dark)] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-[var(--radius)] border border-[var(--accent)] bg-[var(--accent)] flex items-center justify-center">
               <Building2 className="w-6 h-6 text-[var(--paper)]" />
             </div>
-            <div className="text-[var(--ink)] font-bold tracking-tight text-lg flex items-center gap-0.5 group-hover:text-[var(--ink-dark)] transition">
+            <div className="text-[var(--accent)] font-bold tracking-tight text-lg flex items-center gap-0.5 group-hover:text-[var(--accent-deep)] transition">
               ONE LSPU
             </div>
           </Link>
@@ -244,7 +244,7 @@ export function Navbar() {
                     className="w-9 h-9 rounded-sm object-cover border border-[var(--line)]"
                     loading="lazy"
                   />
-                  <div className="hidden lg:block text-left text-xs cursor-pointer" onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
+                  <div className="hidden lg:block text-left text-xs cursor-pointer " onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
                     <div className="font-medium text-[var(--ink)]">{user?.full_name}</div>
                     <div className="text-[var(--muted)] capitalize">
                       {user?.primary_role?.replace('_', ' ')}

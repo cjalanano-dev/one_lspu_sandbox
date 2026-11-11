@@ -100,7 +100,7 @@ export function FacilitiesDirectoryPage() {
                       })
                     }}
                   />
-                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm text-xs font-mono font-bold uppercase bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink)]">
+                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm text-xs font-mono font-bold uppercase bg-[var(--accent)] text-[var(--accent-ink)] border border-[var(--accent)]">
                     {fac.facility_code}
                   </span>
                   <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--paper)] border border-[var(--ink)] text-[var(--ink)]">

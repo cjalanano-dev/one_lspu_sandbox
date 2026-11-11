@@ -63,7 +63,7 @@ Current build state:
 - No logo system is established yet; the wordmark "ONE FACILITY" is set in black system type.
 - Brand palette: monochrome structure with a single blue primary. Paper white `#FFFFFF`, ink `#0A0A0A`, neutral grays for text, surfaces and borders; blue `#4274D9` for primary actions, selected states and links only. Zero gradients, zero blur, zero shadows. Confirmed in `DESIGN.md`.
 - Typography: system grotesque for UI; monospace for room codes, dates, times, and metadata.
-- Blue is the primary colour, but it stays scarce: body text, surfaces, borders, metadata, secondary buttons and alert banners remain monochrome so the accent still reads as emphasis.
+- Blue is the primary colour and carries the brand: logo mark, wordmark, hero bands and primary actions are blue; the structure (text, surfaces, borders, metadata) stays monochrome so the accent still reads as emphasis.
 
 ## Evidence on Hand
 

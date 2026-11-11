@@ -423,14 +423,14 @@ export function CampusExplorerPage() {
                             Not on floor plan
                           </span>
                         )}
-                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink)]">
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--accent)] text-[var(--accent-ink)] border border-[var(--accent)]">
                           {selectedFacility.facility_code}
                         </span>
                       </div>
 
                       <div>
                         <div className="flex items-center justify-between gap-2">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)]">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--accent)] text-xs font-bold uppercase bg-[var(--accent)] text-[var(--accent-ink)]">
                             {selectedFacility.category.replace('_', ' ')}
                           </span>
                           <span className={`flex items-center gap-1 ${statusTag(selectedFacility.status)}`}>
@@ -506,7 +506,7 @@ export function CampusExplorerPage() {
                       <div key={floor.id} className="border border-[var(--line)] rounded-sm overflow-hidden">
                         <div className="border-b border-[var(--line)] bg-[var(--surface-2)] px-4 py-2.5 flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="w-1 h-4 rounded-sm bg-[var(--ink)]" />
+                            <span className="w-1 h-4 rounded-sm bg-[var(--accent)]" />
                             <span className={`text-xs font-bold text-[var(--ink)] uppercase tracking-widest`}>
                               {floorLabel(floor)}
                             </span>

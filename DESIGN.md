@@ -56,22 +56,47 @@ Zero gradients, zero blur, zero shadows.
   - `tag-pending` — transparent fill, blue border + blue text
   - `tag-rejected` / `tag-cancelled` — light gray fill, muted text
   - `tag-maintenance` — light gray fill, muted text (hatch used on floor plans)
-  - `tag-reserved` / `tag-occupied` — light gray fill
+  - `tag-reserved` / `tag-occupied` — accent tint fill, accent-line border
   - All tags: 2px corners (not pills)
 - **Panels:** white fill, 1px hairline border, 2px corners.
-- **Links:** `--accent` text, `--accent-strong` on hover.
+- **Links:** `--accent-text` text, `--accent-deep` on hover.
 
 ## Where blue appears (and where it does not)
 
-Blue is the primary, but it stays scarce so it still reads as emphasis.
+Blue is the primary and carries the brand. It is used on every surface that
+represents an identity, an action, or a selected state.
 
-**Blue:** primary buttons, active nav item, selected pills / tabs / chips / cards,
-selected time slots and checkboxes, approved / available tags, text links,
-focus rings, unread-notification dot.
+**Brand — blue**
+- Logo mark (navbar, landing, auth pages, 404 / 403)
+- "ONE LSPU" wordmark — `--accent`, deepens to `--accent-deep` on hover
+- Landing hero bands and closing band — `--accent-deep`
+- Login page left panel — `--accent-deep`
+- Organisation dashboard identity band — `--accent-deep`
 
-**Monochrome:** body text, surfaces, borders, metadata, secondary outline buttons,
-error / success banners, the landing hero bands, the organisation identity band,
-logo and decorative chips, and every status tag other than approved / available.
+**Primary actions — blue**
+- `.btn-primary` / `.btn-accent`, and every inline CTA (book, reserve,
+  submit, approve, decline, confirm, retry, save)
+
+**Selected state — blue**
+- Active navbar item, unread-notification dot
+- Selected building card, floor pill, view tab, status filter tab
+- Selected equipment chip, time slot, checkbox
+- Approval stepper "done" nodes and timeline dots
+- Selected room on the floor plan, and the "Selected" legend swatch
+
+**Informational — blue**
+- Approved / available tags, pending tags
+- Success / info banners — `--accent-deep`
+- Photo badges (facility code, category)
+- Text links, focus rings, input focus borders
+
+**Monochrome**
+- Body text, surfaces, borders, metadata
+- Secondary outline buttons
+- **Error banners** — errors stay dark, so error vs. success is
+  distinguishable without relying on hue
+- Rejected / cancelled / maintenance tags
+- White CTA buttons sitting on the deep-blue bands (maximum contrast)
 
 **Photography** stays grayscale so the blue never competes with the imagery.
 

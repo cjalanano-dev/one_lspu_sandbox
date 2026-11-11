@@ -103,7 +103,7 @@ export function ProposalTimeline({
           : null
         return (
           <li key={e.id} className="ml-5">
-            <span className="absolute -left-[5px] mt-1.5 w-2.5 h-2.5 rounded-full bg-[var(--ink)]" />
+            <span className="absolute -left-[5px] mt-1.5 w-2.5 h-2.5 rounded-full bg-[var(--accent)]" />
             <p className="text-sm">
               {e.action === 'reminder_sent' ? (
                 <span className="font-semibold">{ACTION_TEXT[e.action]}</span>

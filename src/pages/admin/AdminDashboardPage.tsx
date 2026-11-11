@@ -144,7 +144,7 @@ export function AdminDashboardPage() {
 
       {/* Action Feedback */}
       {actionError || actionSuccess ? (
-        <div className="p-3 border border-[var(--line-strong)] bg-[var(--ink)] text-[var(--paper)] text-xs flex items-start gap-2" role="status" aria-live="polite">
+        <div className="p-3 border border-[var(--accent-deep)] bg-[var(--accent-deep)] text-[var(--paper)] text-xs flex items-start gap-2" role="status" aria-live="polite">
           {actionError ? (
             <>
               <AlertTriangle className="w-4 h-4 text-[var(--paper)] shrink-0 mt-0.5" />

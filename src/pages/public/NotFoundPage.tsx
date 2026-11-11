@@ -5,7 +5,7 @@ export function NotFoundPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
       <div className="w-full max-w-md p-6 text-center">
-        <div className="w-16 h-16 rounded-sm bg-[var(--ink-dark)] flex items-center justify-center mx-auto mb-6">
+        <div className="w-16 h-16 rounded-sm bg-[var(--accent)] flex items-center justify-center mx-auto mb-6">
           <Compass className="w-8 h-8 text-[var(--paper)]" />
         </div>
         <h1 className="text-2xl font-extrabold text-[var(--ink)] mb-2">Page not found</h1>

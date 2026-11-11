@@ -108,7 +108,7 @@ export function LandingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-sm border-[var(--line-strong)] bg-[var(--ink-dark)] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-sm border-[var(--accent)] bg-[var(--accent)] flex items-center justify-center">
             <Building2 className="w-6 h-6 text-[var(--paper)]" />
           </div>
           <p className="text-xs text-[var(--muted)] uppercase tracking-widest font-medium">Loading</p>
@@ -120,7 +120,7 @@ export function LandingPage() {
   return (
     <div className="space-y-0 pb-12">
       {/* Hero — wayfinding board */}
-      <section className="bg-[var(--ink-dark)] text-[var(--paper)]">
+      <section className="bg-[var(--accent-deep)] text-[var(--paper)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-12 items-start">
             <div className="lg:col-span-7 space-y-6">
@@ -272,7 +272,7 @@ export function LandingPage() {
               return (
                 <li key={i} className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <span className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-sm border-[var(--line-strong)] bg-[var(--ink-dark)] text-[var(--paper)] font-black text-xs uppercase">
+                    <span className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-sm border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-ink)] font-black text-xs uppercase">
                       {step.number}
                     </span>
                     <div>
@@ -354,7 +354,7 @@ export function LandingPage() {
       </section>
 
       {/* Closing band */}
-      <section className="bg-[var(--ink-dark)] text-[var(--paper)] py-16">
+      <section className="bg-[var(--accent-deep)] text-[var(--paper)] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="rounded-sm border-[var(--paper)]/10 bg-[var(--paper)]/5 p-10 text-center md:text-left md:p-12">
             <h2 className="text-2xl md:text-3xl font-black mb-4">Run the full reservation lifecycle</h2>

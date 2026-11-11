@@ -53,9 +53,9 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left — black panel */}
-      <div className="hidden lg:flex w-1/2 bg-[var(--ink-dark)] flex-col justify-between p-12 lg:p-16">
+      <div className="hidden lg:flex w-1/2 bg-[var(--accent-deep)] flex-col justify-between p-12 lg:p-16">
         <div>
-          <div className="w-10 h-10 rounded-sm border-[var(--line-strong)] bg-[var(--ink-dark)] flex items-center justify-center mb-6">
+          <div className="w-10 h-10 rounded-sm border-[var(--accent)] bg-[var(--accent)] flex items-center justify-center mb-6">
             <BuildingIcon className="w-6 h-6 text-[var(--paper)]" />
           </div>
           <h1 className="text-3xl font-black text-[var(--paper)] leading-tight">

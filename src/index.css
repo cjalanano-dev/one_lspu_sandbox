@@ -142,14 +142,14 @@
     border: 1px solid var(--accent);
   }
   .tag-reserved {
-    background: var(--surface-2);
+    background: var(--accent-tint);
     color: var(--ink);
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--accent-line);
   }
   .tag-occupied {
-    background: var(--surface-2);
-    color: var(--muted);
-    border: 1px solid var(--line);
+    background: var(--accent-tint);
+    color: var(--ink);
+    border: 1px solid var(--accent-line);
   }
 
   /* ---------- KPI value ---------- */

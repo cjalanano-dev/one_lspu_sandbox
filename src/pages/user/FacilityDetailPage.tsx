@@ -284,7 +284,7 @@ export function FacilityDetailPage() {
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className="tag tag-available font-bold">{facility.facility_code}</span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)]">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--accent)] text-xs font-bold uppercase bg-[var(--accent)] text-[var(--accent-ink)]">
                 {facility.category.replace('_', ' ')}
               </span>
               <span className="tag tag-available font-bold">Active & Reservable</span>
@@ -363,7 +363,7 @@ export function FacilityDetailPage() {
               })
             }}
           />
-          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink)]">
+          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--accent)] text-[var(--accent-ink)] border border-[var(--accent)]">
             {facility.facility_code}
           </span>
         </div>
@@ -407,7 +407,7 @@ export function FacilityDetailPage() {
               )}
 
               {successMsg && (
-                <div id="reservation-success" className="mb-5 p-3 border-[var(--line-strong)] bg-[var(--ink-dark)] text-[var(--paper)] text-xs flex items-start gap-2" role="status" aria-live="polite">
+                <div id="reservation-success" className="mb-5 p-3 border-[var(--accent-deep)] bg-[var(--accent-deep)] text-[var(--paper)] text-xs flex items-start gap-2" role="status" aria-live="polite">
                   <CheckCircle2 className="w-4 h-4 text-[var(--paper)] shrink-0 mt-0.5" />
                   <span>{successMsg}</span>
                 </div>
