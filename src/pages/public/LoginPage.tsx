@@ -74,10 +74,28 @@ export function LoginPage() {
           </p>
           <div className="space-y-3 text-xs text-[var(--paper)]/80">
             <div>
-              <p className="text-[var(--paper)]/40 font-semibold uppercase tracking-wider mb-1">Student Org Officer (Proposals & Org Dashboard)</p>
-              <div>
-                <span className="font-mono font-bold text-[var(--paper)]">officer@campus.edu</span>
-                <span className="text-[var(--paper)]/50 block">OCTA President / Org Officer</span>
+              <p className="text-[var(--paper)]/40 font-semibold uppercase tracking-wider mb-1">Student Org Officers (Proposals & Org Dashboard)</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">octa.president@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">OCTA — Organization for Computing and Technology Advancements (+ octa.secretary@)</span>
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">algo.president@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">ALGO — CS Sub-Org (+ algo.secretary@)</span>
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">bsit.president@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">BSIT — IT Sub-Org (+ bsit.secretary@)</span>
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">coesc.president@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">COESC — College of Engineering Student Council (+ coesc.secretary@)</span>
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">officer@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">Generic Officer (OCTA Fallback)</span>
+                </div>
               </div>
             </div>
 

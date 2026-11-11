@@ -219,7 +219,7 @@ BEGIN
   -- 4. Organizations (upsert by acronym; resolve parent by acronym)
   INSERT INTO public.organizations (name, acronym, description, logo_url, status, college, org_type, parent_org_id)
   VALUES (
-    'Organization of Computer Total Achievers', 'OCTA',
+    'Organization for Computing and Technology Advancements', 'OCTA',
     'Mother student organization of the College of Computer Studies (CCS).',
     'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=128&q=80',
     'active', 'College of Computer Studies (CCS)', 'college_mother', NULL

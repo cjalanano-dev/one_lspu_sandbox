@@ -85,11 +85,17 @@ function mapFloor(row: any): Floor {
   }
 }
 
+const ORG_NAME_OVERRIDES: Record<string, string> = {
+  OCTA: 'Organization for Computing and Technology Advancements',
+  COESC: 'College of Engineering Student Council',
+}
+
 // Map Supabase organization row to our Organization type
 function mapOrganization(row: any): Organization {
+  const acronym = row.acronym ? String(row.acronym).toUpperCase() : row.acronym
   return {
     id: row.id,
-    name: row.name,
+    name: (acronym && ORG_NAME_OVERRIDES[acronym]) || row.name,
     acronym: row.acronym,
     description: row.description ?? null,
     logo_url: row.logo_url ?? null,
