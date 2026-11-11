@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Compass,
   CalendarDays,
+  FileText,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { dataStore } from '../../lib/dataStore'
@@ -123,19 +124,18 @@ export function OrganizationDashboardPage() {
           </div>
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <button
-            onClick={() => setShowNewActivityModal(true)}
-            className="px-5 py-3 rounded-sm bg-white text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition"
-          >
-            <Plus className="w-4 h-4" />
-            New Organization Activity
-          </button>
           <Link
-            to="/explorer"
+            to={selectedOrg ? `/proposals/new?org=${selectedOrg.id}` : '/proposals/new'}
+            className="px-5 py-3 rounded-sm bg-white text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[var(--surface-2)] transition"
+          >
+            <FileText className="w-4 h-4" />
+            File Event Proposal
+          </Link>
+          <Link
+            to="/proposals"
             className="px-5 py-3 rounded-sm border border-white text-white font-medium text-sm flex items-center gap-2 hover:bg-white/5 transition"
           >
-            <Compass className="w-4 h-4 text-white" />
-            Explore Spaces
+            View Proposals
           </Link>
         </div>
       </div>

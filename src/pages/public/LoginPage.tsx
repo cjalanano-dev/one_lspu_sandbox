@@ -36,7 +36,13 @@ export function LoginPage() {
         /* keep default student role if profile lookup fails */
       }
       const defaultPath =
-        role === 'officer' ? '/organization' : role === 'facility_admin' || role === 'system_admin' ? '/admin' : '/explorer'
+        role === 'officer'
+          ? '/proposals'
+          : role === 'adviser' || role === 'osa_staff'
+            ? '/approvals'
+            : role === 'facility_admin' || role === 'system_admin'
+              ? '/approvals'
+              : '/explorer'
       const from = (location.state as { from?: { pathname: string } })?.from?.pathname || defaultPath
       navigate(from)
     } catch (err) {

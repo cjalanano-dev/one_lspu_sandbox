@@ -1,6 +1,13 @@
 // Shared TypeScript types for ONE Facility
 
-export type UserRole = 'student' | 'faculty' | 'officer' | 'facility_admin' | 'system_admin'
+export type UserRole =
+  | 'student'
+  | 'faculty'
+  | 'officer'
+  | 'adviser'
+  | 'osa_staff'
+  | 'facility_admin'
+  | 'system_admin'
 export type AccountStatus = 'active' | 'suspended' | 'pending'
 
 export interface User {
@@ -41,6 +48,12 @@ export type NotificationType =
   | 'reservation_cancelled'
   | 'maintenance_alert'
   | 'info'
+  | 'proposal_action_required'
+  | 'proposal_progress'
+  | 'proposal_returned'
+  | 'proposal_approved'
+  | 'proposal_rejected'
+  | 'proposal_overdue'
 export type MembershipStatus = 'active' | 'pending' | 'inactive'
 export type OrgRole = 'president' | 'vice_president' | 'secretary' | 'treasurer' | 'officer' | 'member'
 
@@ -176,6 +189,7 @@ export interface Notification {
   message: string
   notification_type: NotificationType
   related_reservation_id?: string | null
+  related_proposal_id?: string | null
   is_read: boolean
   created_at: string
 }
@@ -212,4 +226,111 @@ export interface MapCoordinates {
   y: number
   zone?: string
   campus_zone?: string
+}
+
+// ---------------------------------------------------------------------------
+// Event proposals & approval routing
+// ---------------------------------------------------------------------------
+export type ProposalStatus = 'draft' | 'in_review' | 'returned' | 'approved' | 'rejected' | 'cancelled'
+export type EventType =
+  | 'academic'
+  | 'seminar'
+  | 'competition'
+  | 'social'
+  | 'outreach'
+  | 'sports'
+  | 'meeting'
+  | 'other'
+export type ApprovalStepRole = 'adviser' | 'osa_staff' | 'facility_admin'
+export type ApprovalStepStatus = 'waiting' | 'pending' | 'approved' | 'returned' | 'rejected'
+export type FundSource = 'org_funds' | 'student_fees' | 'sponsorship' | 'school_subsidy' | 'other'
+export type AttachmentType =
+  | 'proposal_letter'
+  | 'program_flow'
+  | 'budget_breakdown'
+  | 'parental_waiver'
+  | 'other'
+export type ProposalAction = 'approve' | 'return' | 'reject'
+
+export interface Proposal {
+  id: string
+  reference_no?: string | null
+  organization_id: string
+  submitted_by: string
+  title: string
+  event_type: EventType
+  description?: string | null
+  objectives?: string | null
+  start_datetime?: string | null
+  end_datetime?: string | null
+  expected_attendees: number
+  facility_id?: string | null
+  requested_equipment: string[]
+  reservation_id?: string | null
+  status: ProposalStatus
+  current_step?: number | null
+  revision: number
+  submitted_at?: string | null
+  decided_at?: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface BudgetItem {
+  id?: string
+  proposal_id?: string
+  description: string
+  quantity: number
+  unit_cost: number
+  source_of_funds: FundSource
+  position?: number
+}
+
+export interface ProposalAttachment {
+  id: string
+  proposal_id: string
+  doc_type: AttachmentType
+  file_name: string
+  storage_path: string
+  size_bytes?: number | null
+  uploaded_by?: string | null
+  created_at: string
+}
+
+export interface ApprovalStep {
+  id: string
+  proposal_id: string
+  step_order: number
+  step_role: ApprovalStepRole
+  label: string
+  status: ApprovalStepStatus
+  acted_by?: string | null
+  acted_at?: string | null
+  comment?: string | null
+  due_at?: string | null
+  signature?: string | null
+}
+
+export interface ProposalEvent {
+  id: string
+  proposal_id: string
+  actor_id?: string | null
+  action: string
+  from_status?: string | null
+  to_status?: string | null
+  step_order?: number | null
+  revision?: number | null
+  comment?: string | null
+  created_at: string
+}
+
+export interface ProposalPacket {
+  proposal: Proposal
+  organization: Organization | null
+  facility: Facility | null
+  budget: BudgetItem[]
+  attachments: ProposalAttachment[]
+  steps: ApprovalStep[]
+  events: ProposalEvent[]
+  people: Record<string, { full_name: string; primary_role: string }>
 }
