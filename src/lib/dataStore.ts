@@ -337,10 +337,10 @@ export const dataStore = {
         },
       ])
       .select()
-      .single()
 
     if (error) throw new Error(error.message || 'Failed to create reservation')
-    const created = mapReservation(data)
+    if (!data || data.length === 0) throw new Error('The reservation could not be created.')
+    const created = mapReservation(data[0])
 
     await this.addNotification({
       user_id: payload.requester_id,
@@ -364,13 +364,13 @@ export const dataStore = {
       throw new Error(result.error || 'Failed to approve reservation')
     }
 
-    const { data: resData, error: resError } = await supabase
+    const { data: resRows, error: resError } = await supabase
       .from('reservations')
       .select('*')
       .eq('id', reservationId)
-      .single()
-    if (resError || !resData) throw new Error('Approved reservation not found')
-    return mapReservation(resData)
+    if (resError) throw new Error(resError.message)
+    if (!resRows || resRows.length === 0) throw new Error('Approved reservation not found')
+    return mapReservation(resRows[0])
   },
 
   // Reject Reservation
@@ -395,10 +395,12 @@ export const dataStore = {
       })
       .eq('id', reservationId)
       .select()
-      .single()
 
     if (error) throw new Error(error.message)
-    const rejected = mapReservation(data)
+    if (!data || data.length === 0) {
+      throw new Error('Reservation not found, or it is no longer pending.')
+    }
+    const rejected = mapReservation(data[0])
 
     await this.addNotification({
       user_id: target.requester_id,
@@ -425,10 +427,10 @@ export const dataStore = {
       })
       .eq('id', reservationId)
       .select()
-      .single()
 
     if (error) throw new Error(error.message)
-    const cancelled = mapReservation(data)
+    if (!data || data.length === 0) throw new Error('Reservation not found.')
+    const cancelled = mapReservation(data[0])
 
     await this.addNotification({
       user_id: userId,
@@ -481,10 +483,10 @@ export const dataStore = {
         },
       ])
       .select()
-      .single()
 
     if (error) throw new Error(error.message || 'Failed to create activity')
-    return mapActivity(data)
+    if (!data || data.length === 0) throw new Error('The activity could not be created.')
+    return mapActivity(data[0])
   },
 
   // MAINTENANCE

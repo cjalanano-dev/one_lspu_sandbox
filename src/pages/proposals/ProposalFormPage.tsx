@@ -65,6 +65,8 @@ export function ProposalFormPage() {
   const [proposalId, setProposalId] = useState<string | null>(id ?? null)
   const [orgId, setOrgId] = useState<string>(search.get('org') ?? '')
   const [status, setStatus] = useState<string>('draft')
+  const [loading, setLoading] = useState<boolean>(Boolean(id))
+  const [editable, setEditable] = useState<boolean>(!id)
   const [step, setStep] = useState(0)
   const [errors, setErrors] = useState<string[]>([])
   const [busy, setBusy] = useState(false)
@@ -100,31 +102,58 @@ export function ProposalFormPage() {
     if (!orgId) dataStore.getMyOrganizations(user.id).then((o) => setOrgId(o[0]?.id ?? ''))
   }, [user, id, orgId])
 
-  // Load existing draft
+  // Load existing draft.
+  // `loading` gates the whole form until the packet is known, so the user
+  // cannot click Next / Save / Upload while the proposal's status is still
+  // unknown and land on a write that RLS will reject.
   useEffect(() => {
-    if (!id) return
-    proposalStore.getPacket(id).then((pk) => {
-      if (!pk) return setErrors(['Proposal not found or you do not have access.'])
-      const p = pk.proposal
-      if (p.status !== 'draft' && p.status !== 'returned') {
-        navigate(`/proposals/${p.id}`, { replace: true })
-        return
-      }
-      setOrgId(p.organization_id)
-      setStatus(p.status)
-      setTitle(p.title === 'Untitled event' ? '' : p.title)
-      setEventType(p.event_type)
-      setDescription(p.description ?? '')
-      setObjectives(p.objectives ?? '')
-      setAttendees(p.expected_attendees)
-      setFacilityId(p.facility_id ?? '')
-      setStart(toLocalInput(p.start_datetime))
-      setEnd(toLocalInput(p.end_datetime))
-      setEquipment(p.requested_equipment ?? [])
-      setBudget(pk.budget.length ? pk.budget : [emptyBudgetRow()])
-      setAttachments(pk.attachments)
-      setReturnNote([...pk.events].reverse().find((e) => e.action === 'returned') ?? null)
-    })
+    if (!id) {
+      setLoading(false)
+      return
+    }
+    let cancelled = false
+    proposalStore
+      .getPacket(id)
+      .then((pk) => {
+        if (cancelled) return
+        if (!pk) {
+          setErrors(['Proposal not found or you do not have access.'])
+          setLoading(false)
+          return
+        }
+        const p = pk.proposal
+        if (p.status !== 'draft' && p.status !== 'returned') {
+          // No longer editable — send them back to the read-only view.
+          setEditable(false)
+          setLoading(false)
+          navigate(`/proposals/${p.id}`, { replace: true })
+          return
+        }
+        setEditable(true)
+        setOrgId(p.organization_id)
+        setStatus(p.status)
+        setTitle(p.title === 'Untitled event' ? '' : p.title)
+        setEventType(p.event_type)
+        setDescription(p.description ?? '')
+        setObjectives(p.objectives ?? '')
+        setAttendees(p.expected_attendees)
+        setFacilityId(p.facility_id ?? '')
+        setStart(toLocalInput(p.start_datetime))
+        setEnd(toLocalInput(p.end_datetime))
+        setEquipment(p.requested_equipment ?? [])
+        setBudget(pk.budget.length ? pk.budget : [emptyBudgetRow()])
+        setAttachments(pk.attachments)
+        setReturnNote([...pk.events].reverse().find((e) => e.action === 'returned') ?? null)
+        setLoading(false)
+      })
+      .catch((e) => {
+        if (cancelled) return
+        setErrors([(e as Error).message])
+        setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [id, navigate])
 
   useEffect(() => {
@@ -160,6 +189,9 @@ export function ProposalFormPage() {
   /** Persist draft; creates it on first save. Returns the proposal id. */
   const save = async (): Promise<string> => {
     if (!user) throw new Error('Not signed in')
+    if (!editable) {
+      throw new Error('This proposal can no longer be edited. It has already been submitted for approval.')
+    }
     let pid = proposalId
     if (!pid) {
       if (!orgId) throw new Error('No organization selected.')
@@ -253,6 +285,22 @@ export function ProposalFormPage() {
 
   const total = budgetTotal(budget)
 
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-center justify-between gap-4">
+          <Link to="/proposals" className="btn-text inline-flex items-center gap-1 text-sm">
+            <ArrowLeft className="w-4 h-4" /> All proposals
+          </Link>
+          <span className="text-xs text-[var(--muted)]" aria-live="polite">
+            Loading proposal…
+          </span>
+        </div>
+        <p className="text-sm text-[var(--muted)]">Loading proposal…</p>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between gap-4">
@@ -291,7 +339,7 @@ export function ProposalFormPage() {
             <button
               type="button"
               onClick={() => (i < step ? go(i) : undefined)}
-              disabled={i > step || busy}
+              disabled={i > step || busy || !editable}
               aria-current={i === step ? 'step' : undefined}
               className={cn(
                 'w-full text-left border-t-4 pt-2 text-xs font-bold uppercase tracking-wider',
@@ -459,9 +507,9 @@ export function ProposalFormPage() {
                   {Object.entries(ATTACHMENT_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
               </div>
-              <label className={cn('btn-primary inline-flex items-center gap-2 cursor-pointer', busy && 'opacity-50 pointer-events-none')}>
+              <label className={cn('btn-primary inline-flex items-center gap-2 cursor-pointer', (busy || !editable) && 'opacity-50 pointer-events-none')}>
                 <Upload className="w-4 h-4" /> Upload file
-                <input type="file" className="sr-only" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" onChange={(e) => { handleUpload(e.target.files?.[0]); e.target.value = '' }} />
+                <input type="file" className="sr-only" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" disabled={busy || !editable} onChange={(e) => { handleUpload(e.target.files?.[0]); e.target.value = '' }} />
               </label>
             </div>
             {attachments.length === 0 ? (
@@ -518,15 +566,15 @@ export function ProposalFormPage() {
           )}
         </div>
         <div className="flex gap-2">
-          <button type="button" className="btn-outline inline-flex items-center gap-2" disabled={busy} onClick={() => save().catch((e) => setErrors([e.message]))}>
+          <button type="button" className="btn-outline inline-flex items-center gap-2" disabled={busy || !editable} onClick={() => save().catch((e) => setErrors([e.message]))}>
             <Save className="w-4 h-4" /> Save draft
           </button>
           {step < STEPS.length - 1 ? (
-            <button type="button" className="btn-primary inline-flex items-center gap-2" disabled={busy} onClick={() => go(step + 1)}>
+            <button type="button" className="btn-primary inline-flex items-center gap-2" disabled={busy || !editable} onClick={() => go(step + 1)}>
               Next <ArrowRight className="w-4 h-4" />
             </button>
           ) : (
-            <button type="button" className="btn-primary inline-flex items-center gap-2" disabled={busy} onClick={handleSubmit}>
+            <button type="button" className="btn-primary inline-flex items-center gap-2" disabled={busy || !editable} onClick={handleSubmit}>
               <Send className="w-4 h-4" /> {status === 'returned' ? 'Resubmit for approval' : 'Submit for approval'}
             </button>
           )}

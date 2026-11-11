@@ -165,20 +165,31 @@ export const proposalStore = {
   },
 
   // ---------- Draft editing ----------
+  // Note on .single(): it throws PGRST116 "Cannot coerce the result to a
+  // single JSON object" whenever the statement returns anything other than
+  // exactly one row. For writes that are legitimately filtered to zero rows
+  // by RLS (e.g. updating a proposal that is no longer in 'draft' or
+  // 'returned'), that message is meaningless to the user. These helpers
+  // therefore select without .single() and check the row count explicitly.
   async createDraft(orgId: string, userId: string, input: ProposalDraftInput): Promise<Proposal> {
     const { data, error } = await supabase
       .from('proposals')
       .insert([{ ...input, title: input.title || 'Untitled event', organization_id: orgId, submitted_by: userId }])
       .select()
-      .single()
     fail(error)
-    return mapProposal(data)
+    if (!data || data.length === 0) {
+      throw new Error('The proposal could not be created. You may not have permission to file for this organization.')
+    }
+    return mapProposal(data[0])
   },
 
   async updateDraft(id: string, input: ProposalDraftInput): Promise<Proposal> {
-    const { data, error } = await supabase.from('proposals').update(input).eq('id', id).select().single()
+    const { data, error } = await supabase.from('proposals').update(input).eq('id', id).select()
     fail(error)
-    return mapProposal(data)
+    if (!data || data.length === 0) {
+      throw new Error('This proposal can no longer be edited. It has already been submitted for approval.')
+    }
+    return mapProposal(data[0])
   },
 
   async deleteDraft(id: string) {
@@ -201,7 +212,13 @@ export const proposalStore = {
       }))
     if (rows.length) {
       const { error } = await supabase.from('proposal_budget_items').insert(rows)
-      fail(error)
+      if (error) {
+        throw new Error(
+          error.message.includes('row-level security policy')
+            ? 'The budget can only be edited while the proposal is still a draft.'
+            : error.message,
+        )
+      }
     }
   },
 
@@ -225,12 +242,19 @@ export const proposalStore = {
         },
       ])
       .select()
-      .single()
     if (error) {
       await supabase.storage.from(BUCKET).remove([path])
-      throw new Error(error.message)
+      throw new Error(
+        error.message.includes('row-level security policy')
+          ? 'Attachments can only be added while the proposal is still a draft.'
+          : error.message,
+      )
     }
-    return data as ProposalAttachment
+    if (!data || data.length === 0) {
+      await supabase.storage.from(BUCKET).remove([path])
+      throw new Error('The attachment could not be saved.')
+    }
+    return data[0] as ProposalAttachment
   },
 
   async removeAttachment(att: ProposalAttachment) {

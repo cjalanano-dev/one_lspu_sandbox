@@ -83,9 +83,12 @@ export function ProposalsListPage() {
             </select>
           )}
           {orgId && (
-            <Link to={`/proposals/new?org=${orgId}`} className="btn-primary inline-flex items-center gap-2">
-              <Plus className="w-4 h-4" /> New proposal
-            </Link>
+            <Link
+            to={`/proposals/new?org=${orgId}`}
+            className="btn-primary inline-flex items-center gap-2 whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4 shrink-0" /> New proposal
+          </Link>
           )}
         </div>
       </header>
