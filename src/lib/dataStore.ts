@@ -94,6 +94,9 @@ function mapOrganization(row: any): Organization {
     description: row.description ?? null,
     logo_url: row.logo_url ?? null,
     status: row.status,
+    college: row.college ?? null,
+    org_type: row.org_type ?? null,
+    parent_org_id: row.parent_org_id ?? null,
     created_at: row.created_at,
   }
 }
@@ -553,7 +556,7 @@ export const dataStore = {
     if (!userId) return []
     const { data, error } = await supabase
       .from('organization_members')
-      .select('organization_id')
+      .select('organization_id, organization_role')
       .eq('user_id', userId)
       .eq('membership_status', 'active')
     if (error) throw new Error(error.message)
@@ -565,5 +568,22 @@ export const dataStore = {
       .order('name')
     if (orgError) throw new Error(orgError.message)
     return (orgs ?? []).filter((o) => orgIds.has(o.id)).map(mapOrganization)
+  },
+
+  /** Check if the user is an active president or secretary of an organization */
+  async isOrgExecutive(userId: string | null | undefined, orgId?: string | null): Promise<boolean> {
+    if (!userId) return false
+    let q = supabase
+      .from('organization_members')
+      .select('id, organization_role')
+      .eq('user_id', userId)
+      .eq('membership_status', 'active')
+      .in('organization_role', ['president', 'secretary'])
+    if (orgId) {
+      q = q.eq('organization_id', orgId)
+    }
+    const { data, error } = await q
+    if (error || !data) return false
+    return data.length > 0
   },
 }

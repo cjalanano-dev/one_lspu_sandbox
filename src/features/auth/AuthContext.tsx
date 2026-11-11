@@ -10,7 +10,10 @@ interface AuthContextType {
   isStudent: boolean
   isOfficer: boolean
   isAdviser: boolean
+  isDean: boolean
   isOsa: boolean
+  isCampusDirector: boolean
+  isUnivPresident: boolean
   isApprover: boolean
   isAdmin: boolean
   isSystemAdmin: boolean
@@ -113,10 +116,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isStudent: currentUser?.primary_role === 'student',
     isOfficer: currentUser?.primary_role === 'officer',
     isAdviser: currentUser?.primary_role === 'adviser',
-    isOsa: currentUser?.primary_role === 'osa_staff',
+    isDean: currentUser?.primary_role === 'college_dean',
+    isOsa: currentUser?.primary_role === 'osas' || currentUser?.primary_role === 'osa_staff',
+    isCampusDirector: currentUser?.primary_role === 'campus_director',
+    isUnivPresident: currentUser?.primary_role === 'university_president',
     isApprover:
       currentUser?.primary_role === 'adviser' ||
+      currentUser?.primary_role === 'college_dean' ||
+      currentUser?.primary_role === 'osas' ||
       currentUser?.primary_role === 'osa_staff' ||
+      currentUser?.primary_role === 'campus_director' ||
+      currentUser?.primary_role === 'university_president' ||
       currentUser?.primary_role === 'facility_admin' ||
       currentUser?.primary_role === 'system_admin',
     isAdmin:

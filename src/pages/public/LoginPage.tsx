@@ -38,11 +38,9 @@ export function LoginPage() {
       const defaultPath =
         role === 'officer'
           ? '/proposals'
-          : role === 'adviser' || role === 'osa_staff'
+          : ['adviser', 'college_dean', 'osas', 'campus_director', 'university_president', 'osa_staff', 'facility_admin', 'system_admin'].includes(role)
             ? '/approvals'
-            : role === 'facility_admin' || role === 'system_admin'
-              ? '/approvals'
-              : '/explorer'
+            : '/explorer'
       const from = (location.state as { from?: { pathname: string } })?.from?.pathname || defaultPath
       navigate(from)
     } catch (err) {
@@ -70,29 +68,40 @@ export function LoginPage() {
             and submit reservation requests.
           </p>
         </div>
-        {/* <div className="mt-12">
-          <p className="text-xs text-white/40 uppercase tracking-widest font-semibold mb-2">
-            Demo accounts
+        <div className="mt-8">
+          <p className="text-xs text-white/40 uppercase tracking-widest font-semibold mb-3">
+            Demo & Testing Accounts
           </p>
-          <ul className="space-y-2 text-sm text-white/70 leading-relaxed">
-            <li>
-              <span className="font-mono font-bold text-white">student@campus.edu</span>
-              <span className="ml-2 font-normal text-white/50">· Student</span>
-            </li>
-            <li>
-              <span className="font-mono font-bold text-white">officer@campus.edu</span>
-              <span className="ml-2 font-normal text-white/50">· Organization officer</span>
-            </li>
-            <li>
-              <span className="font-mono font-bold text-white">admin@campus.edu</span>
-              <span className="ml-2 font-normal text-white/50">· Facility administrator</span>
-            </li>
-            <li className="mt-3">
-              <span className="font-mono font-bold text-white">Demo1234!</span>
-              <span className="ml-2 font-normal text-white/50">· All accounts</span>
-            </li>
-          </ul>
-        </div> */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs text-white/80">
+            <div>
+              <p className="font-mono font-bold text-white">officer@campus.edu</p>
+              <p className="text-white/50">OCTA President / Secretary</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-white">adviser@campus.edu</p>
+              <p className="text-white/50">1. Org Adviser</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-white">dean@campus.edu</p>
+              <p className="text-white/50">2. College Dean (CCS)</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-white">osas@campus.edu</p>
+              <p className="text-white/50">3. OSAS Staff</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-white">director@campus.edu</p>
+              <p className="text-white/50">4. Campus Director</p>
+            </div>
+            <div>
+              <p className="font-mono font-bold text-white">president@campus.edu</p>
+              <p className="text-white/50">5. University President</p>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-white/50">
+            Default password for demo accounts: <span className="font-mono font-bold text-white">Demo1234!</span>
+          </p>
+        </div>
       </div>
 
       {/* Right — white form */}
