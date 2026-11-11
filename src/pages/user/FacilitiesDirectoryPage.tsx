@@ -132,7 +132,7 @@ export function FacilitiesDirectoryPage() {
               <div className="p-5 pt-0">
                 <Link
                   to={`/facilities/${fac.id}`}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-sm bg-[#1a1a1a] hover:bg-[#1a1a1a] text-white font-semibold text-sm  transition"
                 >
                   View Details & Book
                   <ArrowRight className="w-3.5 h-3.5" />
