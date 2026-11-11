@@ -1,1 +1,85 @@
-# ONE Facility — Design System\n\n**World:** Campus wayfinding (institutional signage).  \n**Mode:** Operate — task-first dashboards, reservation flows, admin review.  \n**Palette:** Strict monochrome, neutral (no slate-blue tint). Zero gradients, zero blur, zero shadows, zero saturated accents.\n\n## Tokens (src/index.css)\n\n| Token | Value | Role |\n|---|---|---|\n| `--paper` | `#FFFFFF` | Cards, panels, nav |\n| `--surface` | `#FAFAFA` | Page background |\n| `--surface-2` | `#F5F5F5` | Muted panels, hover |\n| `--ink` | `#0A0A0A` | Text, primary buttons, selected states |\n| `--muted` | `#525252` | Secondary text |\n| `--faint` | `#A3A3A3` | Metadata, disabled |\n| `--line` | `#E5E5E5` | Hairline borders |\n| `--line-strong` | `#0A0A0A` | Emphasis borders, focus rings |\n| `--radius` | `0.125rem` (2px) | All corners |\n\n## Type\n\n- System grotesque for UI (system-ui stack)\n- Monospace (`font-mono`) for room codes, dates, times, table metadata, IDs\n- Headlines: `font-black` / `font-extrabold`, tight tracking (`-0.04em` to `tracking-tighter`), line-height near 1\n- Minimum text size: 12px (`text-xs`) — no sub-12px labels\n- One spacing rhythm; more space above headings than below\n\n## Components\n\n- **Buttons:** `btn-primary` = black fill / white text; `btn-outline` = white / black border; `btn-text` = no fill. All 2px corners, hairline borders, 120–160ms transitions, no scale transforms.\n- **Inputs:** white fill, 1px hairline border, black focus ring (via global `:focus-visible`), no box-shadow.\n- **Tags (status):** state conveyed by fill + label + icon, never color alone:\n  - `tag-approved` / `tag-available` — black fill, white text\n  - `tag-pending` — white fill, black border\n  - `tag-rejected` / `tag-cancelled` — light gray fill, muted text\n  - `tag-maintenance` — light gray fill, muted text (hatch used on floor plans)\n  - `tag-reserved` / `tag-occupied` — light gray fill\n  - All tags: 2px corners (not pills)\n- **Panels:** white fill, 1px hairline border, 2px corner, no shadow.\n- **Dialog:** black/60 backdrop (no blur), `aria-modal`, focus trap, Escape closes, focus restored on close, `X` close button, panel anchored `relative`.\n- **Skeleton:** light gray pulse block.\n- **ErrorBoundary:** black alert box, white text, \"Try again\" reset.\n\n## Floor Plan\n\nArchitectural line drawing: white canvas, black perimeter, black corridor, mono room codes. Room states:\n- Available — white fill, black stroke\n- Hover — light gray fill\n- Selected — black fill, white text\n- Maintenance — light gray fill + diagonal hatch\n- Unavailable — gray fill\n\nKeyboard: `tabIndex={0}`, `role=\"button\"`, `aria-label` with name/code/capacity/status, Enter/Space activation, visible focus.\n\n## Imagery\n\n- Facility photography desaturated globally (`filter: grayscale(1)`).\n- Missing images render a neutral outlined placeholder, never an empty `src`.\n- Favicon and avatar placeholder redrawn in black and white.\n\n## Motion\n\n- 120–160ms border/background/color transitions only.\n- `prefers-reduced-motion` reduces all durations to 0.01ms.\n- No scale, rotate, or glow effects.\n\n## Accessibility\n\n- Skip link to `#main-content`\n- `*:focus-visible` 2px black outline\n- Programmatically associated labels on all inputs, selects, radios, checkboxes (`htmlFor`/`id`)\n- `role=\"alert\"` error boxes; black fill for errors\n- Keyboard operability on floor plan, dialogs, dropdowns\n\n## What was removed (anti-reference)\n\n- Sky / indigo / emerald / amber / rose / purple utility classes (158 removed)\n- Gradient hero, gradient text, blur blobs, colored shadows, `active:scale-95`\n- Colored icon tiles and status pills\n- `rounded-3xl` soft cards\n- Dark navy header with gradient logo\n- Dark blue/purple floor-plan canvas\n- `rounded-full` pills (except functional loading spinners)\n- Sub-12px text\n- Box shadows\n- 10px uppercase labels, emoji in notifications\n\n## Finish\n\n`unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance`.\n
+# ONE Facility — Design System
+
+**World:** Campus wayfinding (institutional signage).
+**Mode:** Operate — task-first dashboards, reservation flows, admin review.
+**Palette:** Monochrome structure with a single blue primary. Blue carries primary
+actions and selected states only; text, surfaces, borders and metadata stay neutral.
+Zero gradients, zero blur, zero shadows.
+
+## Tokens (src/index.css)
+
+### Structure — monochrome
+
+| Token | Value | Role |
+|---|---|---|
+| `--paper` | `#FFFFFF` | Cards, panels, nav |
+| `--surface` | `#FAFAFA` | Page background |
+| `--surface-2` | `#F5F5F5` | Muted panels, hover |
+| `--ink` | `#0A0A0A` | Body text, secondary emphasis |
+| `--muted` | `#525252` | Secondary text |
+| `--faint` | `#A3A3A3` | Metadata, disabled |
+| `--line` | `#E5E5E5` | Hairline borders |
+| `--line-strong` | `#0A0A0A` | Emphasis borders |
+| `--ink-dark` | `#1A1A1A` | Dark bands, decorative chips |
+| `--gray-medium` | `#BABABA` | Unavailable legend swatch |
+
+### Primary accent — blue
+
+| Token | Value | Role |
+|---|---|---|
+| `--accent` | `#4274D9` | Primary buttons, selected states, active nav, links |
+| `--accent-strong` | `#2F5FC0` | Accent hover / pressed |
+| `--accent-deep` | `#1B2A4A` | Reserved for deep brand bands |
+| `--accent-ink` | `#FFFFFF` | Text on accent fill |
+| `--accent-tint` | `#EAF0FD` | Selected / hover wash |
+| `--accent-tint-2` | `#D6E2FA` | Accent tint hover |
+| `--accent-line` | `#B9CBF5` | Hairline border on accent tint |
+
+| Token | Value | Role |
+|---|---|---|
+| `--radius` | `0.125rem` (2px) | All corners |
+
+## Type
+
+- System grotesque for UI (system-ui stack)
+- Monospace (`font-mono`) for room codes, dates, times, table metadata, IDs
+- Headlines: `font-black` / `font-extrabold`, tight tracking (`-0.04em` to `tracking-tighter`), line-height near 1
+- Minimum text size: 12px (`text-xs`) — no sub-12px labels
+- One spacing rhythm; more space above headings than below
+
+## Components
+
+- **Buttons:** `btn-primary` / `btn-accent` = blue fill / white text, `--accent-strong` on hover; `btn-outline` = white / black border; `btn-text` = no fill. All 2px corners, hairline borders, 120–160ms transitions, no scale transforms.
+- **Inputs:** white fill, 1px hairline border, blue focus ring (via global `:focus-visible`), no box-shadow.
+- **Tags (status):** state conveyed by fill + label + icon, never colour alone:
+  - `tag-approved` / `tag-available` — blue fill, white text
+  - `tag-pending` — transparent fill, blue border + blue text
+  - `tag-rejected` / `tag-cancelled` — light gray fill, muted text
+  - `tag-maintenance` — light gray fill, muted text (hatch used on floor plans)
+  - `tag-reserved` / `tag-occupied` — light gray fill
+  - All tags: 2px corners (not pills)
+- **Panels:** white fill, 1px hairline border, 2px corners.
+- **Links:** `--accent` text, `--accent-strong` on hover.
+
+## Where blue appears (and where it does not)
+
+Blue is the primary, but it stays scarce so it still reads as emphasis.
+
+**Blue:** primary buttons, active nav item, selected pills / tabs / chips / cards,
+selected time slots and checkboxes, approved / available tags, text links,
+focus rings, unread-notification dot.
+
+**Monochrome:** body text, surfaces, borders, metadata, secondary outline buttons,
+error / success banners, the landing hero bands, the organisation identity band,
+logo and decorative chips, and every status tag other than approved / available.
+
+**Photography** stays grayscale so the blue never competes with the imagery.
+
+## Rules
+
+- No raw colours in components — always a token (`var(--accent)`, `var(--ink)`, …).
+- No Tailwind palette classes (`bg-blue-600` and friends) anywhere.
+- Blue never carries meaning on its own: every coloured element also has a
+  label and, where it represents state, an icon.
+- No shadows, no gradients, no blur, no scale transforms.
+- 2px radius everywhere; 1px hairline borders.

@@ -435,7 +435,7 @@ export function ProposalFormPage() {
                     const name = typeof eq === 'string' ? eq : String((eq as any)?.name ?? eq)
                     const on = equipment.includes(name)
                     return (
-                      <label key={name} className={cn('px-3 py-1.5 border text-sm cursor-pointer', on ? 'bg-[var(--ink)] text-[var(--paper)] border-[var(--ink)]' : 'border-[var(--line)]')}>
+                      <label key={name} className={cn('px-3 py-1.5 border text-sm cursor-pointer', on ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'border-[var(--line)]')}>
                         <input type="checkbox" className="sr-only" checked={on} onChange={() => setEquipment((l) => (on ? l.filter((x) => x !== name) : [...l, name]))} />
                         {name}
                       </label>

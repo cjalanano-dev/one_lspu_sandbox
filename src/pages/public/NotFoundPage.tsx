@@ -14,7 +14,7 @@ export function NotFoundPage() {
         </p>
         <Link
           to="/"
-          className="px-6 py-3 rounded-sm bg-[var(--line-strong)] text-[var(--paper)] font-medium hover:bg-[var(--ink-dark)] transition"
+          className="px-6 py-3 rounded-sm bg-[var(--accent)] text-[var(--accent-ink)] font-medium hover:bg-[var(--accent-strong)] transition"
         >
           Back to home
         </Link>

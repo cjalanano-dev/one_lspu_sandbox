@@ -38,23 +38,30 @@ export function formatTimeOnly(dateString: string | null | undefined): string {
   }).format(date)
 }
 
+/**
+ * Status badge classes.
+ *
+ * Approved/available carry the blue accent; every other state stays
+ * monochrome, and state is always conveyed by fill + label + icon rather
+ * than by hue alone.
+ */
 export function getStatusBadgeClass(status: string | null | undefined): string {
   switch (status?.toLowerCase()) {
     case 'approved':
     case 'available':
-      return 'bg-emerald-50 text-emerald-700 border-emerald-200'
+      return 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
     case 'pending':
-      return 'bg-amber-50 text-amber-700 border-amber-200'
+      return 'bg-transparent text-[var(--accent-text)] border-[var(--accent)]'
     case 'rejected':
     case 'cancelled':
     case 'unavailable':
-      return 'bg-rose-50 text-rose-700 border-rose-200'
+      return 'bg-[var(--surface-2)] text-[var(--muted)] border-[var(--line)]'
     case 'maintenance':
-      return 'bg-purple-50 text-purple-700 border-purple-200'
+      return 'bg-[var(--surface-2)] text-[var(--muted)] border-[var(--line)]'
     case 'occupied':
     case 'reserved':
-      return 'bg-sky-50 text-sky-700 border-sky-200'
+      return 'bg-[var(--surface-2)] text-[var(--ink)] border-[var(--line-strong)]'
     default:
-      return 'bg-slate-50 text-slate-700 border-slate-200'
+      return 'bg-[var(--surface-2)] text-[var(--muted)] border-[var(--line)]'
   }
 }

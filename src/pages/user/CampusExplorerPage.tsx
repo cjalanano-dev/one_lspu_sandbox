@@ -181,7 +181,7 @@ export function CampusExplorerPage() {
           <p className="text-sm text-[var(--muted)] mt-1">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-sm border border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] text-xs font-semibold duration-150 hover:bg-[var(--ink-dark)]"
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-sm border border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-ink)] text-xs font-semibold duration-150 hover:bg-[var(--accent-strong)]"
           >
             Try again
           </button>
@@ -237,7 +237,7 @@ export function CampusExplorerPage() {
               aria-label={`Building ${b.code} — ${b.name}, ${buildingFacs.length} facilities`}
               onKeyDown={(e) => handleBuildingKeyDown(e, b)}
               onClick={() => setSelectedBuilding(b)}
-              className={`p-4 rounded-sm border cursor-pointer transition duration-150 flex flex-col gap-3 min-h-[12rem] ${isSelected ? 'border-[var(--line-strong)] bg-[var(--line-strong)]' : 'border-[var(--line)] bg-[var(--paper)]'} ${textColor}`}
+              className={`p-4 rounded-sm border cursor-pointer transition duration-150 flex flex-col gap-3 min-h-[12rem] ${isSelected ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--line)] bg-[var(--paper)]'} ${textColor}`}
             >
               <div className="flex items-center gap-3">
                 <div className={`w-9 h-9 rounded-sm flex items-center justify-center shrink-0 ${isSelected ? 'bg-[var(--paper)]' : 'bg-[var(--surface-2)] border border-[var(--line)]'}`}>
@@ -334,7 +334,7 @@ export function CampusExplorerPage() {
                       setSelectedFacility(null)
                     }}
                     aria-pressed={isSelected}
-                    className={`px-3.5 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition duration-150 ${isSelected ? 'bg-[var(--line-strong)] text-[var(--paper)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                    className={`px-3.5 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition duration-150 ${isSelected ? 'bg-[var(--accent)] text-[var(--accent-ink)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
                   >
                     {floorLabel(floor)}
                   </button>
@@ -376,13 +376,13 @@ export function CampusExplorerPage() {
               <div className="flex items-center gap-2 ml-auto">
                 <button
                   onClick={() => setViewTab('this-floor')}
-                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'this-floor' ? 'bg-[var(--line-strong)] text-[var(--paper)] border-[var(--line-strong)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'this-floor' ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
                 >
                   This floor ({facilitiesOnFloor.length})
                 </button>
                 <button
                   onClick={() => setViewTab('building')}
-                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'building' ? 'bg-[var(--line-strong)] text-[var(--paper)] border-[var(--line-strong)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'building' ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
                 >
                   Entire building ({buildingFacilityCount})
                 </button>
@@ -462,7 +462,7 @@ export function CampusExplorerPage() {
 
                       <Link
                       to={`/facilities/${selectedFacility.id}`}
-                      className="w-full inline-flex items-center justify-center gap-1.5 py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[var(--ink-dark)] text-[var(--paper)] font-semibold text-sm transition-colors duration-150"
+                      className="w-full inline-flex items-center justify-center gap-1.5 py-3 px-4 rounded-sm bg-[var(--accent)] hover:bg-[var(--accent-strong)] text-[var(--accent-ink)] font-semibold text-sm transition-colors duration-150"
                     >
                       View Details & Reserve
                       <ArrowRight className="w-4 h-4 shrink-0" />

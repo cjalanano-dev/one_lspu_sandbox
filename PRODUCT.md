@@ -61,9 +61,9 @@ Current build state:
 - The working name "ONE Facility" and the tagline "Unified Campus Facility Management System" are current, not binding: naming, tagline, and voice are open for later revision per the product owner.
 - The demo campus is fictional. Do not introduce a real university's name, marks, buildings, or endorsement without supplied assets and permission.
 - No logo system is established yet; the wordmark "ONE FACILITY" is set in black system type.
-- Brand palette: strict monochrome — paper white `#FFFFFF`, ink `#0A0A0A`, neutral grays only. Zero gradients, zero blur, zero shadows, zero saturated accents. Confirmed in `DESIGN.md`.
+- Brand palette: monochrome structure with a single blue primary. Paper white `#FFFFFF`, ink `#0A0A0A`, neutral grays for text, surfaces and borders; blue `#4274D9` for primary actions, selected states and links only. Zero gradients, zero blur, zero shadows. Confirmed in `DESIGN.md`.
 - Typography: system grotesque for UI; monospace for room codes, dates, times, and metadata.
-- The visual direction in `onefacility.md` (navy/blue primary) is superseded by the monochrome wayfinding system in `DESIGN.md`.
+- Blue is the primary colour, but it stays scarce: body text, surfaces, borders, metadata, secondary buttons and alert banners remain monochrome so the accent still reads as emphasis.
 
 ## Evidence on Hand
 

@@ -88,7 +88,7 @@ export function LandingPage() {
   const statusPill = (status: string) => {
     switch (status) {
       case 'available':
-        return 'bg-[var(--ink)] text-[var(--paper)] border-[var(--ink)]'
+        return 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
       case 'reserved':
       case 'occupied':
         return 'bg-[var(--surface-2)] text-[var(--ink)] border-[var(--line-strong)]'
@@ -230,7 +230,7 @@ export function LandingPage() {
                     </div>
                     <Link
                       to="/facilities"
-                      className="block text-[10px] font-bold uppercase tracking-widest text-[var(--ink)] mt-3 flex items-center gap-1"
+                      className="block text-[10px] font-bold uppercase tracking-widest text-[var(--accent-text)] hover:text-[var(--accent-deep)] mt-3 flex items-center gap-1"
                     >
                       View all {facilityCount} facilities <ArrowRight className="w-3 h-3" />
                     </Link>
@@ -339,7 +339,7 @@ export function LandingPage() {
                       <td className="px-6 py-4 text-right">
                         <Link
                           to={`/explorer?building=${b.code}`}
-                          className="inline-flex items-center gap-1 text-xs font-bold text-[var(--ink)] hover:underline uppercase tracking-wider"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-[var(--accent-text)] hover:text-[var(--accent-deep)] uppercase tracking-wider"
                         >
                           View building <ArrowRight className="w-3 h-3" />
                         </Link>

@@ -329,7 +329,7 @@ export function AdminDashboardPage() {
                         </button>
                         <button
                           onClick={() => handleApprove(res.id)}
-                          className="px-5 py-2.5 rounded-sm bg-[var(--ink)] text-[var(--paper)] text-xs font-bold  transition flex items-center gap-1.5"
+                          className="px-5 py-2.5 rounded-sm bg-[var(--accent)] text-[var(--accent-ink)] text-xs font-bold  transition flex items-center gap-1.5"
                         >
                           <CheckCircle2 className="w-4 h-4" />
                           Approve
@@ -410,7 +410,7 @@ export function AdminDashboardPage() {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-sm bg-[var(--ink)] text-[var(--paper)] font-semibold hover:bg-[var(--ink-dark)] transition"
+              className="px-4 py-2 rounded-sm bg-[var(--accent)] text-[var(--accent-ink)] font-semibold hover:bg-[var(--accent-strong)] transition"
             >
               Confirm Decline
             </button>

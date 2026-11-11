@@ -41,7 +41,7 @@ export function ApprovalStepper({
             <span
               className={cn(
                 'shrink-0 w-7 h-7 rounded-full border flex items-center justify-center',
-                done && 'bg-[var(--ink)] text-[var(--paper)] border-[var(--ink)]',
+                done && 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]',
                 active && 'border-[var(--ink)] border-2',
                 bad && 'bg-[var(--surface)] border-dashed border-[var(--ink)]',
                 s.status === 'waiting' && 'border-[var(--line)] text-[var(--faint)]',

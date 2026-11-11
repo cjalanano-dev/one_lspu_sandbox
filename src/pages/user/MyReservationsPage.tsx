@@ -116,7 +116,7 @@ export function MyReservationsPage() {
                 onClick={() => setFilterStatus(st as any)}
                 className={`px-3 py-1.5 rounded-sm text-xs font-bold capitalize transition ${
                   filterStatus === st
-                    ? 'bg-[var(--line-strong)] text-[var(--paper)]'
+                    ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
                     : 'border border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'
                 }`}
               >
@@ -225,7 +225,7 @@ export function MyReservationsPage() {
                             <span>Cancel this request?</span>
                             <button
                               onClick={() => handleConfirmCancel(res.id)}
-                              className="ml-2 px-3 py-1.5 rounded-sm bg-[var(--ink)] text-[var(--paper)] text-xs font-bold hover:bg-[var(--ink-dark)] transition"
+                              className="ml-2 px-3 py-1.5 rounded-sm bg-[var(--accent)] text-[var(--accent-ink)] text-xs font-bold hover:bg-[var(--accent-strong)] transition"
                             >
                               Yes
                             </button>

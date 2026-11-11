@@ -381,7 +381,7 @@ export function FacilityDetailPage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   to="/login"
-                  className="w-full sm:w-auto px-6 py-3 rounded-sm bg-[var(--ink)] text-[var(--paper)] font-semibold text-sm hover:bg-[var(--ink-dark)] transition"
+                  className="w-full sm:w-auto px-6 py-3 rounded-sm bg-[var(--accent)] text-[var(--accent-ink)] font-semibold text-sm hover:bg-[var(--accent-strong)] transition"
                 >
                   Sign in
                 </Link>
@@ -447,7 +447,7 @@ export function FacilityDetailPage() {
                         aria-pressed={selectedSlot?.start === slot.start && selectedSlot?.end === slot.end}
                         className={`px-3 py-2.5 rounded-sm text-xs font-medium border transition ${
                           selectedSlot?.start === slot.start && selectedSlot?.end === slot.end
-                            ? 'bg-[var(--line-strong)] border-[var(--line-strong)] text-[var(--paper)] '
+                            ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--accent-ink)] '
                             : slot.available
                             ? 'bg-[var(--paper)] border-[var(--line-strong)] text-[var(--ink)] hover:bg-[var(--surface-2)] hover:border-[var(--ink)]'
                             : 'bg-[var(--surface-2)] border-[var(--line)] text-[var(--faint)] cursor-not-allowed'
@@ -577,7 +577,7 @@ export function FacilityDetailPage() {
                           const id = `equipment-${item.replace(/\s+/g, '-')}`
                           return (
                             <div key={item} className={`flex items-center gap-2 p-2 rounded-sm cursor-pointer transition border ${
-                              checked ? 'border-[var(--ink-dark)] bg-[var(--ink-dark)]' : 'border-[var(--line)] hover:bg-[var(--surface-2)]'
+                              checked ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--line)] hover:bg-[var(--surface-2)]'
                             }`}>
                               <input
                                 id={id}
@@ -585,7 +585,7 @@ export function FacilityDetailPage() {
                                 checked={checked}
                                 onChange={() => toggleEquipment(item)}
                                 className={`w-4 h-4 shrink-0 ${
-                                  checked ? 'bg-[var(--ink-dark)] text-[var(--paper)] border-[var(--ink-dark)]' : 'text-[var(--ink)] border-[var(--line)]'
+                                  checked ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'text-[var(--ink)] border-[var(--line)]'
                                 } focus:ring-2 focus:ring-[var(--line-strong)]`}
                                 aria-label={item}
                               />
@@ -603,7 +603,7 @@ export function FacilityDetailPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[var(--ink-dark)] text-[var(--paper)] font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full py-3 px-4 rounded-sm bg-[var(--accent)] hover:bg-[var(--accent-strong)] text-[var(--accent-ink)] font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {submitting ? 'Validating Conflicts...' : 'Confirm & Request Reservation'}
                     </button>

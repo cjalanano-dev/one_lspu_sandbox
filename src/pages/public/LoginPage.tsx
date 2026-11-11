@@ -175,7 +175,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-[var(--ink-dark)] rounded-sm border border-[var(--line-strong)] hover:bg-[var(--ink-dark)] hover:border-[var(--ink)] text-[var(--paper)] font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 bg-[var(--accent)] rounded-sm border border-[var(--accent)] hover:bg-[var(--accent-strong)] hover:border-[var(--accent-strong)] text-[var(--accent-ink)] font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
