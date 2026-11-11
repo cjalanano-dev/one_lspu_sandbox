@@ -156,7 +156,7 @@ export function Navbar() {
             <div className="w-9 h-9 rounded-[var(--radius)] border border-[var(--accent)] bg-[var(--accent)] flex items-center justify-center">
               <Building2 className="w-6 h-6 text-[var(--paper)]" />
             </div>
-            <div className="text-[var(--accent)] font-bold tracking-tight text-lg flex items-center gap-0.5 group-hover:text-[var(--accent-deep)] transition">
+            <div className="text-[var(--accent)] font-bold tracking-tight text-lg flex items-center gap-0.5 ">
               ONE LSPU
             </div>
           </Link>
@@ -237,7 +237,7 @@ export function Navbar() {
                 </div>
 
                 {/* Profile Avatar & Dropdown */}
-                <div className="relative flex items-center gap-2 pl-2 border-l border-[var(--line)]">
+                <div className="relative flex items-center gap-2 pl-2">
                   <img
                     src={user?.avatar_url || '/user-placeholder.svg'}
                     alt={user?.full_name || 'User'}

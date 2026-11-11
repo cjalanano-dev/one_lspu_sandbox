@@ -25,10 +25,16 @@
          --accent-strong #2F5FC0  5.97:1 with white  - hover fill
        Use --accent-text wherever the blue is the text colour; keep --accent
        for fills and non-text marks. */
-    --accent: #4274d9;
-    --accent-text: #2f5fc0;
-    --accent-strong: #2f5fc0;
-    --accent-deep: #1b2a4a;
+    --accent: #006BFF;
+--accent-text: #0057D1;   /* mas dark ng konti para pasado sa contrast sa puting bg */
+--accent-strong: #0052CC; /* hover / pressed */
+--accent-deep: #0B2A5B;   /* headers, dark sections */
+
+    /* --accent: #9a4455;
+--accent-text: #8a2f45;
+--accent-strong: #b85c6e;
+--accent-deep: #5e2230; */
+
     --accent-ink: #ffffff;
     --accent-tint: #eaf0fd;
     --accent-tint-2: #d6e2fa;
