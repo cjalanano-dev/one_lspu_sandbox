@@ -2,15 +2,235 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    /* ---------- Monochrome semantic tokens (HSL-neutral) ---------- */
+    --paper: 0 0% 100%;
+    --surface: 0 0% 98%;
+    --surface-2: 0 0% 96%;
+    --ink: 0 0% 4%;
+    --muted: 0 0% 32%;
+    --faint: 0 0% 64%;
+    --line: 0 0% 89%;
+    --line-strong: 0 0% 4%;
+
+    --radius: 0.125rem;
+
+    /* ---------- Type scale ---------- */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+
+    /* ---------- Spacing ---------- */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
   }
 
   body {
-    background-color: #f8fafc;
-    color: #0f172a;
+    background-color: hsl(var(--surface));
+    color: hsl(var(--ink));
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.5;
+  }
+
+  /* ---------- Focus styles (a11y) ---------- */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--line-strong));
+    outline-offset: 2px;
+  }
+
+  /* ---------- Skip link (a11y) ---------- */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: -9999;
+  }
+  .skip-link:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    z-index: 9999;
+    padding: 0.75rem 1rem;
+    background: hsl(var(--line-strong));
+    color: hsl(var(--paper));
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* ---------- Status tags — state via icon + label, not color ---------- */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tag-approved {
+    background: hsl(var(--line-strong));
+    color: hsl(var(--paper));
+    border: 1px solid hsl(var(--line-strong));
+  }
+  .tag-pending {
+    background: transparent;
+    color: hsl(var(--ink));
+    border: 1px solid hsl(var(--line-strong));
+  }
+  .tag-rejected,
+  .tag-cancelled {
+    background: hsl(var(--surface-2));
+    color: hsl(var(--muted));
+    border: 1px solid hsl(var(--line));
+  }
+  .tag-maintenance {
+    background: hsl(var(--surface-2));
+    color: hsl(var(--muted));
+    border: 1px solid hsl(var(--line));
+  }
+  .tag-available {
+    background: hsl(var(--line-strong));
+    color: hsl(var(--paper));
+    border: 1px solid hsl(var(--line-strong));
+  }
+  .tag-reserved {
+    background: hsl(var(--surface-2));
+    color: hsl(var(--ink));
+    border: 1px solid hsl(var(--line-strong));
+  }
+  .tag-occupied {
+    background: hsl(var(--surface-2));
+    color: hsl(var(--muted));
+    border: 1px solid hsl(var(--line));
+  }
+
+  /* ---------- KPI value ---------- */
+  .kpi-value {
+    font-size: 1.875rem;
+    font-weight: 900;
+    color: hsl(var(--ink));
+  }
+  .kpi-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: hsl(var(--muted));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ---------- Form field ---------- */
+  .field-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: hsl(var(--ink));
+    margin-bottom: 0.25rem;
+  }
+  .field-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: var(--radius);
+    background: hsl(var(--paper));
+    color: hsl(var(--ink));
+    font-size: 0.875rem;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: hsl(var(--line-strong));
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    background: hsl(var(--line-strong));
+    color: hsl(var(--paper));
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .btn-primary:hover {
+    background: #1a1a1a;
+  }
+  .btn-primary:disabled {
+    background: hsl(var(--surface-2));
+    color: hsl(var(--faint));
+    cursor: not-allowed;
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    border: 1.5px solid hsl(var(--line-strong));
+    background: hsl(var(--paper));
+    color: hsl(var(--ink));
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .btn-outline:hover {
+    background: hsl(var(--surface-2));
+    border-color: hsl(var(--ink));
+  }
+
+  .btn-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    background: transparent;
+    color: hsl(var(--ink));
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .btn-text:hover {
+    background: hsl(var(--surface-2));
+  }
+
+  /* ---------- Panel ---------- */
+  .panel {
+    background: hsl(var(--paper));
+    border: 1px solid hsl(var(--line));
+    border-radius: var(--radius);
   }
 }
