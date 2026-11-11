@@ -14,6 +14,7 @@ import {
   Lock,
 } from 'lucide-react'
 import { dataStore } from '../../lib/dataStore'
+import { facilityImageUrl } from '../../lib/facilityImages'
 import { useAuth } from '../../features/auth/AuthContext'
 import { formatDateTime } from '../../lib/utils'
 import type {
@@ -350,18 +351,18 @@ export function FacilityDetailPage() {
         </div>
 
         <div className="lg:col-span-5 relative aspect-square lg:aspect-auto bg-[var(--surface-2)]">
-          {facility.image_url ? (
-            <img
-              src={facility.image_url}
-              alt={facility.name}
-              className="w-full h-full object-cover grayscale"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center border border-[var(--line)]">
-              <Building2 className="w-12 h-12 text-[var(--faint)]" />
-            </div>
-          )}
+          <img
+            src={facilityImageUrl(facility)}
+            alt={facility.name}
+            className="w-full h-full object-cover grayscale"
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.src = facilityImageUrl({
+                image_url: null,
+                category: 'multipurpose',
+              })
+            }}
+          />
           <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink)]">
             {facility.facility_code}
           </span>

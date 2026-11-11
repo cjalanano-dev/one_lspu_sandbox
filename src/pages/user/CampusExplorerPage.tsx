@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 
 import { dataStore } from '../../lib/dataStore'
+import { facilityImageUrl } from '../../lib/facilityImages'
 import { FloorPlanViewer } from '../../features/campus/FloorPlanViewer'
 import type { Building, Floor, Facility } from '../../types'
 
@@ -405,18 +406,18 @@ export function CampusExplorerPage() {
                   {selectedFacility ? (
                     <div className="space-y-5">
                       <div className="relative rounded-sm overflow-hidden aspect-video bg-[var(--surface-2)] border border-[var(--line)]">
-                        {selectedFacility.image_url ? (
-                          <img
-                            src={selectedFacility.image_url}
-                            alt={selectedFacility.name}
-                            className="w-full h-full object-cover grayscale"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center border border-[var(--line)]">
-                            <Building2 className="w-12 h-12 text-[var(--faint)]" aria-hidden={true} />
-                          </div>
-                        )}
+                        <img
+                          src={facilityImageUrl(selectedFacility)}
+                          alt={selectedFacility.name}
+                          className="w-full h-full object-cover grayscale"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.src = facilityImageUrl({
+                              image_url: null,
+                              category: 'multipurpose',
+                            })
+                          }}
+                        />
                         {hasMapPosition(selectedFacility) ? null : (
                           <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm border border-[var(--muted)] text-[var(--muted)] text-xs font-bold uppercase">
                             Not on floor plan

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Building2, Search, Users, Cpu, ArrowRight } from 'lucide-react'
 import { dataStore } from '../../lib/dataStore'
+import { facilityImageUrl } from '../../lib/facilityImages'
 import type { Facility, Building } from '../../types'
 
 export function FacilitiesDirectoryPage() {
@@ -87,18 +88,18 @@ export function FacilitiesDirectoryPage() {
             >
               <div>
                 <div className="relative aspect-[16/9] bg-[var(--surface-2)] overflow-hidden border-b border-[var(--line)]">
-                  {fac.image_url ? (
-                    <img
-                      src={fac.image_url}
-                      alt={fac.name}
-                      className="w-full h-full object-cover grayscale"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center border border-[var(--line)]">
-                      <Building2 className="w-12 h-12 text-[var(--faint)]" />
-                    </div>
-                  )}
+                  <img
+                    src={facilityImageUrl(fac)}
+                    alt={fac.name}
+                    className="w-full h-full object-cover grayscale"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.src = facilityImageUrl({
+                        image_url: null,
+                        category: 'multipurpose',
+                      })
+                    }}
+                  />
                   <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm text-xs font-mono font-bold uppercase bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink)]">
                     {fac.facility_code}
                   </span>
