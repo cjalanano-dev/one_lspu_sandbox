@@ -74,28 +74,16 @@ export function LoginPage() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs text-[var(--paper)]/80">
             <div>
+              <p className="font-mono font-bold text-[var(--paper)]">test1@gmail.com</p>
+              <p className="text-[var(--paper)]/50">Faculty</p>
+            </div>
+            <div>
               <p className="font-mono font-bold text-[var(--paper)]">officer@campus.edu</p>
-              <p className="text-[var(--paper)]/50">OCTA President / Secretary</p>
+              <p className="text-[var(--paper)]/50">Organization Officer</p>
             </div>
             <div>
-              <p className="font-mono font-bold text-[var(--paper)]">adviser@campus.edu</p>
-              <p className="text-[var(--paper)]/50">1. Org Adviser</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">dean@campus.edu</p>
-              <p className="text-[var(--paper)]/50">2. College Dean (CCS)</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">osas@campus.edu</p>
-              <p className="text-[var(--paper)]/50">3. OSAS Staff</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">director@campus.edu</p>
-              <p className="text-[var(--paper)]/50">4. Campus Director</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">president@campus.edu</p>
-              <p className="text-[var(--paper)]/50">5. University President</p>
+              <p className="font-mono font-bold text-[var(--paper)]">admin@campus.edu</p>
+              <p className="text-[var(--paper)]/50">Facility Administrator</p>
             </div>
           </div>
           <p className="mt-3 text-xs text-[var(--paper)]/50">

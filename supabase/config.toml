@@ -175,7 +175,10 @@ enable_refresh_token_rotation = true
 # Requires enable_refresh_token_rotation = true.
 refresh_token_reuse_interval = 10
 # Allow/disallow new user signups to your project. Existing users can still sign in.
-enable_signup = true
+# Public registration is closed: the app has no register page and accounts are
+# provisioned administratively. Pushed to the hosted project with
+# `supabase config push`. This does not affect administrative user creation.
+enable_signup = false
 # Allow/disallow anonymous sign-ins to your project.
 enable_anonymous_sign_ins = false
 # Allow/disallow testing manual linking of accounts
@@ -185,6 +188,16 @@ minimum_password_length = 6
 # Passwords that do not meet the following requirements will be rejected as weak. Supported values
 # are: `letters_digits`, `lower_upper_letters_digits`, `lower_upper_letters_digits_symbols`
 password_requirements = ""
+
+# Before User Created hook.
+# Rejects public signups at the auth server. The function is created by
+# supabase/migrations/20261119_close_public_signup.sql and returns an error
+# for every signup, so accounts can only be created administratively (via the
+# service_role key or the Supabase dashboard). This is a second layer behind
+# `enable_signup = false` above.
+[auth.hook.before_user_created]
+enabled = true
+uri = "pg-functions://postgres/public/hook_reject_public_signup"
 
 # Configure passkey sign-ins.
 # [auth.passkey]

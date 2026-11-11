@@ -6,11 +6,13 @@ Unified Campus Facility Management System — discover buildings, explore floor 
 
 | Email | Password | Role | Lands on |
 |-------|----------|------|----------|
-| `student@campus.edu` | `Demo1234!` | Student | `/explorer` |
+| `test1@gmail.com` | `Demo1234!` | Faculty | `/explorer` |
 | `officer@campus.edu` | `Demo1234!` | Organization Officer | `/organization` |
 | `admin@campus.edu` | `Demo1234!` | Facility Administrator | `/admin` |
 
 All accounts are active and linked to seeded campus data (TIC, SAC, SRH buildings; 5 facilities).
+There is no student account on the live project; `test1@gmail.com` is the closest
+equivalent and lands on the student-facing explorer flow.
 
 ## Recommended demo flow (officer → admin → officer)
 
@@ -86,6 +88,34 @@ Migration order:
 3. `20261112_demo_cleanup.sql` — anon catalog reads, notifications INSERT policy
 4. `20261113_role_access_control.sql` — harden signup roles, link officer to ACM
 5. `20261114_demo_seed_data.sql` — activities, reservations, maintenance, notifications
+6. `20261119_close_public_signup.sql` — reject public signups (before-user-created hook)
+
+## Closing public registration
+
+Public self-registration is closed at two layers:
+
+1. **Auth config** — `supabase/config.toml` sets `enable_signup = false` and
+   registers the before-user-created hook. Push it with:
+   ```
+   npx supabase config push
+   ```
+   > This compares the whole local config against the project. To change only
+   > the signup settings, stage a minimal `supabase/config.toml` that declares
+   > just `[auth] enable_signup` and `[auth.hook.before_user_created]`, then
+   > run `npx supabase config push --workdir <dir>` — undeclared properties are
+   > left unchanged on the remote project.
+
+2. **Database** — `20261119_close_public_signup.sql` creates
+   `public.hook_reject_public_signup()`, which returns an error for every
+   signup that reaches it.
+
+Accounts are provisioned administratively instead: create them in the
+Supabase dashboard (Authentication → Users → Add user) or with the
+service_role key. The `handle_new_user` trigger still creates the matching
+`profiles` row automatically.
+
+Verified against the live project: `POST /auth/v1/signup` is rejected, while
+`POST /auth/v1/admin/users` and existing-user sign-in both still work.
 
 ## Status
 
