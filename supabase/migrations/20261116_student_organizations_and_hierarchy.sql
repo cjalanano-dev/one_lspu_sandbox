@@ -262,18 +262,56 @@ ON CONFLICT (organization_id, user_id)
 DO UPDATE SET organization_role = 'president', membership_status = 'active';
 
 -- Support for dedicated test accounts if created:
--- Org President (OCTA)
+-- 1. OCTA (CCS Mother Org)
 INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
 SELECT o.id, p.id, 'president', 'active'
 FROM public.organizations o JOIN public.profiles p ON p.email = 'octa.president@campus.edu'
 WHERE o.acronym = 'OCTA'
 ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'president';
 
--- Org Secretary (OCTA)
 INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
 SELECT o.id, p.id, 'secretary', 'active'
 FROM public.organizations o JOIN public.profiles p ON p.email = 'octa.secretary@campus.edu'
 WHERE o.acronym = 'OCTA'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'secretary';
+
+-- 2. ALGO (CS Sub-Org of OCTA)
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'president', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'algo.president@campus.edu'
+WHERE o.acronym = 'ALGO'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'president';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'secretary', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'algo.secretary@campus.edu'
+WHERE o.acronym = 'ALGO'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'secretary';
+
+-- 3. BSIT (IT Sub-Org of OCTA)
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'president', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'bsit.president@campus.edu'
+WHERE o.acronym = 'BSIT'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'president';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'secretary', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'bsit.secretary@campus.edu'
+WHERE o.acronym = 'BSIT'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'secretary';
+
+-- 4. COESC (College of Engineering Student Council)
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'president', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'coesc.president@campus.edu'
+WHERE o.acronym = 'COESC'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'president';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'secretary', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'coesc.secretary@campus.edu'
+WHERE o.acronym = 'COESC'
 ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'secretary';
 
 -- Set designated roles for demo approvers when accounts exist

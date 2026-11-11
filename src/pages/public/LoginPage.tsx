@@ -70,40 +70,45 @@ export function LoginPage() {
         </div>
         <div className="mt-8">
           <p className="text-xs text-[var(--paper)]/40 uppercase tracking-widest font-semibold mb-3">
-            Demo & Testing Accounts
+            Active Demo & Testing Accounts
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs text-[var(--paper)]/80">
+          <div className="space-y-3 text-xs text-[var(--paper)]/80">
             <div>
-              <p className="font-mono font-bold text-[var(--paper)]">test1@gmail.com</p>
-              <p className="text-[var(--paper)]/50">Faculty</p>
+              <p className="text-[var(--paper)]/40 font-semibold uppercase tracking-wider mb-1">Student Org Officer (Proposals & Org Dashboard)</p>
+              <div>
+                <span className="font-mono font-bold text-[var(--paper)]">officer@campus.edu</span>
+                <span className="text-[var(--paper)]/50 block">OCTA President / Org Officer</span>
+              </div>
             </div>
+
             <div>
-              <p className="font-mono font-bold text-[var(--paper)]">officer@campus.edu</p>
-              <p className="text-[var(--paper)]/50">Organization Officer (files proposals)</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">admin@campus.edu</p>
-              <p className="text-[var(--paper)]/50">Facility Administrator</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">adviser@campus.edu</p>
-              <p className="text-[var(--paper)]/50">1. Org Adviser</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">dean@campus.edu</p>
-              <p className="text-[var(--paper)]/50">2. College Dean</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">osas@campus.edu</p>
-              <p className="text-[var(--paper)]/50">3. Office of Student Affairs</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">director@campus.edu</p>
-              <p className="text-[var(--paper)]/50">4. Campus Director</p>
-            </div>
-            <div>
-              <p className="font-mono font-bold text-[var(--paper)]">president@campus.edu</p>
-              <p className="text-[var(--paper)]/50">5. University President</p>
+              <p className="text-[var(--paper)]/40 font-semibold uppercase tracking-wider mb-1">Approval Hierarchy (Steps 1–5)</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">adviser@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">1. Org Adviser</span>
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">dean@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">2. College Dean (CCS)</span>
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">osas@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">3. OSAS Staff</span>
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">director@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">4. Campus Director</span>
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">president@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">5. Univ. President</span>
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-[var(--paper)]">admin@campus.edu</span>
+                  <span className="text-[var(--paper)]/50 block">Facility / Sys Admin</span>
+                </div>
+              </div>
             </div>
           </div>
           <p className="mt-3 text-xs text-[var(--paper)]/50">
