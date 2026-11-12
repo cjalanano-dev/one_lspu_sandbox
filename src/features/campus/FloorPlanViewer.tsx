@@ -41,16 +41,53 @@ function roomText(isSelected: boolean) {
   return isSelected ? 'var(--paper)' : 'var(--ink)'
 }
 
+function computeRoomPosition(facility: Facility, index: number, total: number) {
+  // If explicitly mapped via coordinates, use them
+  if (facility.map_position && typeof facility.map_position === 'object' && facility.map_position.x != null) {
+    return normalizePosition(facility.map_position)
+  }
+
+  // Automatic schematic architecture layout for 100x70 canvas
+  if (total === 1) {
+    return { x: 18, y: 15, width: 64, height: 40 }
+  }
+
+  if (total === 2) {
+    return index === 0
+      ? { x: 12, y: 14, width: 35, height: 42 }
+      : { x: 53, y: 14, width: 35, height: 42 }
+  }
+
+  if (total <= 4) {
+    const col = index % 2
+    const row = Math.floor(index / 2)
+    return {
+      x: 12 + col * 41,
+      y: row === 0 ? 12 : 40,
+      width: 35,
+      height: 20,
+    }
+  }
+
+  // 5 to 8 rooms (e.g. Old CCS labs & lecture rooms along top and bottom wings)
+  const isTopWing = index < Math.ceil(total / 2)
+  const cols = isTopWing ? Math.ceil(total / 2) : total - Math.ceil(total / 2)
+  const colIdx = isTopWing ? index : index - Math.ceil(total / 2)
+  const roomW = Math.max(14, Math.floor(76 / cols) - 2)
+
+  return {
+    x: 12 + colIdx * (roomW + 2),
+    y: isTopWing ? 12 : 42,
+    width: roomW,
+    height: 18,
+  }
+}
+
 export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectFacility }: FloorPlanViewerProps) {
   const [hoveredFacility, setHoveredFacility] = useState<Facility | null>(null)
 
   const floorFacilities = facilities.filter((f) => f.floor_id === floor.id)
-  const plottedFacilities = floorFacilities.filter(
-    (f) =>
-      f.map_position &&
-      typeof f.map_position === 'object' &&
-      f.map_position.x != null,
-  )
+  const plottedFacilities = floorFacilities
 
   const handleRoomKeyDown = (e: React.KeyboardEvent, facility: Facility) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -124,8 +161,8 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
             </text>
 
             {/* Render Facility Rooms */}
-            {plottedFacilities.map((facility) => {
-              const pos = normalizePosition(facility.map_position)
+            {plottedFacilities.map((facility, idx) => {
+              const pos = computeRoomPosition(facility, idx, plottedFacilities.length)
               const isSelected = selectedFacility?.id === facility.id
               const isHovered = hoveredFacility?.id === facility.id
 
