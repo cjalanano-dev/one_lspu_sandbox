@@ -1,52 +1,96 @@
+
 @import "tailwindcss";
 
 @layer base {
   :root {
-    /* ---------- Monochrome structural tokens (full CSS colors) ---------- */
-    --paper: hsl(0 0% 100%);
-    --surface: hsl(0 0% 98%);
-    --surface-2: hsl(0 0% 96%);
-    --ink: hsl(0 0% 4%);
-    --muted: hsl(0 0% 32%);
-    --faint: hsl(0 0% 64%);
-    --line: hsl(0 0% 89%);
-    --line-strong: hsl(0 0% 4%);
-    --ink-dark: hsl(0 0% 10%);
-    --gray-medium: hsl(0 0% 73%);
+    /* ---------- Core palette ---------- */
+    --paper: #FFFFFF;
+    --surface: #F5F7F9;
+    --surface-2: #E8EEF2;
 
-    /* ---------- Primary accent ---------- */
-    /* Blue carries the primary actions and selected states. Everything
-       structural (text, surfaces, borders, metadata) stays monochrome so
-       the accent never becomes a wash.
+    --ink: #040910;
+    --muted: #42515E;
+    --faint: #82909C;
 
-       Contrast (WCAG 2.1, measured against #FFFFFF):
-         --accent        #006BFF  4.62:1 with white  - fills, borders, marks
-         --accent-text   #0057D1  6.39:1 with white  - accent TEXT on light surfaces
-         --accent-strong #0052CC  6.82:1 with white  - hover fill
-         --accent-deep   #0B2A5B  14.03:1 with white - bands and banners
-       Use --accent-text wherever the blue is the text colour; keep --accent
-       for fills and non-text marks. */
-    --accent: #006BFF;
-    --accent-text: #0057D1;   /* slightly darker so accent text passes contrast on white */
-    --accent-strong: #0052CC; /* hover / pressed */
-    --accent-deep: #0B2A5B;   /* headers, dark sections */
+    --line: #DCE3E9;
+    --line-strong: #294143;
 
-    --accent-ink: #ffffff;
-    --accent-tint: #eaf0fd;
-    --accent-tint-2: #d6e2fa;
-    --accent-line: #b9cbf5;
+    --ink-dark: #040910;
+    --gray-medium: #AAB8C1;
 
-    /* ---------- Destructive / sign-out ---------- */
-    /* Reserved for destructive actions only (sign out). Never used for
-       ordinary navigation, so the meaning stays unambiguous.
-       Contrast against #FFFFFF: --danger 6.57:1, --danger-strong 8.66:1. */
-    --danger: #b42218c7;
+    /* ---------- Navy primary colors ---------- */
+    --accent: #173B63;
+    --accent-text: #102D48;
+    --accent-strong: #0B1921;
+    --accent-deep: #0B1921;
+
+    --accent-ink: #FFFFFF;
+    --accent-tint: #E8EEF5;
+    --accent-tint-2: #D3DEE9;
+    --accent-line: #A8BBCF;
+
+    /* ---------- Palette shades ---------- */
+    --midnight-black: #040910;
+    --deep-navy: #0B1921;
+    --dark-teal: #14272D;
+    --deep-forest: #294143;
+    --muted-teal: #344D4C;
+    --forest-sage: #425C56;
+    --dusty-green: #4F695F;
+    --sage-green: #5E7769;
+    --soft-moss: #6E8675;
+    --light-sage: #97A994;
+
+    /* ---------- Gradient backgrounds ---------- */
+    --gradient-primary: linear-gradient(
+      120deg,
+      #040910 0%,
+      #0B1921 35%,
+      #14272D 70%,
+      #294143 100%
+    );
+
+    --gradient-hero: linear-gradient(
+      115deg,
+      #0B1921 0%,
+      #102D48 45%,
+      #14272D 100%
+    );
+
+    --gradient-soft: linear-gradient(
+      135deg,
+      #14272D 0%,
+      #294143 55%,
+      #425C56 100%
+    );
+
+    --gradient-button: linear-gradient(
+      110deg,
+      #102D48 0%,
+      #173B63 55%,
+      #294143 100%
+    );
+
+    --gradient-hover: linear-gradient(
+      110deg,
+      #173B63 0%,
+      #294143 100%
+    );
+
+    /* ---------- Shadows ---------- */
+    --shadow-soft: 0 4px 20px rgba(4, 9, 16, 0.06);
+    --shadow-medium: 0 8px 30px rgba(4, 9, 16, 0.12);
+    --shadow-navy: 0 8px 24px rgba(11, 25, 33, 0.18);
+
+    /* ---------- Destructive actions ---------- */
+    --danger: #B42318;
     --danger-strong: #912018;
-    --danger-ink: #ffffff;
-    --danger-tint: #fef3f2;
-    --danger-text: #b42318;
+    --danger-ink: #FFFFFF;
+    --danger-tint: #FEF3F2;
+    --danger-text: #B42318;
 
-    --radius: 0.125rem;
+    /* ---------- Radius ---------- */
+    --radius: 0.25rem;
 
     /* ---------- Type scale ---------- */
     --text-xs: 0.75rem;
@@ -70,17 +114,18 @@
   body {
     background-color: var(--surface);
     color: var(--ink);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+      'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+      'Open Sans', 'Helvetica Neue', sans-serif;
     line-height: 1.5;
   }
 
-  /* ---------- Focus styles (a11y) ---------- */
   *:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
-  /* ---------- Skip link (a11y) ---------- */
+  /* ---------- Skip link ---------- */
   .skip-link {
     position: absolute;
     left: -9999px;
@@ -90,6 +135,7 @@
     overflow: hidden;
     z-index: -9999;
   }
+
   .skip-link:focus {
     position: static;
     width: auto;
@@ -97,7 +143,7 @@
     overflow: visible;
     z-index: 9999;
     padding: 0.75rem 1rem;
-    background: var(--accent);
+    background: var(--gradient-button);
     color: var(--accent-ink);
     border-radius: var(--radius);
     text-decoration: none;
@@ -106,7 +152,9 @@
 
   /* ---------- Reduced motion ---------- */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -116,7 +164,31 @@
 }
 
 @layer components {
-  /* ---------- Status tags — state via icon + label, not color ---------- */
+  /* ---------- Gradient utilities ---------- */
+  .navy-gradient {
+    background: var(--gradient-hero);
+  }
+
+  .navy-gradient-dark {
+    background: var(--gradient-primary);
+  }
+
+  .navy-gradient-soft {
+    background: var(--gradient-soft);
+  }
+
+  .navy-gradient-button {
+    background: var(--gradient-button);
+    color: #FFFFFF;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .navy-gradient-button:hover {
+    background: var(--gradient-hover);
+    box-shadow: var(--shadow-navy);
+  }
+
+  /* ---------- Status tags ---------- */
   .tag {
     display: inline-flex;
     align-items: center;
@@ -127,49 +199,42 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  .tag-approved {
-    background: var(--accent);
+
+  .tag-approved,
+  .tag-available {
+    background: var(--gradient-button);
     color: var(--accent-ink);
     border: 1px solid var(--accent);
   }
+
   .tag-pending {
-    background: transparent;
+    background: var(--accent-tint);
     color: var(--accent-text);
-    border: 1px solid var(--accent);
+    border: 1px solid var(--accent-line);
   }
+
   .tag-rejected,
-  .tag-cancelled {
-    background: var(--surface-2);
-    color: var(--muted);
-    border: 1px solid var(--line);
-  }
+  .tag-cancelled,
   .tag-maintenance {
     background: var(--surface-2);
     color: var(--muted);
     border: 1px solid var(--line);
   }
-  .tag-available {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border: 1px solid var(--accent);
-  }
-  .tag-reserved {
-    background: var(--accent-tint);
-    color: var(--ink);
-    border: 1px solid var(--accent-line);
-  }
+
+  .tag-reserved,
   .tag-occupied {
     background: var(--accent-tint);
-    color: var(--ink);
+    color: var(--accent-text);
     border: 1px solid var(--accent-line);
   }
 
-  /* ---------- KPI value ---------- */
+  /* ---------- KPI ---------- */
   .kpi-value {
     font-size: 1.875rem;
     font-weight: 900;
     color: var(--ink);
   }
+
   .kpi-label {
     font-size: 0.75rem;
     font-weight: 600;
@@ -178,7 +243,7 @@
     letter-spacing: 0.05em;
   }
 
-  /* ---------- Form field ---------- */
+  /* ---------- Form fields ---------- */
   .field-label {
     display: block;
     font-size: 0.875rem;
@@ -186,6 +251,7 @@
     color: var(--ink);
     margin-bottom: 0.25rem;
   }
+
   .field-input {
     width: 100%;
     padding: 0.5rem 0.75rem;
@@ -195,57 +261,42 @@
     color: var(--ink);
     font-size: 0.875rem;
   }
+
   .field-input:focus {
     outline: none;
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(23, 59, 99, 0.12);
   }
 
   /* ---------- Buttons ---------- */
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius);
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-size: 0.875rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: background 0.12s;
-  }
-  .btn-primary:hover {
-    background: var(--accent-strong);
-  }
-  .btn-primary:disabled {
-    background: var(--surface-2);
-    color: var(--faint);
-    cursor: not-allowed;
-  }
-
-  /* Alias so an accent button can be requested explicitly. */
+  .btn-primary,
   .btn-accent {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius);
-    background: var(--accent);
+    background: var(--gradient-button);
     color: var(--accent-ink);
     font-size: 0.875rem;
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: background 0.12s;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
   }
+
+  .btn-primary:hover,
   .btn-accent:hover {
-    background: var(--accent-strong);
+    background: var(--gradient-hover);
+    box-shadow: var(--shadow-navy);
   }
+
+  .btn-primary:disabled,
   .btn-accent:disabled {
     background: var(--surface-2);
     color: var(--faint);
     cursor: not-allowed;
+    box-shadow: none;
   }
 
   .btn-outline {
@@ -260,11 +311,13 @@
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.12s;
+    transition: all 0.2s ease;
   }
+
   .btn-outline:hover {
     background: var(--accent-tint);
-    border-color: var(--accent-line);
+    border-color: var(--accent);
+    color: var(--accent-text);
   }
 
   .btn-text {
@@ -279,27 +332,31 @@
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: background 0.12s;
-  }
-  .btn-text:hover {
-    background: var(--accent-tint);
+    transition: background 0.2s ease;
   }
 
-  /* ---------- Panel ---------- */
+  .btn-text:hover {
+    background: var(--accent-tint);
+    color: var(--accent-text);
+  }
+
+  /* ---------- Panels ---------- */
   .panel {
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
   }
 
-  /* ---------- Accent link ---------- */
+  /* ---------- Accent links ---------- */
   .link-accent {
     color: var(--accent-text);
     text-decoration: none;
     transition: color 0.12s;
   }
+
   .link-accent:hover {
-    color: var(--accent-deep);
+    color: var(--accent-strong);
     text-decoration: underline;
   }
 }
