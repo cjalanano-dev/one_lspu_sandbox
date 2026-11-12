@@ -84,6 +84,7 @@ export interface Organization {
   college?: string | null
   org_type?: 'college_mother' | 'program_sub_org' | 'university_wide' | string | null
   parent_org_id?: string | null
+  adviser_id?: string | null
   created_at: string
   /**
    * The current user's role in this organization, populated by

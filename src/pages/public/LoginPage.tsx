@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { Mail, Lock, ArrowRight, User, Eye, EyeOff } from 'lucide-react'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
+import { ArrowRight, Eye, EyeOff, Building2 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../features/auth/AuthContext'
 
@@ -22,8 +22,6 @@ export function LoginPage() {
       setIsLoading(true)
       await signIn(email, password)
 
-      // user profile is loaded asynchronously by the auth listener;
-      // fetch it directly so the role-based redirect fires correctly.
       let role = 'student'
       try {
         const { data } = await supabase
@@ -35,117 +33,83 @@ export function LoginPage() {
       } catch {
         /* keep default student role if profile lookup fails */
       }
+
       const defaultPath =
         role === 'officer'
           ? '/proposals'
-          : ['adviser', 'college_dean', 'osas', 'campus_director', 'university_president', 'osa_staff', 'facility_admin', 'system_admin'].includes(role)
+          : ['adviser', 'college_dean', 'osas', 'campus_director', 'university_president', 'osa_staff'].includes(role)
             ? '/approvals'
-            : '/explorer'
+            : ['facility_admin', 'system_admin'].includes(role)
+              ? '/admin'
+              : '/'
+
       const from = (location.state as { from?: { pathname: string } })?.from?.pathname || defaultPath
       navigate(from)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed. Please try again.')
+      setError(err instanceof Error ? err.message : 'Login failed. Please verify your institutional credentials.')
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left — black panel */}
-      <div className="hidden lg:flex w-1/2 bg-[var(--accent-deep)] flex-col justify-between p-12 lg:p-16">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[var(--paper)]">
+      {/* Left — Grayish-Black Institutional Brand Panel (50%) */}
+      <div className="lg:w-1/2 bg-[var(--ink)] text-[var(--paper)] flex flex-col justify-between p-10 sm:p-16 border-b lg:border-b-0 lg:border-r border-[var(--ink-soft)]">
         <div>
-          <div className="w-10 h-10 rounded-sm border-[var(--accent)] bg-[var(--accent)] flex items-center justify-center mb-6">
-            <BuildingIcon className="w-6 h-6 text-[var(--paper)]" />
+          <Link to="/" className="inline-flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--accent)] flex items-center justify-center transition group-hover:bg-[var(--accent)]">
+              <Building2 className="w-5 h-5 text-[var(--paper)]" />
+            </div>
+            <div>
+              <span className="font-extrabold tracking-tight text-lg text-[var(--paper)] flex items-center gap-1.5">
+                ONE LSPU
+              </span>
+              <span className="block text-[10px] font-mono uppercase tracking-widest text-[var(--paper)]/50">
+                Unified Campus Platform
+              </span>
+            </div>
+          </Link>
+        </div>
+
+        <div className="my-12 lg:my-0 max-w-md space-y-5">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[11px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
+            Institutional Access
           </div>
-          <h1 className="text-3xl font-black text-[var(--paper)] leading-tight">
-            ONE LSPU<br />
-            Campus access,<br />
-            from any screen.
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--paper)] tracking-tight leading-tight">
+            Unified Student Organization and Admin Portal
           </h1>
-          <p className="mt-6 text-[var(--paper)]/60 text-sm leading-relaxed max-w-md">
-            Sign in to your ONE LSPU account to explore buildings, check floor-plan availability,
-            and submit reservation requests.
+          <p className="text-sm text-[var(--paper)]/65 leading-relaxed">
+            Sign in with your credentials to access your role-specific workspace, inspect interactive building plans, and manage institutional reservations and approvals.
           </p>
         </div>
-        <div className="mt-8">
-          <p className="text-xs text-[var(--paper)]/40 uppercase tracking-widest font-semibold mb-3">
-            Active Demo & Testing Accounts
-          </p>
-          <div className="space-y-3 text-xs text-[var(--paper)]/80">
-            <div>
-              <p className="text-[var(--paper)]/40 font-semibold uppercase tracking-wider mb-1">Student Org Officers (Proposals & Org Dashboard)</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">octa.president@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">OCTA — Organization for Computing and Technology Advancements (+ octa.secretary@)</span>
-                </div>
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">algo.president@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">ALGO — CS Sub-Org (+ algo.secretary@)</span>
-                </div>
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">bsit.president@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">BSIT — IT Sub-Org (+ bsit.secretary@)</span>
-                </div>
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">coesc.president@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">COESC — College of Engineering Student Council (+ coesc.secretary@)</span>
-                </div>
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">officer@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">Generic Officer (OCTA Fallback)</span>
-                </div>
-              </div>
-            </div>
 
-            <div>
-              <p className="text-[var(--paper)]/40 font-semibold uppercase tracking-wider mb-1">Approval Hierarchy (Steps 1–5)</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">adviser@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">1. Org Adviser</span>
-                </div>
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">dean@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">2. College Dean (CCS)</span>
-                </div>
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">osas@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">3. OSAS Staff</span>
-                </div>
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">director@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">4. Campus Director</span>
-                </div>
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">president@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">5. Univ. President</span>
-                </div>
-                <div>
-                  <span className="font-mono font-bold text-[var(--paper)]">admin@campus.edu</span>
-                  <span className="text-[var(--paper)]/50 block">Facility / Sys Admin</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <p className="mt-3 text-xs text-[var(--paper)]/50">
-            Default password for demo accounts: <span className="font-mono font-bold text-[var(--paper)]">Demo1234!</span>
-          </p>
+        <div className="flex items-center justify-between text-xs text-[var(--paper)]/45 border-t border-[var(--ink-soft)] pt-6">
+          <span>© 2026 ONE LSPU</span>
+          <Link to="/" className="text-[var(--accent-line)] hover:underline font-medium">
+            Return to public directory →
+          </Link>
         </div>
       </div>
 
-      {/* Right — white form */}
-      <div className="flex-1 flex items-center justify-center bg-[var(--paper)] p-8 sm:p-12">
-        <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <h1 className="text-2xl font-extrabold text-[var(--ink)]">Welcome back</h1>
-            <p className="text-[var(--muted)] mt-1">Sign in to your ONE LSPU account</p>
+      {/* Right — Whitish-White Sign-In Form (50%) */}
+      <div className="lg:w-1/2 flex items-center justify-center bg-[var(--paper)] p-8 sm:p-16">
+        <div className="w-full max-w-sm space-y-8">
+          <div className="space-y-2">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-[var(--accent-text)] font-semibold">
+              Portal Authentication
+            </span>
+            <h2 className="text-2xl font-extrabold text-[var(--ink)] tracking-tight">
+              Sign in to your account
+            </h2>
+            <p className="text-xs text-[var(--muted)]">
+              Enter your institutional email address and password to continue.
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-[var(--ink)]">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="email" className="field-label">
                 Email address
               </label>
               <input
@@ -155,14 +119,14 @@ export function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)]"
-                placeholder="e.g. student@campus.edu"
+                className="field-input"
+                placeholder="name@campus.edu"
                 aria-describedby={error ? 'login-error' : undefined}
               />
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium text-[var(--ink)]">
+            <div>
+              <label htmlFor="password" className="field-label">
                 Password
               </label>
               <div className="relative">
@@ -173,7 +137,7 @@ export function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-sm border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] focus:border-[var(--line-strong)] pr-10"
+                  className="field-input pr-10"
                   placeholder="••••••••"
                   aria-describedby={error ? 'login-error' : undefined}
                 />
@@ -189,8 +153,12 @@ export function LoginPage() {
             </div>
 
             {error && (
-              <div id="login-error" className="rounded-sm border-[var(--line-strong)] p-3.5 bg-[var(--ink-dark)] text-[var(--paper)] text-xs flex items-start gap-2" role="alert">
-                <span className="text-[var(--paper)] shrink-0 mt-0.5">✕</span>
+              <div
+                id="login-error"
+                className="rounded-[var(--radius)] border border-[var(--danger)]/30 p-3.5 bg-[var(--danger-tint)] text-[var(--danger-text)] text-xs flex items-start gap-2 font-medium"
+                role="alert"
+              >
+                <span className="shrink-0">✕</span>
                 <span>{error}</span>
               </div>
             )}
@@ -198,17 +166,17 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-[var(--accent)] rounded-sm border border-[var(--accent)] hover:bg-[var(--accent-strong)] hover:border-[var(--accent-strong)] text-[var(--accent-ink)] font-semibold text-sm  transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-[var(--radius)] bg-[var(--ink)] hover:bg-[var(--accent)] text-[var(--paper)] font-semibold text-xs uppercase tracking-wider transition disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
             >
               {isLoading ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-white/60 border-t-transparent rounded-full animate-spin"></span>
-                  Signing in...
+                  <span className="w-4 h-4 border-2 border-white/60 border-t-transparent rounded-full animate-spin" />
+                  Signing in…
                 </>
               ) : (
                 <>
+                  Sign in
                   <ArrowRight className="w-4 h-4" />
-                  Log in
                 </>
               )}
             </button>
@@ -216,13 +184,5 @@ export function LoginPage() {
         </div>
       </div>
     </div>
-  )
-}
-
-function BuildingIcon({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M3 4V21h18V4h-6v3h-6V4z" />
-    </svg>
   )
 }

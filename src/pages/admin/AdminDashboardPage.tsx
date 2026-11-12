@@ -14,6 +14,7 @@ import {
 import { dataStore } from '../../lib/dataStore'
 import { useAuth } from '../../features/auth/AuthContext'
 import { Dialog } from '../../components/ui/Dialog'
+import { StudentOrgEventsCalendar } from '../../components/calendar/StudentOrgEventsCalendar'
 import { formatDateTime } from '../../lib/utils'
 import type { Reservation, Facility, Organization } from '../../types'
 
@@ -128,13 +129,17 @@ export function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--ink-soft)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)] tracking-tight flex items-center gap-2.5">
-            <ShieldCheck className="w-8 h-8 text-[var(--ink)]" />
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-xs bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)] mb-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+            {isSystemAdmin ? 'System Governance Workspace' : 'Venue Governance Workspace'}
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--paper)] tracking-tight flex items-center gap-2.5">
+            <ShieldCheck className="w-7 h-7 text-[var(--accent)]" />
             {isSystemAdmin ? 'System Administrator Command Center' : 'Facility Administrator Command Center'}
           </h1>
-          <p className="text-sm text-[var(--muted)] mt-1">
+          <p className="text-xs sm:text-sm text-[var(--paper)]/70 mt-1">
             {isSystemAdmin
               ? 'Manage platform-wide facilities, users, organizations, and campus resources.'
               : 'Review incoming reservation requests, enforce conflict prevention, and monitor campus utilization.'}
@@ -376,6 +381,9 @@ export function AdminDashboardPage() {
           </div>
         )}
       </div>
+
+      {/* University-Wide Student Organization Events Calendar */}
+      <StudentOrgEventsCalendar />
 
       <Dialog
         isOpen={!!rejectModalRes}

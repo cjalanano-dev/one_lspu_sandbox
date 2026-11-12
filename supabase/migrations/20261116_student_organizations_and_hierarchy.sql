@@ -43,7 +43,7 @@ INSERT INTO public.organizations (id, name, acronym, description, logo_url, stat
 VALUES
   (
     gen_random_uuid(),
-    'Alliance of Leaders in G-Software and Optimization',
+    'Association for Leadership, Governance, and Organization',
     'ALGO',
     'Sub-organization of OCTA for Computer Science Students.',
     'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=128&q=80',
@@ -54,7 +54,7 @@ VALUES
   ),
   (
     gen_random_uuid(),
-    'Bachelor of Science in Information Technology Student Society',
+    'BSIT',
     'BSIT',
     'Sub-organization of OCTA for Information Technology Students.',
     'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=128&q=80',

@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 import { dataStore, canFileForOrganization } from '../../lib/dataStore'
 import { useAuth } from '../../features/auth/AuthContext'
 import { Dialog } from '../../components/ui/Dialog'
+import { StudentOrgEventsCalendar } from '../../components/calendar/StudentOrgEventsCalendar'
 import { formatDateTime } from '../../lib/utils'
 import type { Organization, Activity, Reservation, Facility } from '../../types'
 
@@ -44,6 +45,7 @@ export function OrganizationDashboardPage() {
   const [activities, setActivities] = useState<Activity[]>([])
   const [orgReservations, setOrgReservations] = useState<Reservation[]>([])
   const [facilitiesMap, setFacilitiesMap] = useState<Record<string, Facility>>({})
+  const [adviserName, setAdviserName] = useState<string | null>(null)
 
   const [showNewActivityModal, setShowNewActivityModal] = useState(false)
   const [activityError, setActivityError] = useState<string | null>(null)
@@ -69,6 +71,13 @@ export function OrganizationDashboardPage() {
 
       const resList = await dataStore.getReservations({ organizationId: currentOrg.id })
       setOrgReservations(resList)
+
+      if (currentOrg.adviser_id) {
+        const advProfile = await dataStore.getProfile(currentOrg.adviser_id)
+        setAdviserName(advProfile?.full_name ?? null)
+      } else {
+        setAdviserName(null)
+      }
     }
 
     const facList = await dataStore.getFacilities()
@@ -144,6 +153,11 @@ export function OrganizationDashboardPage() {
               <span className="text-xs text-[var(--paper)]/50 font-medium uppercase tracking-widest">
                 Student Organization
               </span>
+              {adviserName && (
+                <span className="px-2 py-0.5 rounded-xs border border-[var(--accent)]/40 text-[11px] font-mono bg-[var(--ink-soft)] text-[var(--accent-line)]">
+                  Adviser: {adviserName}
+                </span>
+              )}
             </div>
             <h1 className="text-2xl font-black text-[var(--paper)]">{selectedOrg?.name}</h1>
             <p className="text-xs text-[var(--paper)]/60 mt-1 max-w-2xl leading-relaxed uppercase tracking-wider font-medium">
@@ -288,6 +302,9 @@ export function OrganizationDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* University-Wide Student Organization Events Calendar */}
+      <StudentOrgEventsCalendar />
 
       <Dialog
         isOpen={showNewActivityModal}

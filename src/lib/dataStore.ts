@@ -87,6 +87,8 @@ function mapFloor(row: any): Floor {
 
 const ORG_NAME_OVERRIDES: Record<string, string> = {
   OCTA: 'Organization for Computing and Technology Advancements',
+  ALGO: 'Association for Leadership, Governance, and Organization',
+  BSIT: 'BSIT',
   COESC: 'College of Engineering Student Council',
 }
 
@@ -103,6 +105,7 @@ function mapOrganization(row: any): Organization {
     college: row.college ?? null,
     org_type: row.org_type ?? null,
     parent_org_id: row.parent_org_id ?? null,
+    adviser_id: row.adviser_id ?? null,
     created_at: row.created_at,
     organization_role: row.organization_role ?? null,
   }
@@ -598,6 +601,18 @@ export const dataStore = {
   async getFilingOrganizations(userId?: string | null): Promise<Organization[]> {
     const orgs = await this.getMyOrganizations(userId)
     return orgs.filter(canFileForOrganization)
+  },
+
+  /** Organizations where the given user is the designated faculty adviser. */
+  async getAdvisedOrganizations(userId?: string | null): Promise<Organization[]> {
+    if (!userId) return []
+    const { data, error } = await supabase
+      .from('organizations')
+      .select('*')
+      .eq('adviser_id', userId)
+      .order('name')
+    if (error) throw new Error(error.message)
+    return (data ?? []).map(mapOrganization)
   },
 
   /** Check if the user is an active president or secretary of an organization */

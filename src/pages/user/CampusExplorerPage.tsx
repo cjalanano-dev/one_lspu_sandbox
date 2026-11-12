@@ -14,12 +14,15 @@ import {
 import { dataStore } from '../../lib/dataStore'
 import { facilityImageUrl } from '../../lib/facilityImages'
 import { FloorPlanViewer } from '../../features/campus/FloorPlanViewer'
+import { useAuth } from '../../features/auth/AuthContext'
 import type { Building, Floor, Facility } from '../../types'
 
 const MAX_CHIPS_PER_CARD = 5
 
 export function CampusExplorerPage() {
   const location = useLocation()
+  const { isApprover, isAdmin } = useAuth()
+  const isPureSignatory = isApprover && !isAdmin
 
   const [buildings, setBuildings] = useState<Building[]>([])
   const [floors, setFloors] = useState<Floor[]>([])
@@ -35,8 +38,6 @@ export function CampusExplorerPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // One-time load of every building, floor, and facility from Supabase.
-  // Switching buildings is then instant (no extra round trips).
   useEffect(() => {
     async function loadData() {
       setLoading(true)
@@ -54,7 +55,8 @@ export function CampusExplorerPage() {
         const params = new URLSearchParams(location.search)
         const code = params.get('building')
         const found = code ? bList.find((b) => b.code === code) : null
-        setSelectedBuilding(found ?? bList[0])
+        const initialBuilding = found ?? bList[0] ?? null
+        setSelectedBuilding(initialBuilding)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load campus data.')
       } finally {
@@ -70,6 +72,18 @@ export function CampusExplorerPage() {
       .filter((f) => f.building_id === selectedBuilding.id)
       .sort((a, b) => a.floor_number - b.floor_number)
   }, [floors, selectedBuilding])
+
+  // Auto-select first floor when building changes
+  useEffect(() => {
+    if (buildingFloors.length > 0) {
+      setSelectedFloor((prev) => {
+        if (prev && prev.building_id === selectedBuilding?.id) return prev
+        return buildingFloors[0]
+      })
+    } else {
+      setSelectedFloor(null)
+    }
+  }, [buildingFloors, selectedBuilding?.id])
 
   const floorById = useMemo(() => new Map(floors.map((f) => [f.id, f])), [floors])
 
@@ -175,13 +189,13 @@ export function CampusExplorerPage() {
   if (error) {
     return (
       <div className="space-y-6 p-6">
-        <div className="rounded-sm border border-[var(--line)] bg-[var(--paper)] p-6 text-center">
+        <div className="panel p-6 text-center">
           <Info className="w-10 h-10 text-[var(--muted)] mx-auto mb-3" />
           <h3 className="font-bold text-[var(--ink)]">Something went wrong</h3>
           <p className="text-sm text-[var(--muted)] mt-1">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-sm border border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-ink)] text-xs font-semibold duration-150 hover:bg-[var(--accent-strong)]"
+            className="mt-4 btn-primary text-xs"
           >
             Try again
           </button>
@@ -192,11 +206,11 @@ export function CampusExplorerPage() {
 
   if (loading || !selectedBuilding) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
+      <div className="min-h-[60vh] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <Compass className="w-8 h-8 text-[var(--ink)]" />
-          <p className="text-xs text-[var(--muted)] uppercase tracking-widest font-medium">
-            Loading campus…
+          <Compass className="w-8 h-8 text-[var(--accent)]" />
+          <p className="text-xs text-[var(--muted)] font-mono uppercase tracking-widest">
+            Loading schematic campus map…
           </p>
         </div>
       </div>
@@ -207,19 +221,26 @@ export function CampusExplorerPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Grayish-Black Header Bar */}
+      <div className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 border border-[var(--ink-soft)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)] tracking-tighter leading-none flex items-center gap-2.5">
-            <Compass className="w-7 h-7 text-[var(--ink)]" />
-            Campus Explorer
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
+            Spatial Campus Discovery
+          </span>
+          <h1 className="text-2xl font-extrabold text-[var(--paper)] tracking-tight flex items-center gap-2.5 mt-0.5">
+            <Compass className="w-6 h-6 text-[var(--accent)]" />
+            Interactive Campus Explorer
           </h1>
-          <p className="text-sm text-[var(--muted)] mt-1">
-            Navigate buildings, explore floor layouts, and inspect university spaces.
+          <p className="text-xs text-[var(--paper)]/70 mt-1">
+            Select a campus building, switch floor levels, and inspect room capacities on the schematic floor plan.
           </p>
         </div>
+        <Link to="/facilities" className="btn-accent text-xs gap-1.5 shrink-0">
+          <Building2 className="w-4 h-4" /> Full Facilities Directory
+        </Link>
       </div>
 
-      {/* Buildings */}
+      {/* Building Selector Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {buildings.map((b) => {
           const isSelected = isSelectedBuilding(b)
@@ -227,7 +248,7 @@ export function CampusExplorerPage() {
           const visible = buildingFacs.slice(0, MAX_CHIPS_PER_CARD)
           const more = buildingFacs.length - MAX_CHIPS_PER_CARD
           const textColor = isSelected ? 'text-[var(--paper)]' : 'text-[var(--ink)]'
-          const mutedColor = isSelected ? 'text-[var(--accent-ink)]' : 'text-[var(--muted)]'
+          const mutedColor = isSelected ? 'text-[var(--paper)]/70' : 'text-[var(--muted)]'
 
           return (
             <div
@@ -237,14 +258,24 @@ export function CampusExplorerPage() {
               aria-label={`Building ${b.code} — ${b.name}, ${buildingFacs.length} facilities`}
               onKeyDown={(e) => handleBuildingKeyDown(e, b)}
               onClick={() => setSelectedBuilding(b)}
-              className={`p-4 rounded-sm border cursor-pointer transition duration-150 flex flex-col gap-3 min-h-[12rem] ${isSelected ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--line)] bg-[var(--paper)]'} ${textColor}`}
+              className={`p-4 rounded-[var(--radius)] border cursor-pointer transition duration-150 flex flex-col gap-3 min-h-[11.5rem] ${
+                isSelected
+                  ? 'border-[var(--accent)] bg-[var(--ink)] ring-1 ring-[var(--accent)] shadow-sm'
+                  : 'border-[var(--line)] bg-[var(--paper)] hover:border-[var(--accent-line)]'
+              } ${textColor}`}
             >
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-sm flex items-center justify-center shrink-0 ${isSelected ? 'bg-[var(--paper)]' : 'bg-[var(--surface-2)] border border-[var(--line)]'}`}>
-                  <Building2 className="w-5 h-5 text-[var(--ink)]" />
+                <div
+                  className={`w-9 h-9 rounded-[var(--radius)] flex items-center justify-center shrink-0 ${
+                    isSelected
+                      ? 'bg-[var(--ink-soft)] border border-[var(--accent)] text-[var(--accent-line)]'
+                      : 'bg-[var(--surface)] border border-[var(--line)] text-[var(--ink)]'
+                  }`}
+                >
+                  <Building2 className="w-4 h-4" />
                 </div>
                 <div className="overflow-hidden flex-1 min-w-0">
-                  <span className={`text-xs font-mono font-bold uppercase tracking-widest ${textColor}`}>
+                  <span className={`text-[11px] font-mono font-bold uppercase tracking-widest ${isSelected ? 'text-[var(--accent-line)]' : 'text-[var(--accent-text)]'}`}>
                     {b.code}
                   </span>
                   <h3 className={`font-bold text-sm truncate ${textColor}`}>{b.name}</h3>
@@ -254,7 +285,11 @@ export function CampusExplorerPage() {
                   </p>
                 </div>
                 <span
-                  className={`text-xs font-mono font-bold uppercase px-2 py-0.5 rounded-sm border shrink-0 ${isSelected ? 'border-[var(--paper)] text-[var(--ink)] bg-[var(--paper)]' : 'border-[var(--line)] text-[var(--ink)] bg-[var(--paper)]'}`}
+                  className={`text-xs font-mono font-bold uppercase px-2 py-0.5 rounded-xs border shrink-0 ${
+                    isSelected
+                      ? 'border-[var(--accent)]/40 text-[var(--accent-line)] bg-[var(--ink-soft)]'
+                      : 'border-[var(--line)] text-[var(--ink)] bg-[var(--surface)]'
+                  }`}
                 >
                   {buildingFacs.length}
                 </span>
@@ -278,10 +313,14 @@ export function CampusExplorerPage() {
                         }
                       }}
                       onClick={(e) => openFacility(b, f)(e as React.MouseEvent)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-sm text-xs border shrink-0 ${isSelected ? 'border-[var(--paper)] text-[var(--ink)] bg-[var(--paper)]' : 'border-[var(--line)] bg-[var(--surface-2)] text-[var(--ink)]'}`}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-xs text-[11px] border shrink-0 transition ${
+                        isSelected
+                          ? 'border-[var(--ink-soft)] text-[var(--paper)]/90 bg-[var(--ink-soft)] hover:border-[var(--accent)]'
+                          : 'border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] hover:border-[var(--accent-line)]'
+                      }`}
                     >
-                      <span className="truncate">{f.name}</span>
-                      <span className={`text-xs leading-none font-mono font-bold uppercase opacity-60 text-[#354649] `}>
+                      <span className="truncate max-w-[7rem]">{f.name}</span>
+                      <span className="text-[10px] leading-none font-mono font-bold uppercase opacity-60">
                         {badge}
                       </span>
                     </span>
@@ -304,7 +343,11 @@ export function CampusExplorerPage() {
                       setSelectedBuilding(b)
                       setViewTab('building')
                     }}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-sm text-xs border shrink-0 ${isSelected ? 'border-[var(--paper)] text-[var(--ink)] bg-[var(--paper)]' : 'border-[var(--line)] bg-[var(--surface-2)] text-[var(--ink)]'}`}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-xs text-[11px] font-mono border shrink-0 ${
+                      isSelected
+                        ? 'border-[var(--accent)]/40 text-[var(--accent-line)] bg-[var(--ink-soft)]'
+                        : 'border-[var(--line)] bg-[var(--surface)] text-[var(--ink)]'
+                    }`}
                   >
                     +{more}
                   </span>
@@ -318,10 +361,10 @@ export function CampusExplorerPage() {
       {selectedBuilding && (
         <>
           {/* Floors + search + filters + view tabs */}
-          <div className="rounded-sm border border-[var(--line)] bg-[var(--paper)] p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="panel p-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
               <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mr-1 flex items-center gap-1">
-                <Layers className="w-3.5 h-3.5" />
+                <Layers className="w-3.5 h-3.5 text-[var(--accent)]" />
                 Levels:
               </span>
               {buildingFloors.map((floor) => {
@@ -334,7 +377,11 @@ export function CampusExplorerPage() {
                       setSelectedFacility(null)
                     }}
                     aria-pressed={isSelected}
-                    className={`px-3.5 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition duration-150 ${isSelected ? 'bg-[var(--accent)] text-[var(--accent-ink)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                    className={`px-3.5 py-1.5 rounded-[var(--radius)] text-xs font-bold whitespace-nowrap transition duration-150 ${
+                      isSelected
+                        ? 'bg-[var(--ink)] text-[var(--paper)] border border-[var(--accent)]'
+                        : 'border border-[var(--line)] text-[var(--muted)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)]'
+                    }`}
                   >
                     {floorLabel(floor)}
                   </button>
@@ -342,7 +389,7 @@ export function CampusExplorerPage() {
               })}
             </div>
 
-            <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               <div className="relative flex-1 sm:w-48">
                 <Search className="w-4 h-4 text-[var(--faint)] absolute left-3 top-2.5" />
                 <input
@@ -351,7 +398,7 @@ export function CampusExplorerPage() {
                   aria-label="Search facilities"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-[var(--paper)] focus:border-[var(--line-strong)]"
+                  className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-[var(--radius)] bg-[var(--paper)] focus:border-[var(--accent)]"
                 />
               </div>
 
@@ -361,7 +408,7 @@ export function CampusExplorerPage() {
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
                   aria-label="Category filter"
-                  className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-medium text-[var(--ink)] bg-[var(--paper)] focus:border-[var(--line-strong)] appearance-none"
+                  className="border border-[var(--line)] rounded-[var(--radius)] text-xs py-2 px-3 font-medium text-[var(--ink)] bg-[var(--paper)] focus:border-[var(--accent)]"
                 >
                   <option value="all">All categories</option>
                   <option value="auditorium">Auditorium</option>
@@ -373,16 +420,24 @@ export function CampusExplorerPage() {
                 </select>
               </div>
 
-              <div className="flex items-center gap-2 ml-auto">
+              <div className="flex items-center gap-1.5 ml-auto">
                 <button
                   onClick={() => setViewTab('this-floor')}
-                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'this-floor' ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                  className={`px-3 py-1.5 rounded-[var(--radius)] text-xs font-bold transition duration-150 ${
+                    viewTab === 'this-floor'
+                      ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
+                      : 'border border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'
+                  }`}
                 >
                   This floor ({facilitiesOnFloor.length})
                 </button>
                 <button
                   onClick={() => setViewTab('building')}
-                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition duration-150 ${viewTab === 'building' ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]' : 'border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'}`}
+                  className={`px-3 py-1.5 rounded-[var(--radius)] text-xs font-bold transition duration-150 ${
+                    viewTab === 'building'
+                      ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
+                      : 'border border-[var(--line)] text-[var(--muted)] hover:bg-[var(--surface-2)]'
+                  }`}
                 >
                   Entire building ({buildingFacilityCount})
                 </button>
@@ -402,10 +457,10 @@ export function CampusExplorerPage() {
                 />
               </div>
               <div className="lg:col-span-5">
-                <div className="rounded-sm border border-[var(--line)] p-6 flex flex-col justify-between">
+                <div className="panel p-6 h-full flex flex-col justify-between">
                   {selectedFacility ? (
                     <div className="space-y-5">
-                      <div className="relative rounded-sm overflow-hidden aspect-video bg-[var(--surface-2)] border border-[var(--line)]">
+                      <div className="relative rounded-[var(--radius)] overflow-hidden aspect-video bg-[var(--surface-2)] border border-[var(--line)]">
                         <img
                           src={facilityImageUrl(selectedFacility)}
                           alt={selectedFacility.name}
@@ -419,25 +474,25 @@ export function CampusExplorerPage() {
                           }}
                         />
                         {hasMapPosition(selectedFacility) ? null : (
-                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded-sm border border-[var(--muted)] text-[var(--muted)] text-xs font-bold uppercase">
+                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded-xs bg-[var(--ink)]/80 text-[var(--paper)] text-[10px] font-mono uppercase">
                             Not on floor plan
                           </span>
                         )}
-                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-sm text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink)]">
+                        <span className="absolute top-2 right-2 px-2.5 py-0.5 rounded-xs text-xs font-mono font-bold uppercase bg-[var(--ink)] text-[var(--accent-line)] border border-[var(--accent)]/40">
                           {selectedFacility.facility_code}
                         </span>
                       </div>
 
                       <div>
                         <div className="flex items-center justify-between gap-2">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-[var(--ink)] text-xs font-bold uppercase bg-[var(--ink)] text-[var(--paper)]">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xs border border-[var(--line)] text-[11px] font-mono font-semibold uppercase bg-[var(--surface)] text-[var(--ink)]">
                             {selectedFacility.category.replace('_', ' ')}
                           </span>
                           <span className={`flex items-center gap-1 ${statusTag(selectedFacility.status)}`}>
                             {selectedFacility.status}
                           </span>
                         </div>
-                        <h4 className="text-lg font-bold text-[var(--ink)] mt-2">
+                        <h4 className="text-lg font-extrabold text-[var(--ink)] mt-2">
                           {selectedFacility.name}
                         </h4>
                         <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">
@@ -446,14 +501,14 @@ export function CampusExplorerPage() {
                       </div>
 
                       <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[var(--line)] text-xs">
-                        <div className="border border-[var(--line)] p-2.5 rounded-sm bg-[var(--surface)]">
-                          <span className="text-[var(--faint)] block font-medium">Capacity</span>
+                        <div className="border border-[var(--line)] p-3 rounded-[var(--radius)] bg-[var(--surface)]">
+                          <span className="text-[var(--faint)] block font-mono uppercase text-[10px]">Max Capacity</span>
                           <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
                             {selectedFacility.capacity} Seats
                           </span>
                         </div>
-                        <div className="border border-[var(--line)] p-2.5 rounded-sm bg-[var(--surface)]">
-                          <span className="text-[var(--faint)] block font-medium">Equipment</span>
+                        <div className="border border-[var(--line)] p-3 rounded-[var(--radius)] bg-[var(--surface)]">
+                          <span className="text-[var(--faint)] block font-mono uppercase text-[10px]">Equipment</span>
                           <span className="font-bold text-[var(--ink)] text-sm flex items-center gap-1.5 mt-0.5">
                             {selectedFacility.equipment?.length || 0} Listed
                           </span>
@@ -461,19 +516,19 @@ export function CampusExplorerPage() {
                       </div>
 
                       <Link
-                      to={`/facilities/${selectedFacility.id}`}
-                      className="w-full inline-flex items-center justify-center gap-1.5 py-3 px-4 rounded-sm bg-[var(--ink)] hover:bg-[var(--ink-dark)] text-[var(--paper)] font-semibold text-sm transition-colors duration-150"
-                    >
-                      View Details & Reserve
-                      <ArrowRight className="w-4 h-4 shrink-0" />
-                    </Link>
+                        to={`/facilities/${selectedFacility.id}`}
+                        className="w-full btn-primary gap-1.5 py-3"
+                      >
+                        {isPureSignatory ? 'Inspect Venue Schedule & Specs' : 'View Details & Reserve'}
+                        <ArrowRight className="w-4 h-4 shrink-0" />
+                      </Link>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center h-full text-center p-8">
                       <Info className="w-10 h-10 text-[var(--muted)] mb-3" />
-                      <h4 className="text-sm font-medium text-[var(--ink)]">No facility selected</h4>
+                      <h4 className="text-sm font-bold text-[var(--ink)]">No facility selected</h4>
                       <p className="text-xs text-[var(--muted)] mt-1 max-w-xs">
-                        Tap a room on the plan above to see its details and start a reservation request.
+                        Select a room on the schematic floor plan to inspect its capacity, equipment, and schedule.
                       </p>
                     </div>
                   )}
@@ -482,36 +537,36 @@ export function CampusExplorerPage() {
             </div>
           )}
 
-          {/* Facility roster — real facility data, not a demo list */}
+          {/* Facility roster */}
           {viewTab === 'building' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-bold text-[var(--ink)] uppercase tracking-widest">
+                <h2 className="text-xs font-bold text-[var(--ink)] uppercase tracking-widest">
                   All facilities in {selectedBuilding.name}
                 </h2>
-                <p className="text-xs text-[var(--muted)]">
-                  {buildingFacilityCount} facility{buildingFacilityCount !== 1 ? 'ies' : ''}
+                <p className="text-xs font-mono text-[var(--muted)]">
+                  {buildingFacilityCount} mapped spaces
                 </p>
               </div>
               {buildingFloors.length === 0 ? (
-                <div className="rounded-sm border border-[var(--line)] bg-[var(--paper)] p-6 text-center">
+                <div className="panel p-6 text-center">
                   <Info className="w-8 h-8 text-[var(--muted)] mx-auto mb-3" />
                   <p className="text-sm text-[var(--muted)]">No floors found for this building.</p>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {facilitiesByFloor.map(({ floor, facilities: floorFacs }) => {
                     const plotted = floorFacs.filter(hasMapPosition).length
                     return (
-                      <div key={floor.id} className="border border-[var(--line)] rounded-sm overflow-hidden">
-                        <div className="border-b border-[var(--line)] bg-[var(--surface-2)] px-4 py-2.5 flex items-center justify-between">
+                      <div key={floor.id} className="panel overflow-hidden">
+                        <div className="border-b border-[var(--line)] bg-[var(--ink)] text-[var(--paper)] px-4 py-2.5 flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="w-1 h-4 rounded-sm bg-[var(--ink)]" />
-                            <span className={`text-xs font-bold text-[var(--ink)] uppercase tracking-widest`}>
+                            <span className="w-1.5 h-3.5 rounded-xs bg-[var(--accent)]" />
+                            <span className="text-xs font-bold uppercase tracking-widest">
                               {floorLabel(floor)}
                             </span>
                           </div>
-                          <span className="text-xs font-mono text-[var(--muted)]">
+                          <span className="text-xs font-mono text-[var(--paper)]/70">
                             {plotted}/{floorFacs.length} on plan
                           </span>
                         </div>
@@ -525,21 +580,23 @@ export function CampusExplorerPage() {
                               <button
                                 key={f.id}
                                 onClick={() => selectFacility(f)}
-                                className={`w-full px-4 py-3 flex items-center justify-between border-b border-[var(--line)] last:border-0 hover:bg-[var(--surface-2)] transition duration-150 text-left ${selectedFacility?.id === f.id ? 'bg-[var(--surface-2)]' : ''}`}
+                                className={`w-full px-4 py-3 flex items-center justify-between hover:bg-[var(--accent-tint)] transition duration-150 text-left ${
+                                  selectedFacility?.id === f.id ? 'bg-[var(--accent-tint)]' : ''
+                                }`}
                               >
                                 <div className="flex items-center gap-3">
                                   <span className={statusTag(f.status)}>{f.status}</span>
                                   <div className="min-w-0 flex-1">
                                     <div className="font-bold text-[var(--ink)] text-sm truncate">
-                                      {f.facility_code} — {f.name}
+                                      <span className="font-mono text-[var(--accent-text)]">{f.facility_code}</span> — {f.name}
                                     </div>
                                     <div className="text-xs text-[var(--muted)] truncate">
                                       {f.category.replace('_', ' ')} · {f.capacity} seats
                                     </div>
                                   </div>
                                 </div>
-                                <span className={`text-xs font-bold uppercase ${hasMapPosition(f) ? 'text-[var(--ink)]' : 'text-[var(--muted)]'}`}>
-                                  {hasMapPosition(f) ? 'On plan' : 'No plan location'}
+                                <span className={`text-xs font-mono font-semibold uppercase ${hasMapPosition(f) ? 'text-[var(--accent-text)]' : 'text-[var(--muted)]'}`}>
+                                  {hasMapPosition(f) ? 'On plan →' : 'No plan location'}
                                 </span>
                               </button>
                             ))
@@ -553,13 +610,12 @@ export function CampusExplorerPage() {
             </div>
           )}
 
-          {/* Empty / no-plan-location state for the plan view */}
           {viewTab === 'this-floor' && selectedFloor && facilitiesOnFloor.length > 0 && plottedCount === 0 && (
-            <div className="rounded-sm border border-[var(--line)] bg-[var(--surface-2)] p-6 text-center">
+            <div className="panel p-6 text-center">
               <Info className="w-10 h-10 text-[var(--muted)] mx-auto mb-3" />
               <h4 className="text-sm font-medium text-[var(--ink)] mb-1">No floor-plan locations yet</h4>
               <p className="text-xs text-[var(--muted)] max-w-xs mx-auto">
-                The facilities on {floorLabel(selectedFloor)} don't have floor-plan positions set. Use the
+                The facilities on {floorLabel(selectedFloor)} don't have floor-plan positions set. Use the{' '}
                 <strong>Entire building</strong> tab to see them all.
               </p>
             </div>

@@ -56,7 +56,8 @@ function overlaps(aStart: number, aEnd: number, bStart: number, bEnd: number): b
 export function FacilityDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { user, isOfficer } = useAuth()
+  const { user, isOfficer, isApprover, isAdmin } = useAuth()
+  const isPureSignatory = isApprover && !isAdmin
 
   const [facility, setFacility] = useState<Facility | null>(null)
   const [building, setBuilding] = useState<Building | null>(null)
@@ -370,22 +371,42 @@ export function FacilityDetailPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-7 bg-[var(--paper)] rounded-sm border border-[var(--line)] p-6 sm:p-8">
+        <div className="lg:col-span-7 bg-[var(--paper)] rounded-[var(--radius)] border border-[var(--line)] p-6 sm:p-8">
           {!user ? (
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
               <Lock className="w-12 h-12 text-[var(--muted)]" />
               <h4 className="text-lg font-bold text-[var(--ink)]">Sign in to reserve this facility</h4>
               <p className="text-sm text-[var(--muted)] max-w-sm">
-                You must be logged in to submit a reservation request. Sign in or create an account to get started.
+                You must be logged in to submit a reservation request. Sign in to your institutional account to get started.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   to="/login"
-                  className="w-full sm:w-auto px-6 py-3 rounded-sm bg-[var(--accent)] text-[var(--accent-ink)] font-semibold text-sm hover:bg-[var(--accent-strong)] transition"
+                  className="btn-accent"
                 >
-                  Sign in
+                  Sign in to Workspace
                 </Link>
               </div>
+            </div>
+          ) : isPureSignatory ? (
+            <div className="py-12 px-6 text-center space-y-4 bg-[var(--surface)] rounded-[var(--radius)] border border-[var(--line)]">
+              <div className="w-10 h-10 rounded-[var(--radius)] bg-[var(--ink)] text-[var(--accent-line)] border border-[var(--accent)]/40 flex items-center justify-center mx-auto">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <div className="space-y-1.5 max-w-md mx-auto">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent-text)] font-bold">
+                  Signatory Reference Mode
+                </span>
+                <h4 className="text-base font-extrabold text-[var(--ink)]">
+                  Read-Only Venue Availability Inspection
+                </h4>
+                <p className="text-xs text-[var(--muted)] leading-relaxed">
+                  As an institutional signatory, this view shows live room schedules and existing bookings so you can verify venue availability while reviewing event proposals.
+                </p>
+              </div>
+              <Link to="/approvals" className="btn-primary text-xs">
+                Return to Approvals Inbox
+              </Link>
             </div>
           ) : (
             <>
@@ -519,7 +540,7 @@ export function FacilityDetailPage() {
                           >
                             {organizations.map((org) => (
                               <option key={org.id} value={org.id}>
-                                {org.name} ({org.acronym})
+                                {org.name === org.acronym ? org.name : `${org.name} (${org.acronym})`}
                               </option>
                             ))}
                           </select>

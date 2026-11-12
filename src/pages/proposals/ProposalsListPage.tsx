@@ -62,19 +62,24 @@ export function ProposalsListPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">Digital paperwork</p>
-          <h1 className="text-2xl font-black">Event proposals</h1>
-          <p className="text-sm text-[var(--muted)] mt-1 max-w-xl">
-            File the activity proposal, budget and venue request once. It moves through the Org Adviser, College Dean,
+      <header className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--ink-soft)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-xs bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+            Student Organization Digital Paperwork
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--paper)]">
+            Event Proposals &amp; Signatory Routing
+          </h1>
+          <p className="text-xs sm:text-sm text-[var(--paper)]/70 max-w-2xl">
+            File the activity proposal, budget, and venue request once. It moves through the Org Adviser, College Dean,
             OSAS, Campus Director, and University President approvals digitally.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           {orgs.length > 1 && (
             <select
-              className="field-input"
+              className="border border-[var(--ink-soft)] rounded-[var(--radius)] text-xs py-2.5 px-3 font-medium text-[var(--paper)] bg-[var(--ink-dark)] focus:border-[var(--accent)]"
               value={orgId}
               onChange={(e) => setOrgId(e.target.value)}
               aria-label="Organization"
@@ -88,11 +93,11 @@ export function ProposalsListPage() {
           )}
           {orgId && (
             <Link
-            to={`/proposals/new?org=${orgId}`}
-            className="btn-primary inline-flex items-center gap-2 whitespace-nowrap"
-          >
-            <Plus className="w-4 h-4 shrink-0" /> New proposal
-          </Link>
+              to={`/proposals/new?org=${orgId}`}
+              className="btn-accent inline-flex items-center gap-2 whitespace-nowrap"
+            >
+              <Plus className="w-4 h-4 shrink-0" /> New Proposal
+            </Link>
           )}
         </div>
       </header>

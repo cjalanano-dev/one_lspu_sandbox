@@ -2,51 +2,44 @@
 
 @layer base {
   :root {
-    /* ---------- Monochrome structural tokens (full CSS colors) ---------- */
-    --paper: hsl(0 0% 100%);
-    --surface: hsl(0 0% 98%);
-    --surface-2: hsl(0 0% 96%);
-    --ink: hsl(0 0% 4%);
-    --muted: hsl(0 0% 32%);
-    --faint: hsl(0 0% 64%);
-    --line: hsl(0 0% 89%);
-    --line-strong: hsl(0 0% 4%);
-    --ink-dark: hsl(0 0% 10%);
-    --gray-medium: hsl(0 0% 73%);
+    /* ---------- Navy Institutional Palette ----------
+       Obsidian #020712 · Classic #0C1F42 · Uniform #1A2F5A · Royal #1E3A7D
+       Stormy #2C4F7F · Nautical #3D5E9B · Coastal #5E7BA8 · Sky #8A9DBE · Foggy #B5C2D9 */
+    --paper: #fbfcfe;        /* Near-white with a navy cast */
+    --surface: #f1f4f9;      /* Foggy Navy wash, very light */
+    --surface-2: #e3e9f2;    /* Secondary grouping */
 
-    /* ---------- Primary accent ---------- */
-    /* Blue carries the primary actions and selected states. Everything
-       structural (text, surfaces, borders, metadata) stays monochrome so
-       the accent never becomes a wash.
+    --ink: #0c1f42;          /* Classic Navy: primary text & dark chrome */
+    --ink-dark: #020712;     /* Obsidian Navy: deepest headers */
+    --ink-soft: #1a2f5a;     /* Uniform Navy: elevated dark surface */
 
-       Contrast (WCAG 2.1, measured against #FFFFFF):
-         --accent        #006BFF  4.62:1 with white  - fills, borders, marks
-         --accent-text   #0057D1  6.39:1 with white  - accent TEXT on light surfaces
-         --accent-strong #0052CC  6.82:1 with white  - hover fill
-         --accent-deep   #0B2A5B  14.03:1 with white - bands and banners
-       Use --accent-text wherever the blue is the text colour; keep --accent
-       for fills and non-text marks. */
-    --accent: #006BFF;
-    --accent-text: #0057D1;   /* slightly darker so accent text passes contrast on white */
-    --accent-strong: #0052CC; /* hover / pressed */
-    --accent-deep: #0B2A5B;   /* headers, dark sections */
+    --muted: #2c4f7f;        /* Stormy Navy: secondary text */
+    --faint: #5e7ba8;        /* Coastal Navy: metadata */
+    --gray-medium: #b5c2d9;  /* Foggy Navy: disabled fills */
 
-    --accent-ink: #ffffff;
-    --accent-tint: #eaf0fd;
-    --accent-tint-2: #d6e2fa;
-    --accent-line: #b9cbf5;
+    --line: #dbe2ee;         /* Hairline border */
+    --line-strong: #1a2f5a;  /* Uniform Navy rule */
 
-    /* ---------- Destructive / sign-out ---------- */
-    /* Reserved for destructive actions only (sign out). Never used for
-       ordinary navigation, so the meaning stays unambiguous.
-       Contrast against #FFFFFF: --danger 6.57:1, --danger-strong 8.66:1. */
-    --danger: #b42218c7;
-    --danger-strong: #912018;
-    --danger-ink: #ffffff;
-    --danger-tint: #fef3f2;
-    --danger-text: #b42318;
+    /* ---------- Accents ---------- */
+    --accent: #3d5e9b;       /* Nautical Navy */
+    --accent-text: #1e3a7d;  /* Royal Navy: accessible on light */
+    --accent-strong: #1e3a7d;/* Royal Navy hover */
+    --accent-deep: #0c1f42;  /* Classic Navy hero bands */
 
-    --radius: 0.125rem;
+    --accent-ink: #fbfcfe;
+    --accent-tint: #e8edf6;  /* Foggy-derived hover wash */
+    --accent-tint-2: #d3dcec;
+    --accent-line: #8a9dbe;  /* Sky Navy border */
+
+    /* ---------- Destructive / Warning ---------- */
+    --danger: #dc2626;
+    --danger-strong: #b91c1c;
+    --danger-ink: #fcfcfd;
+    --danger-tint: #fef2f2;
+    --danger-text: #b91c1c;
+
+    --radius: 0.375rem;
+    --radius-lg: 0.5rem;
 
     /* ---------- Type scale ---------- */
     --text-xs: 0.75rem;
@@ -70,8 +63,10 @@
   body {
     background-color: var(--surface);
     color: var(--ink);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* ---------- Focus styles (a11y) ---------- */
@@ -97,8 +92,8 @@
     overflow: visible;
     z-index: 9999;
     padding: 0.75rem 1rem;
-    background: var(--accent);
-    color: var(--accent-ink);
+    background: var(--ink);
+    color: var(--paper);
     border-radius: var(--radius);
     text-decoration: none;
     font-weight: 600;
@@ -116,26 +111,29 @@
 }
 
 @layer components {
-  /* ---------- Status tags — state via icon + label, not color ---------- */
+  /* ---------- Status tags — refined institutional badges ---------- */
   .tag {
     display: inline-flex;
     align-items: center;
-    font-size: var(--text-xs);
+    gap: 0.375rem;
+    font-size: 0.6875rem;
     font-weight: 600;
-    padding: 0.125rem 0.5rem;
-    border-radius: var(--radius);
+    padding: 0.1875rem 0.5rem;
+    border-radius: 0.25rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    line-height: 1.2;
   }
-  .tag-approved {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border: 1px solid var(--accent);
+  .tag-approved,
+  .tag-available {
+    background: var(--accent-tint);
+    color: var(--accent-text);
+    border: 1px solid var(--accent-line);
   }
   .tag-pending {
-    background: transparent;
-    color: var(--accent-text);
-    border: 1px solid var(--accent);
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
   }
   .tag-rejected,
   .tag-cancelled {
@@ -144,47 +142,41 @@
     border: 1px solid var(--line);
   }
   .tag-maintenance {
-    background: var(--surface-2);
-    color: var(--muted);
-    border: 1px solid var(--line);
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
   }
-  .tag-available {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border: 1px solid var(--accent);
-  }
-  .tag-reserved {
-    background: var(--accent-tint);
-    color: var(--ink);
-    border: 1px solid var(--accent-line);
-  }
+  .tag-reserved,
   .tag-occupied {
-    background: var(--accent-tint);
+    background: var(--surface-2);
     color: var(--ink);
-    border: 1px solid var(--accent-line);
+    border: 1px solid var(--gray-medium);
   }
 
   /* ---------- KPI value ---------- */
   .kpi-value {
-    font-size: 1.875rem;
-    font-weight: 900;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
     color: var(--ink);
+    line-height: 1.1;
   }
   .kpi-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
+    margin-top: 0.25rem;
   }
 
   /* ---------- Form field ---------- */
   .field-label {
     display: block;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     color: var(--ink);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.375rem;
   }
   .field-input {
     width: 100%;
@@ -194,10 +186,12 @@
     background: var(--paper);
     color: var(--ink);
     font-size: 0.875rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
   .field-input:focus {
     outline: none;
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
   }
 
   /* ---------- Buttons ---------- */
@@ -205,45 +199,49 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.625rem 1.25rem;
     border-radius: var(--radius);
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-size: 0.875rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.8125rem;
     font-weight: 600;
-    border: none;
+    border: 1px solid var(--ink);
     cursor: pointer;
-    transition: background 0.12s;
+    transition: all 0.15s ease;
   }
   .btn-primary:hover {
-    background: var(--accent-strong);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
   }
   .btn-primary:disabled {
     background: var(--surface-2);
+    border-color: var(--line);
     color: var(--faint);
     cursor: not-allowed;
   }
 
-  /* Alias so an accent button can be requested explicitly. */
   .btn-accent {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.625rem 1.25rem;
     border-radius: var(--radius);
     background: var(--accent);
     color: var(--accent-ink);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
-    border: none;
+    border: 1px solid var(--accent);
     cursor: pointer;
-    transition: background 0.12s;
+    transition: all 0.15s ease;
   }
   .btn-accent:hover {
     background: var(--accent-strong);
+    border-color: var(--accent-strong);
   }
   .btn-accent:disabled {
     background: var(--surface-2);
+    border-color: var(--line);
     color: var(--faint);
     cursor: not-allowed;
   }
@@ -252,37 +250,39 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.625rem 1.25rem;
     border-radius: var(--radius);
-    border: 1.5px solid var(--line-strong);
+    border: 1px solid var(--line);
     background: var(--paper);
     color: var(--ink);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.12s;
+    transition: all 0.15s ease;
   }
   .btn-outline:hover {
     background: var(--accent-tint);
     border-color: var(--accent-line);
+    color: var(--accent-text);
   }
 
   .btn-text {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.5rem 0.875rem;
     border-radius: var(--radius);
     background: transparent;
-    color: var(--ink);
-    font-size: 0.875rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: background 0.12s;
+    transition: all 0.15s ease;
   }
   .btn-text:hover {
     background: var(--accent-tint);
+    color: var(--accent-text);
   }
 
   /* ---------- Panel ---------- */
@@ -290,16 +290,18 @@
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: var(--radius);
+    box-shadow: 0 1px 2px 0 rgba(24, 26, 31, 0.03);
   }
 
   /* ---------- Accent link ---------- */
   .link-accent {
     color: var(--accent-text);
     text-decoration: none;
+    font-weight: 500;
     transition: color 0.12s;
   }
   .link-accent:hover {
-    color: var(--accent-deep);
+    color: var(--accent-strong);
     text-decoration: underline;
   }
 }

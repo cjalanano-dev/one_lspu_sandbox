@@ -236,7 +236,7 @@ BEGIN
 
   INSERT INTO public.organizations (name, acronym, description, logo_url, status, college, org_type, parent_org_id)
   VALUES (
-    'Alliance of Leaders in G-Software and Optimization', 'ALGO',
+    'Association for Leadership, Governance, and Organization', 'ALGO',
     'Sub-organization of OCTA for Computer Science Students.',
     'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=128&q=80',
     'active', 'College of Computer Studies (CCS)', 'program_sub_org', v_octa
@@ -252,7 +252,7 @@ BEGIN
 
   INSERT INTO public.organizations (name, acronym, description, logo_url, status, college, org_type, parent_org_id)
   VALUES (
-    'Bachelor of Science in Information Technology Student Society', 'BSIT',
+    'BSIT', 'BSIT',
     'Sub-organization of OCTA for Information Technology Students.',
     'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=128&q=80',
     'active', 'College of Computer Studies (CCS)', 'program_sub_org', v_octa
