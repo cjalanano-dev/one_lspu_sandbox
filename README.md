@@ -1,204 +1,174 @@
-# ONE Facility
+# ONE LSPU
 
-Unified Campus Facility Management System — discover buildings, explore floor plans, and reserve campus facilities with a conflict-checked approval lifecycle.
+**ONE LSPU** unifies campus facility management and student event governance at **Laguna State Polytechnic University — San Pablo City Campus** through interactive schematic floor plans, real-time availability, automated conflict detection, and a five-stage digital signatory workflow—eliminating manual paperwork, preventing double bookings, and delivering faster, transparent approvals across dedicated role-based workspaces.
 
-## Demo accounts (Supabase Auth)
+---
 
-All accounts use the password `Demo1234!`.
+## Quick Start
 
-| Email | Role | Lands on |
-|-------|------|----------|
-| `test1@gmail.com` | Faculty | `/explorer` |
-| `officer@campus.edu` | Organization Officer (files proposals) | `/organization` |
-| `admin@campus.edu` | Facility Administrator | `/admin` |
-| `adviser@campus.edu` | 1. Organization Adviser | `/approvals` |
-| `dean@campus.edu` | 2. College Dean | `/approvals` |
-| `osas@campus.edu` | 3. Office of Student Affairs | `/approvals` |
-| `director@campus.edu` | 4. Campus Director | `/approvals` |
-| `president@campus.edu` | 5. University President | `/approvals` |
-
-All accounts are active and linked to seeded campus data (TIC, SAC, SRH buildings; 17 facilities).
-There is no student account on the live project; `test1@gmail.com` is the closest
-equivalent and lands on the student-facing explorer flow.
-
-The approver accounts are what the five-stage event proposal chain needs
-(Adviser → Dean → OSAS → Campus Director → University President). Recreate them
-in any environment with:
-
-```
-SUPABASE_URL=https://<ref>.supabase.co \
-SUPABASE_SERVICE_ROLE_KEY=<service_role key> \
-node scripts/seed-demo-accounts.mjs
-```
-
-Then apply the SQL migrations below, which assign the roles and link
-`officer@campus.edu` as president of OCTA and `adviser@campus.edu` as the
-organisation adviser.
-
-## Recommended demo flow (officer → admin → officer)
-
-1. **Officer** — sign in as `officer@campus.edu`, lands on `/organization`. See ACM org + activities.
-2. **Officer** — go to `/explorer` → pick a facility → select an available time slot → submit a reservation.
-3. **Admin** — sign in as `admin@campus.edu`, lands on `/admin`. See the pending approval queue with the officer's reservation.
-4. **Admin** — approve (emerald) or decline (rose, with reason) the reservation.
-5. **Officer** — sign back in → bell shows "Reservation Approved" / "Reservation Declined" notification.
-6. **Student** — sign in as `test1@gmail.com`, book a facility, see it in `/my-reservations`.
-7. **Proposal chain** — as `officer@campus.edu` file a proposal at `/proposals/new`, then sign in as each approver in turn (`adviser@` → `dean@` → `osas@` → `director@` → `president@`) to approve it. The signed packet is at `/proposals/:id/print`.
-
-
-## Tech stack
-
-- React 19 + Vite + TypeScript + Tailwind CSS
-- Supabase (Auth, PostgreSQL, RLS, realtime-ready)
-- React Router, TanStack Query, React Hook Form, Zod, Lucide React, Recharts, FullCalendar
-
-## Project structure
-
-```
-src/
-  app/            Router, route guards (RequireAuth, RequireRole, RedirectIfAuthed)
-  components/     Navigation, UI primitives (Dialog, Skeleton, ErrorBoundary)
-  features/auth/  Supabase Auth context (sign in / sign out / session)
-  features/campus/ Floor plan viewer
-  lib/            dataStore (Supabase-only data layer), supabase client, utils
-  pages/          Landing, Login, Unauthorized, NotFound,
-                  user (explorer, facilities, facility detail, my reservations),
-                  organization, admin
-  types/          Shared TypeScript types
-supabase/
-  migrations/     Schema, profile trigger, role access control, demo seed data
-  seed.sql        Campus organizations, buildings, floors, facilities
-```
-
-## Key behaviors
-
-- **No localStorage fallback** — every read/write goes directly to Supabase. If env vars are missing, the app throws a clear config error instead of silently falling back to demo data.
-- **No public sign-up** — the register route and all "Create account" entry points are removed. Accounts are provisioned administratively; the `handle_new_user` trigger still creates the profile row when an account is added in the Supabase dashboard.
-- **Role-based routes** — `/admin` (facility_admin/system_admin), `/organization` (officer), `/my-reservations` (authenticated). Guests are redirected to login.
-- **Availability-first booking** — time slots are derived from `facility_schedules`, existing approved reservations, and maintenance periods. Conflicts are checked client-side and re-checked server-side via the `approve_reservation()` RPC.
-- **Notifications** — written to Supabase (not localStorage); the bell shows unread count and marks items read.
-
-## Environment
-
-Create `.env` (do not overwrite an existing user-owned `.env`):
-
-```
-VITE_SUPABASE_URL=https://yojmjuctaqjvxljjctnb.supabase.co
+### 1. Environment Variables
+Ensure your `.env` file at the project root contains your Supabase credentials:
+```env
+VITE_SUPABASE_URL=https://lntfwbqxprrqvsexmckw.supabase.co
 VITE_SUPABASE_ANON_KEY=<your-anon-key>
 ```
 
+### 2. Install & Run
+```bash
+npm install
+npm run dev
+```
+
+---
+
+## Demo Accounts (Password: `Demo1234!`)
+
+Every account is pre-provisioned in Supabase Auth and `public.profiles`. You can switch between any role instantly using the **Quick Fill** tabs on `/login` (`Staff & Faculty`, `Org Officers`, `Signatories`).
+
+### 1. Faculty & Campus Requesters
+| Role | Email | Password | Default Workspace | Capabilities |
+| :--- | :--- | :--- | :--- | :--- |
+| **Faculty** | `test1@gmail.com` | `Demo1234!` | `/` | Browse interactive campus map & floor plans, check live availability, submit & cancel personal facility reservations |
+
+### 2. Student Organization Officers (Presidents & Secretaries)
+Only active **Presidents** and **Secretaries** of recognized student organizations can draft and submit event proposals.
+
+| Organization | Position | Email | Password | Default Route |
+| :--- | :--- | :--- | :--- | :--- |
+| **OCTA** *(CCS Mother Org)* | President | `octa.president@campus.edu` *(or `officer@campus.edu`)* | `Demo1234!` | `/proposals` |
+| **OCTA** *(CCS Mother Org)* | Secretary | `octa.secretary@campus.edu` | `Demo1234!` | `/proposals` |
+| **ALGO** *(CS Sub-Org under OCTA)* | President | `algo.president@campus.edu` | `Demo1234!` | `/proposals` |
+| **ALGO** *(CS Sub-Org under OCTA)* | Secretary | `algo.secretary@campus.edu` | `Demo1234!` | `/proposals` |
+| **BSIT** *(IT Sub-Org under OCTA)* | President | `bsit.president@campus.edu` | `Demo1234!` | `/proposals` |
+| **BSIT** *(IT Sub-Org under OCTA)* | Secretary | `bsit.secretary@campus.edu` | `Demo1234!` | `/proposals` |
+| **COESC** *(College of Engineering SC)* | President | `coesc.president@campus.edu` | `Demo1234!` | `/proposals` |
+| **COESC** *(College of Engineering SC)* | Secretary | `coesc.secretary@campus.edu` | `Demo1234!` | `/proposals` |
+
+### 3. Five-Stage Signatories & Approvers
+Each proposal progresses sequentially through five clearance stages (`Step 1` → `Step 5`). Step 1 is scoped to the submitting organization's dedicated Faculty Adviser.
+
+| Stage | Signatory Role | Email | Password | Scope / Default Route |
+| :--- | :--- | :--- | :--- | :--- |
+| **Step 1** | **OCTA Adviser** | `octa.adviser@campus.edu` | `Demo1234!` | Step 1 for OCTA proposals (`/approvals`) |
+| **Step 1** | **ALGO Adviser** | `algo.adviser@campus.edu` | `Demo1234!` | Step 1 for ALGO proposals (`/approvals`) |
+| **Step 1** | **BSIT Adviser** | `bsit.adviser@campus.edu` | `Demo1234!` | Step 1 for BSIT proposals (`/approvals`) |
+| **Step 1** | **COESC Adviser** | `coesc.adviser@campus.edu` | `Demo1234!` | Step 1 for COESC proposals (`/approvals`) |
+| **Step 1** | **General Org Adviser** | `adviser@campus.edu` | `Demo1234!` | Fallback Step 1 Signatory (`/approvals`) |
+| **Step 2** | **College Dean** | `dean@campus.edu` | `Demo1234!` | Step 2 Signatory (`/approvals`) |
+| **Step 3** | **OSAS** | `osas@campus.edu` | `Demo1234!` | Step 3 Signatory (`/approvals`) |
+| **Step 4** | **Campus Director** | `director@campus.edu` | `Demo1234!` | Step 4 Signatory (`/approvals`) |
+| **Step 5** | **University President** | `president@campus.edu` | `Demo1234!` | Step 5 Final Signatory (`/approvals`) |
+
+### 4. Facility & System Administration
+| Role | Email | Password | Default Route | Capabilities |
+| :--- | :--- | :--- | :--- | :--- |
+| **Facility Admin** | `admin@campus.edu` | `Demo1234!` | `/admin` | Approve/reject direct venue reservations, manage facility catalog & maintenance status, oversee campus-wide bookings |
+
+---
+
+## End-to-End Demo Walkthroughs
+
+### Flow A: Five-Stage Student Event Proposal & Automatic Venue Locking
+1. **Draft & Submit Proposal (`octa.president@campus.edu`)**
+   - Sign in on `/login` using the **Org Officers** quick-fill tab.
+   - Click **New Event Proposal** (`/proposals/new`) and complete the 5-step wizard:
+     - **Step 1 (Basic Details):** Title, Category, Organization (`OCTA`), Objective, and Expected Attendance.
+     - **Step 2 (Schedule & Venue):** Pick an event date/time and select a campus venue (e.g., `AVEC-MAIN` or `GYM-MAIN`). The system performs live venue conflict checks against both direct reservations and other in-flight proposals.
+     - **Step 3 (Program & Speakers):** Add program timeline blocks and speakers.
+     - **Step 4 (Budget):** Itemize projected expenses with automatic total calculation (`tabular-nums`).
+     - **Step 5 (Documents):** Upload supporting PDFs/attachments and click **Submit for Approval**.
+2. **Sequential Signatory Clearances (`Step 1` → `Step 5`)**
+   - Sign in as `octa.adviser@campus.edu` (`/approvals`), open the proposal, and click **Approve & Sign** (or **Return for Revision** with required notes).
+   - Repeat clearance through `dean@campus.edu` (Step 2), `osas@campus.edu` (Step 3), `director@campus.edu` (Step 4), and `president@campus.edu` (Step 5).
+   - Each approval generates a cryptographic **SHA-256 signature hash**, timestamp, and audit trail entry.
+3. **Automatic Reservation & Printable Permit**
+   - Upon **Step 5 (University President)** approval:
+     - The proposal status transitions to `approved`.
+     - A confirmed reservation is **automatically locked** in `public.reservations` for the selected venue and schedule.
+     - The event appears on the **University-Wide Student Organization Events Calendar** (`/calendar`).
+   - Open `/proposals/:id/print` to generate the official A4 **Event Permit & Clearance Sheet** complete with signatory stamps and a verifiable QR code (`/verify/:reference`).
+
+### Flow B: Interactive Campus Discovery & Direct Facility Reservation
+1. Sign in as `test1@gmail.com` (Faculty) or `octa.president@campus.edu`.
+2. Open **Campus Map** (`/explorer`):
+   - Explore the **Interactive 2D LSPU San Pablo Campus Map** featuring 16 real campus buildings, main gates, parking zones, and pathways.
+   - Select a building (e.g., `Old CCS Building` or `AVEC Building`) and switch to the **Floor Plan Viewer** to inspect room-level schematic layouts and live status pins (`Available`, `Reserved`, `Pending`, `Maintenance`).
+3. Click any room pin to inspect capacity, amenities, and schedule, then submit a time-slot reservation.
+4. Sign in as `admin@campus.edu` (`/admin`) to review and approve the reservation request.
+
+---
+
+## Key Architecture & Features
+
+- **Role-Isolated Workspaces:**
+  - **Signatories (`adviser`, `dean`, `osas`, `director`, `president`):** Dedicated clearance inbox (`/approvals`), 48-hour SLA tracking, overdue alerts, and university calendar visibility.
+  - **Organization Officers (`student_officer`):** Executive dashboard (`/organization`), 5-step proposal wizard (`/proposals`), real-time stepper tracking, and facility booking access.
+  - **Facility Administrators (`admin`, `super_admin`):** Central reservation command center (`/admin`), status overrides, and facility inventory controls.
+  - **Faculty & Staff (`faculty`, `student`):** Streamlined campus map discovery (`/explorer`), directory search (`/facilities`), and personal reservation tracking (`/my-reservations`).
+- **Real LSPU San Pablo Campus Geometry (`16 Buildings`, `22 Reservable Facilities`):**
+  - **Buildings:** `COE`, `CIT-MULTI`, `CIT`, `AVEC`, `OLD-CCS` (1F & 2F), `GYM`, `CCJE`, `CAS`, `CBAA`, `AMPHI`, `CHMT`, `BADMINTON`, `RESEARCH`, `NEW-CCS`, `HOSTEL`, and `CTE`.
+  - **Facilities:** Includes `GYM-MAIN` (1,200 cap), `AMPHI-MAIN` (600 cap), `AVEC-MAIN` (250 cap), `OLD-CCS-LAB1`–`LAB6` & `LEC1`, `NEW-CCS-ACCRED-1F`, `CBAA-ACCRED`, `CCJE-FH`, `CTE-FH-2F`, `BADMINTON-MAIN`, `HOSTEL-MAIN`, `RESEARCH-MAIN`, and college room blocks.
+- **Dual-Layer Conflict Detection:**
+  - Prevents overlapping bookings at both the client pre-check layer (`check_reservation_conflict` & `check_proposal_venue_conflict` RPCs) and the PostgreSQL trigger layer (`trg_prevent_reservation_overlap`) with a 1-hour setup/teardown buffer.
+- **Cryptographic Signatory Ledger & Public QR Verification:**
+  - Every signatory decision records a verifiable signature hash (`SHA-256`) and can be validated publicly without login via `/verify/:reference`.
+- **Architectural Space & Signatory Ledger UI:**
+  - Engineered with `IBM Plex Sans` and `IBM Plex Mono`, `1px` structural hairlines (`.ledger-strip` / `.ledger-cell`), high-contrast status semantics, print-ready A4 permit stylesheets, and responsive touch targets (`320px` mobile to desktop widescreen).
+
+---
+
+## Application Routes
+
+| Route | Access | Description |
+| :--- | :--- | :--- |
+| `/` | Public / Authenticated | Institutional portal for guests; role-scoped workspace upon login |
+| `/login` | Public | Institutional Sign-In with Quick-Fill Demo Role Switcher |
+| `/calendar` | Authenticated | University-Wide Student Organization Events Calendar (Month / Week / Day) |
+| `/explorer` | Requesters & Admins | Interactive 2D LSPU San Pablo Campus Map & SVG Floor Plan Viewer |
+| `/facilities` | Requesters & Admins | Searchable Facility Directory with Building, Type, Capacity, and Equipment filters |
+| `/facilities/:id` | Requesters & Admins | Facility Specifications, Live Availability Timeline, and Reservation Modal |
+| `/my-reservations` | Requesters & Admins | Personal Reservation Ledger & Cancellation Controls |
+| `/organization` | `student_officer`, `admin` | Student Organization Executive Dashboard (Activities & Venue Bookings) |
+| `/proposals` | `student_officer`, Signatories, Admins | Event Proposals Registry with Status & Search Filters |
+| `/proposals/new` | `student_officer` *(Pres/Sec)*, `admin` | 5-Step Event Proposal Submission Wizard |
+| `/proposals/:id` | Authenticated | Proposal Dossier, 5-Stage Approval Stepper, Budget, & Audit Log |
+| `/proposals/:id/print` | Authenticated | Printable A4 Official Event Permit with QR Code & Digital Stamps |
+| `/verify/:reference` | Public | Public Cryptographic Permit & Signatory Verification Page |
+| `/approvals` | Signatories & Admins | Signatory Clearance Inbox with 48h SLA Indicators & Batch Filters |
+| `/admin` | `admin`, `super_admin` | Facility Administrator Command Center & Catalog Management |
+
+---
+
+## Database Schema & Migrations (`supabase/migrations/`)
+
+All 20 migrations are applied to project `lntfwbqxprrqvsexmckw`:
+
+1. `20261110_init_schema.sql` — Core enums, `profiles`, `organizations`, `buildings`, `floors`, `facilities`, `reservations`, `reservation_logs`, and overlap prevention triggers.
+2. `20261111_rls_and_rpc.sql` — Row-Level Security (RLS) policies and `check_reservation_conflict` RPC.
+3. `20261112_seed_campus_data.sql` — Initial campus seed data.
+4. `20261113_seed_demo_accounts.sql` — Core demo accounts in `auth.users` and `public.profiles`.
+5. `20261114_event_proposals_schema.sql` — 5-stage `event_proposals`, `proposal_approvals`, `proposal_attachments`, `proposal_audit_logs`, and automatic venue reservation trigger on Step 5 approval.
+6. `20261115_seed_signatory_accounts.sql` — Signatory demo accounts (`adviser`, `dean`, `osas`, `director`, `president`) and sample multi-stage proposals.
+7. `20261116_enhance_proposals_v2.sql` — Budget breakdown JSONB, program schedule, speakers, QR verification reference, SHA-256 signature hashes, and `check_proposal_venue_conflict` RPC.
+8. `20261117_storage_and_Print_Verification.sql` — Supabase Storage bucket (`proposal-attachments`) and public QR verification RPC (`verify_proposal_by_reference`).
+9. `20261118_student_orgs_and_officers.sql` — `organization_officers` table and helper functions (`can_create_org_proposal`).
+10. `20261119_lspu_campus_map_seed.sql` — LSPU San Pablo City Campus 2D map coordinates and schematic floor plan geometries.
+11. `20261120_lockdown_public_signup.sql` — Disables public self-registration and restricts account creation to institutional provisioning.
+12. `20261121_fix_storage_rls_and_conflict_rpc.sql` — Storage RLS refinements and conflict detection accuracy updates.
+13. `20261122_fix_proposal_update_rls.sql` — RLS policy allowing officers to resubmit returned proposals and signatories to advance stages.
+14. `20261123_reseed_orgs_octa_algo_bsit_coesc.sql` — Seeds real LSPU student organizations (`OCTA`, `ALGO`, `BSIT`, `COESC`) with hierarchy (`parent_org_id`).
+15. `20261124_seed_org_presidents_and_secretaries.sql` — Dedicated President and Secretary accounts for `OCTA`, `ALGO`, `BSIT`, and `COESC`.
+16. `20261125_org_advisers_and_step1_scoping.sql` — Dedicated Faculty Adviser accounts per organization and Step 1 approval scoping.
+17. `20261126_rename_bsit_org.sql` — Standardizes BSIT organization naming and metadata.
+18. `20261127_update_campus_buildings.sql` — Updates campus buildings to the 16 real LSPU San Pablo structures.
+19. `20261128_align_facilities_to_real_buildings.sql` — Aligns facility records and floor plan coordinates to the real campus buildings.
+20. `20261129_reprovision_real_facilities.sql` — Provisions the 22 real reservable facilities across LSPU San Pablo City Campus.
+
+---
+
 ## Scripts
 
-```
-npm run dev     # start dev server at http://localhost:5173
-npm run build   # production build
-npm run lint    # oxlint
-```
-
-## Database
-
-Apply migrations in order:
-
-```
-npx supabase db reset        # local (if using Supabase CLI locally)
-# or apply each migration file to the remote project:
-npx supabase db query --remote --file supabase/migrations/<file>.sql
-```
-
-Migration order:
-1. `20261110_init_schema.sql` — 13 tables, RLS, helper functions
-2. `20261111_add_profile_trigger.sql` — auto-create profiles on signup
-3. `20261112_demo_cleanup.sql` — anon catalog reads, notifications INSERT policy
-4. `20261113_role_access_control.sql` — harden signup roles, link officer to ACM
-5. `20261114_demo_seed_data.sql` — activities, reservations, maintenance, notifications
-6. `20261115_event_proposals.sql` — event proposals, budget, attachments, approval steps/events
-7. `20261116_student_organizations_and_hierarchy.sql` — org hierarchy, 5-stage approval chain
-8. `20261117_randomize_seed_ids.sql` — randomise seeded UUIDs
-9. `20261118_plot_real_facilities.sql` — plot the 12 real facilities on the floor plans
-10. `20261119_close_public_signup.sql` — reject public signups (before-user-created hook)
-11. `20261120_facility_images.sql` — a photograph for every facility
-12. `20261121_repair_proposals_and_org_hierarchy.sql` — reconcile the proposals schema (see below)
-
-### Verify the schema actually matches the app
-
-A migration that is not applied leaves the app failing at runtime with errors
-like `Could not find the table 'public.proposal_budget_items' in the schema
-cache`. Check what the project actually has:
-
-```
-npx supabase db query --remote --read-only \
-  "SELECT version, name FROM supabase_migrations.schema_migrations ORDER BY version;"
-```
-
-Only migrations listed there are tracked by Supabase; anything applied by hand
-in the dashboard is invisible to it and can be lost on the next reset.
-
-`20261121_repair_proposals_and_org_hierarchy.sql` ends with a **schema guard**
-that raises an exception if any table, column or function the app depends on is
-missing, and it ends with `NOTIFY pgrst, 'reload schema'` so PostgREST picks
-up the new schema immediately. Run it after any schema change:
-
-```
-npx supabase db query --remote --file supabase/migrations/20261121_repair_proposals_and_org_hierarchy.sql
-```
-
-### Why the proposals schema needed a repair migration
-
-`20261115` and `20261116` were never applied to the live project, and they
-also disagreed with each other and with the app:
-
-- `20261116` called `public.check_schedule_conflicts(...)`, which no migration
-  defined.
-- `20261116`'s `submit_proposal` wrote to `proposal_events (step_id,
-  actor_role, note)`, columns that `20261115` — and the app's `ProposalEvent`
-  type — do not have.
-- `20261115` constrained `approval_steps.step_role` to three roles, but
-  `20261116` inserts five different ones.
-- `20261116` renamed the `submit_proposal` parameter from `p_proposal` to
-  `p_proposal_id`, so the app's `rpc('submit_proposal', { p_proposal })` call
-  would not resolve.
-- `20261115`'s venue conflict check only ran for the `facility_admin` step,
-  which the five-stage chain never creates.
-
-`20261121` installs the reconciled schema in one place, matching what
-`src/types/index.ts` and `src/lib/proposals.ts` actually expect, and adds the
-guard so a skipped migration fails loudly instead of silently.
-
-One more subtlety it fixes: the `proposals` SELECT policy cannot use a helper
-that re-queries `public.proposals`, because such a function cannot see the row
-being inserted. With the helper, `insert(...).select(...)` — which is
-`INSERT ... RETURNING` — fails with `42501 new row violates row-level
-security policy`. The policy now evaluates the row's own columns inline.
-
-## Closing public registration
-
-Public self-registration is closed at two layers:
-
-1. **Auth config** — `supabase/config.toml` sets `enable_signup = false` and
-   registers the before-user-created hook. Push it with:
-   ```
-   npx supabase config push
-   ```
-   > This compares the whole local config against the project. To change only
-   > the signup settings, stage a minimal `supabase/config.toml` that declares
-   > just `[auth] enable_signup` and `[auth.hook.before_user_created]`, then
-   > run `npx supabase config push --workdir <dir>` — undeclared properties are
-   > left unchanged on the remote project.
-
-2. **Database** — `20261119_close_public_signup.sql` creates
-   `public.hook_reject_public_signup()`, which returns an error for every
-   signup that reaches it.
-
-Accounts are provisioned administratively instead: create them in the
-Supabase dashboard (Authentication → Users → Add user) or with the
-service_role key. The `handle_new_user` trigger still creates the matching
-`profiles` row automatically.
-
-Verified against the live project: `POST /auth/v1/signup` is rejected, while
-`POST /auth/v1/admin/users` and existing-user sign-in both still work.
-
-## Status
-
-- TypeScript: `tsc --noEmit` clean
-- Build: `npm run build` succeeds (~668 kB)
-- Dev server: `http://localhost:5173`
+- `npm run dev` — Start Vite development server with HMR
+- `npm run build` — Type-check (`tsc -b`) and build production bundle to `dist/`
+- `npm run lint` — Run ESLint across `src/`
+- `npm run preview` — Preview production build locally
