@@ -1,96 +1,45 @@
-
 @import "tailwindcss";
 
 @layer base {
   :root {
-    /* ---------- Core palette ---------- */
-    --paper: #FFFFFF;
-    --surface: #F5F7F9;
-    --surface-2: #E8EEF2;
+    /* ---------- Navy Institutional Palette ----------
+       Obsidian #020712 · Classic #0C1F42 · Uniform #1A2F5A · Royal #1E3A7D
+       Stormy #2C4F7F · Nautical #3D5E9B · Coastal #5E7BA8 · Sky #8A9DBE · Foggy #B5C2D9 */
+    --paper: #fbfcfe;        /* Near-white with a navy cast */
+    --surface: #f1f4f9;      /* Foggy Navy wash, very light */
+    --surface-2: #e3e9f2;    /* Secondary grouping */
 
-    --ink: #040910;
-    --muted: #42515E;
-    --faint: #82909C;
+    --ink: #0c1f42;          /* Classic Navy: primary text & dark chrome */
+    --ink-dark: #020712;     /* Obsidian Navy: deepest headers */
+    --ink-soft: #1a2f5a;     /* Uniform Navy: elevated dark surface */
 
-    --line: #DCE3E9;
-    --line-strong: #294143;
+    --muted: #2c4f7f;        /* Stormy Navy: secondary text */
+    --faint: #5e7ba8;        /* Coastal Navy: metadata */
+    --gray-medium: #b5c2d9;  /* Foggy Navy: disabled fills */
 
-    --ink-dark: #040910;
-    --gray-medium: #AAB8C1;
+    --line: #dbe2ee;         /* Hairline border */
+    --line-strong: #1a2f5a;  /* Uniform Navy rule */
 
-    /* ---------- Navy primary colors ---------- */
-    --accent: #173B63;
-    --accent-text: #102D48;
-    --accent-strong: #0B1921;
-    --accent-deep: #0B1921;
+    /* ---------- Accents ---------- */
+    --accent: #3d5e9b;       /* Nautical Navy */
+    --accent-text: #1e3a7d;  /* Royal Navy: accessible on light */
+    --accent-strong: #1e3a7d;/* Royal Navy hover */
+    --accent-deep: #0c1f42;  /* Classic Navy hero bands */
 
-    --accent-ink: #FFFFFF;
-    --accent-tint: #E8EEF5;
-    --accent-tint-2: #D3DEE9;
-    --accent-line: #A8BBCF;
+    --accent-ink: #fbfcfe;
+    --accent-tint: #e8edf6;  /* Foggy-derived hover wash */
+    --accent-tint-2: #d3dcec;
+    --accent-line: #8a9dbe;  /* Sky Navy border */
 
-    /* ---------- Palette shades ---------- */
-    --midnight-black: #040910;
-    --deep-navy: #0B1921;
-    --dark-teal: #14272D;
-    --deep-forest: #294143;
-    --muted-teal: #344D4C;
-    --forest-sage: #425C56;
-    --dusty-green: #4F695F;
-    --sage-green: #5E7769;
-    --soft-moss: #6E8675;
-    --light-sage: #97A994;
+    /* ---------- Destructive / Warning ---------- */
+    --danger: #dc2626;
+    --danger-strong: #b91c1c;
+    --danger-ink: #fcfcfd;
+    --danger-tint: #fef2f2;
+    --danger-text: #b91c1c;
 
-    /* ---------- Gradient backgrounds ---------- */
-    --gradient-primary: linear-gradient(
-      120deg,
-      #040910 0%,
-      #0B1921 35%,
-      #14272D 70%,
-      #294143 100%
-    );
-
-    --gradient-hero: linear-gradient(
-      115deg,
-      #0B1921 0%,
-      #102D48 45%,
-      #14272D 100%
-    );
-
-    --gradient-soft: linear-gradient(
-      135deg,
-      #14272D 0%,
-      #294143 55%,
-      #425C56 100%
-    );
-
-    --gradient-button: linear-gradient(
-      110deg,
-      #102D48 0%,
-      #173B63 55%,
-      #294143 100%
-    );
-
-    --gradient-hover: linear-gradient(
-      110deg,
-      #173B63 0%,
-      #294143 100%
-    );
-
-    /* ---------- Shadows ---------- */
-    --shadow-soft: 0 4px 20px rgba(4, 9, 16, 0.06);
-    --shadow-medium: 0 8px 30px rgba(4, 9, 16, 0.12);
-    --shadow-navy: 0 8px 24px rgba(11, 25, 33, 0.18);
-
-    /* ---------- Destructive actions ---------- */
-    --danger: #B42318;
-    --danger-strong: #912018;
-    --danger-ink: #FFFFFF;
-    --danger-tint: #FEF3F2;
-    --danger-text: #B42318;
-
-    /* ---------- Radius ---------- */
-    --radius: 0.25rem;
+    --radius: 0.375rem;
+    --radius-lg: 0.5rem;
 
     /* ---------- Type scale ---------- */
     --text-xs: 0.75rem;
@@ -114,18 +63,19 @@
   body {
     background-color: var(--surface);
     color: var(--ink);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont,
-      'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-      'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
+  /* ---------- Focus styles (a11y) ---------- */
   *:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
-  /* ---------- Skip link ---------- */
+  /* ---------- Skip link (a11y) ---------- */
   .skip-link {
     position: absolute;
     left: -9999px;
@@ -135,7 +85,6 @@
     overflow: hidden;
     z-index: -9999;
   }
-
   .skip-link:focus {
     position: static;
     width: auto;
@@ -143,8 +92,8 @@
     overflow: visible;
     z-index: 9999;
     padding: 0.75rem 1rem;
-    background: var(--gradient-button);
-    color: var(--accent-ink);
+    background: var(--ink);
+    color: var(--paper);
     border-radius: var(--radius);
     text-decoration: none;
     font-weight: 600;
@@ -152,9 +101,7 @@
 
   /* ---------- Reduced motion ---------- */
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -164,94 +111,73 @@
 }
 
 @layer components {
-  /* ---------- Gradient utilities ---------- */
-  .navy-gradient {
-    background: var(--gradient-hero);
-  }
-
-  .navy-gradient-dark {
-    background: var(--gradient-primary);
-  }
-
-  .navy-gradient-soft {
-    background: var(--gradient-soft);
-  }
-
-  .navy-gradient-button {
-    background: var(--gradient-button);
-    color: #FFFFFF;
-    transition: background 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .navy-gradient-button:hover {
-    background: var(--gradient-hover);
-    box-shadow: var(--shadow-navy);
-  }
-
-  /* ---------- Status tags ---------- */
+  /* ---------- Status tags — refined institutional badges ---------- */
   .tag {
     display: inline-flex;
     align-items: center;
-    font-size: var(--text-xs);
+    gap: 0.375rem;
+    font-size: 0.6875rem;
     font-weight: 600;
-    padding: 0.125rem 0.5rem;
-    border-radius: var(--radius);
+    padding: 0.1875rem 0.5rem;
+    border-radius: 0.25rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    line-height: 1.2;
   }
-
   .tag-approved,
   .tag-available {
-    background: var(--gradient-button);
-    color: var(--accent-ink);
-    border: 1px solid var(--accent);
-  }
-
-  .tag-pending {
     background: var(--accent-tint);
     color: var(--accent-text);
     border: 1px solid var(--accent-line);
   }
-
+  .tag-pending {
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
   .tag-rejected,
-  .tag-cancelled,
-  .tag-maintenance {
+  .tag-cancelled {
     background: var(--surface-2);
     color: var(--muted);
     border: 1px solid var(--line);
   }
-
+  .tag-maintenance {
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+  }
   .tag-reserved,
   .tag-occupied {
-    background: var(--accent-tint);
-    color: var(--accent-text);
-    border: 1px solid var(--accent-line);
-  }
-
-  /* ---------- KPI ---------- */
-  .kpi-value {
-    font-size: 1.875rem;
-    font-weight: 900;
+    background: var(--surface-2);
     color: var(--ink);
+    border: 1px solid var(--gray-medium);
   }
 
+  /* ---------- KPI value ---------- */
+  .kpi-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1.1;
+  }
   .kpi-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
+    margin-top: 0.25rem;
   }
 
-  /* ---------- Form fields ---------- */
+  /* ---------- Form field ---------- */
   .field-label {
     display: block;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     color: var(--ink);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.375rem;
   }
-
   .field-input {
     width: 100%;
     padding: 0.5rem 0.75rem;
@@ -260,63 +186,83 @@
     background: var(--paper);
     color: var(--ink);
     font-size: 0.875rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
-
   .field-input:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(23, 59, 99, 0.12);
+    box-shadow: 0 0 0 3px var(--accent-tint);
   }
 
   /* ---------- Buttons ---------- */
-  .btn-primary,
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border: 1px solid var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  .btn-primary:disabled {
+    background: var(--surface-2);
+    border-color: var(--line);
+    color: var(--faint);
+    cursor: not-allowed;
+  }
+
   .btn-accent {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.625rem 1.25rem;
     border-radius: var(--radius);
-    background: var(--gradient-button);
+    background: var(--accent);
     color: var(--accent-ink);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
-    border: none;
+    border: 1px solid var(--accent);
     cursor: pointer;
-    transition: background 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.15s ease;
   }
-
-  .btn-primary:hover,
   .btn-accent:hover {
-    background: var(--gradient-hover);
-    box-shadow: var(--shadow-navy);
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
   }
-
-  .btn-primary:disabled,
   .btn-accent:disabled {
     background: var(--surface-2);
+    border-color: var(--line);
     color: var(--faint);
     cursor: not-allowed;
-    box-shadow: none;
   }
 
   .btn-outline {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.625rem 1.25rem;
     border-radius: var(--radius);
-    border: 1.5px solid var(--line-strong);
+    border: 1px solid var(--line);
     background: var(--paper);
     color: var(--ink);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
   }
-
   .btn-outline:hover {
     background: var(--accent-tint);
-    border-color: var(--accent);
+    border-color: var(--accent-line);
     color: var(--accent-text);
   }
 
@@ -324,37 +270,36 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.5rem 0.875rem;
     border-radius: var(--radius);
     background: transparent;
-    color: var(--ink);
-    font-size: 0.875rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.15s ease;
   }
-
   .btn-text:hover {
     background: var(--accent-tint);
     color: var(--accent-text);
   }
 
-  /* ---------- Panels ---------- */
+  /* ---------- Panel ---------- */
   .panel {
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    box-shadow: var(--shadow-soft);
+    box-shadow: 0 1px 2px 0 rgba(24, 26, 31, 0.03);
   }
 
-  /* ---------- Accent links ---------- */
+  /* ---------- Accent link ---------- */
   .link-accent {
     color: var(--accent-text);
     text-decoration: none;
+    font-weight: 500;
     transition: color 0.12s;
   }
-
   .link-accent:hover {
     color: var(--accent-strong);
     text-decoration: underline;

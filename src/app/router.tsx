@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from './layouts/AppLayout'
 import { RequireAuth, RequireRole, RedirectIfAuthed } from './guards/RequireAuth'
 import { ErrorBoundary } from '../components/ui/ErrorBoundary'
@@ -18,6 +18,7 @@ import { ProposalDetailPage } from '../pages/proposals/ProposalDetailPage'
 import { ApprovalsInboxPage } from '../pages/proposals/ApprovalsInboxPage'
 import { ProposalPrintPage } from '../pages/proposals/ProposalPrintPage'
 import { VerifyProposalPage } from '../pages/proposals/VerifyProposalPage'
+import { OrgEventsCalendarPage } from '../pages/public/OrgEventsCalendarPage'
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <LandingPage />,
+      },
+      {
+        path: 'calendar',
+        element: <OrgEventsCalendarPage />,
       },
       {
         path: 'explorer',
@@ -87,9 +92,9 @@ export const router = createBrowserRouter([
       {
         path: 'my-reservations',
         element: (
-          <RequireAuth>
+          <RequireRole allowedRoles={['student', 'faculty', 'officer', 'facility_admin', 'system_admin']}>
             <MyReservationsPage />
-          </RequireAuth>
+          </RequireRole>
         ),
       },
       {

@@ -43,6 +43,8 @@ function fail(error: { message: string } | null): asserts error is null {
 
 const ORG_NAME_OVERRIDES: Record<string, string> = {
   OCTA: 'Organization for Computing and Technology Advancements',
+  ALGO: 'Association for Leadership, Governance, and Organization',
+  BSIT: 'BSIT',
   COESC: 'College of Engineering Student Council',
 }
 
@@ -99,7 +101,7 @@ export const proposalStore = {
   },
 
   /** Proposals whose current pending step the given role can act on (RLS limits rows). */
-  async getInbox(role: string): Promise<InboxItem[]> {
+  async getInbox(role: string, userId?: string): Promise<InboxItem[]> {
     let q = supabase.from('approval_steps').select('*').eq('status', 'pending')
     if (role !== 'system_admin') {
       if (role === 'osas' || role === 'osa_staff') {
@@ -128,12 +130,20 @@ export const proposalStore = {
       .filter((s) => byId.has(s.proposal_id) && byId.get(s.proposal_id)!.status === 'in_review')
       .map((s) => {
         const proposal = byId.get(s.proposal_id)!
+        const organization = normalizeOrganization(orgs?.find((o) => o.id === proposal.organization_id))
         return {
           step: s,
           proposal,
-          organization: normalizeOrganization(orgs?.find((o) => o.id === proposal.organization_id)),
+          organization,
           facility: facs?.find((f) => f.id === proposal.facility_id),
         }
+      })
+      .filter((item) => {
+        // When an Organization Adviser views their inbox, strictly scope to organizations they advise
+        if (role === 'adviser' && userId && item.organization?.adviser_id) {
+          return item.organization.adviser_id === userId
+        }
+        return true
       })
   },
 

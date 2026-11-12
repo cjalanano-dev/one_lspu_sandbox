@@ -57,7 +57,11 @@ export function ProposalPrintPage() {
           <div>
             <p className="text-[9pt] uppercase tracking-widest">ONE LSPU · Event Proposal Packet</p>
             <h1 className="text-[18pt] font-black leading-tight">{p.title}</h1>
-            <p className="text-[10pt]">{organization?.name} ({organization?.acronym})</p>
+            <p className="text-[10pt]">
+              {organization?.name === organization?.acronym
+                ? organization?.name
+                : `${organization?.name} (${organization?.acronym})`}
+            </p>
           </div>
           <div className="text-right text-[9pt] flex gap-3 items-start">
             <div>

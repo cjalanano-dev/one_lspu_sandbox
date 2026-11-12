@@ -96,14 +96,17 @@ export function MyReservationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--ink-soft)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)] tracking-tight flex items-center gap-2.5">
-            <Calendar className="w-7 h-7 text-[var(--ink)]" />
-            My Reservations
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
+            Personal Booking Ledger
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--paper)] tracking-tight flex items-center gap-2.5 mt-0.5">
+            <Calendar className="w-6 h-6 text-[var(--accent)]" />
+            My Facility Reservations
           </h1>
-          <p className="text-sm text-[var(--muted)] mt-1">
-            Track submission status, review feedback, or manage your requests.
+          <p className="text-xs sm:text-sm text-[var(--paper)]/70 mt-1">
+            Track submission status, review administrator feedback, or manage your venue requests.
           </p>
         </div>
 
@@ -114,10 +117,10 @@ export function MyReservationsPage() {
               <button
                 key={st}
                 onClick={() => setFilterStatus(st as any)}
-                className={`px-3 py-1.5 rounded-sm text-xs font-bold capitalize transition ${
+                className={`px-3.5 py-1.5 rounded-[var(--radius)] text-xs font-bold capitalize transition ${
                   filterStatus === st
                     ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
-                    : 'border border-[var(--line)] text-[var(--muted)] hover:bg-[var(--accent-tint)]'
+                    : 'border border-[var(--ink-soft)] bg-[var(--ink-dark)] text-[var(--paper)]/70 hover:text-[var(--paper)]'
                 }`}
               >
                 {label}

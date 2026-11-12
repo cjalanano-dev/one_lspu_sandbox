@@ -1,6 +1,5 @@
-
 import { useState, useEffect, useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
   Building2,
   Compass,
@@ -8,424 +7,903 @@ import {
   ShieldCheck,
   ArrowRight,
   CheckCircle2,
+  Clock,
   Users,
+  FileText,
+  Inbox,
+  Plus,
+  AlertTriangle,
+  Layers,
+  Lock,
 } from 'lucide-react'
 import { useAuth } from '../../features/auth/AuthContext'
-import { dataStore } from '../../lib/dataStore'
-import type { Facility, Building } from '../../types'
+import { dataStore, canFileForOrganization } from '../../lib/dataStore'
+import { proposalStore, isOverdue, PROPOSAL_STATUS_LABEL, proposalTagClass, type InboxItem } from '../../lib/proposals'
+import { StudentOrgEventsCalendar } from '../../components/calendar/StudentOrgEventsCalendar'
+import { formatDateTime } from '../../lib/utils'
+import type { Facility, Building, Reservation, Proposal, Organization } from '../../types'
 
-const STEPS = [
-  {
-    number: '01',
-    title: 'Explore',
-    description: 'Browse campus buildings and discover available facilities through the interactive campus explorer.',
-    icon: Compass,
+const ROLE_TITLES: Record<string, { badge: string; title: string; subtitle: string }> = {
+  student: {
+    badge: 'Student Portal Workspace',
+    title: 'Campus Facility Discovery & Reservations',
+    subtitle: 'Locate study lounges, lecture halls, and laboratories across campus buildings and track your personal booking requests.',
   },
-  {
-    number: '02',
-    title: 'Discover',
-    description: 'Select a facility to inspect its location, capacity, features, and availability.',
-    icon: Building2,
+  faculty: {
+    badge: 'Faculty Portal Workspace',
+    title: 'Academic Venue & Laboratory Scheduling',
+    subtitle: 'Inspect instructional spaces, verify equipment availability, and manage academic room reservations.',
   },
-  {
-    number: '03',
-    title: 'Reserve',
-    description: 'Choose your preferred schedule and submit a facility reservation request.',
-    icon: Calendar,
+  officer: {
+    badge: 'Student Organization Executive Hub',
+    title: 'Organization Event Proposals',
+    subtitle: 'Draft digital event packets, monitor multi-stage signatory routing, and coordinate official organization bookings.',
   },
-  {
-    number: '04',
-    title: 'Confirm',
-    description: 'Track your request and receive updates once your reservation is reviewed.',
-    icon: CheckCircle2,
+  adviser: {
+    badge: 'Step 1 Signatory · Organization Adviser',
+    title: 'Adviser Endorsement & Review Desk',
+    subtitle: 'Review student organization event proposals, verify activity objectives and budgets, and issue Step 1 digital signatures.',
   },
-]
+  college_dean: {
+    badge: 'Step 2 Signatory · Office of the College Dean',
+    title: 'Academic & College Clearance Desk',
+    subtitle: 'Evaluate college-endorsed student organization proposals and grant academic unit clearance.',
+  },
+  osas: {
+    badge: 'Step 3 Signatory · Office of Student Affairs & Services',
+    title: 'OSAS Compliance & Welfare Clearance Desk',
+    subtitle: 'Audit student activity attachments, waivers, and institutional compliance prior to executive routing.',
+  },
+  osa_staff: {
+    badge: 'Step 3 Signatory · Office of Student Affairs',
+    title: 'Student Affairs Clearance Desk',
+    subtitle: 'Audit student activity packets, program flows, and compliance requirements.',
+  },
+  campus_director: {
+    badge: 'Step 4 Signatory · Office of the Campus Director',
+    title: 'Campus Operations & Executive Review Desk',
+    subtitle: 'Review campus-wide event clearances, venue allocations, and operational readiness.',
+  },
+  university_president: {
+    badge: 'Step 5 Signatory · Office of the University President',
+    title: 'Presidential Final Authorization Desk',
+    subtitle: 'Grant final institutional authorization for university-wide and major student organization events.',
+  },
+  facility_admin: {
+    badge: 'Facility Administration Command',
+    title: 'Venue Scheduling & Reservation Control',
+    subtitle: 'Process direct facility reservation requests, enforce conflict prevention, and oversee building utilization.',
+  },
+  system_admin: {
+    badge: 'Institutional System Administration',
+    title: 'Platform Governance & Operations Command',
+    subtitle: 'Full visibility across campus buildings, facility reservations, student organizations, and signatory workflows.',
+  },
+}
 
 export function LandingPage() {
-  const { user, signOut, isLoading, isStudent, isOfficer, isAdmin } = useAuth()
-  const navigate = useNavigate()
+  const { user, isLoading, isOfficer, isApprover, isAdmin } = useAuth()
 
   const [buildings, setBuildings] = useState<Building[]>([])
   const [facilities, setFacilities] = useState<Facility[]>([])
+  const [myReservations, setMyReservations] = useState<Reservation[]>([])
+  const [allPendingReservations, setAllPendingReservations] = useState<Reservation[]>([])
+  const [orgProposals, setOrgProposals] = useState<Proposal[]>([])
+  const [myOrgs, setMyOrgs] = useState<Organization[]>([])
+  const [advisedOrgs, setAdvisedOrgs] = useState<Organization[]>([])
+  const [inboxItems, setInboxItems] = useState<InboxItem[]>([])
   const [dataLoading, setDataLoading] = useState(true)
-  const [dataError, setDataError] = useState<string | null>(null)
+
+  const isPureSignatory = isApprover && !isAdmin
 
   useEffect(() => {
-    async function loadData() {
+    async function loadRoleScopedData() {
       setDataLoading(true)
-      setDataError(null)
-
       try {
         const [bList, fList] = await Promise.all([
           dataStore.getBuildings(),
           dataStore.getFacilities(),
         ])
-
         setBuildings(bList)
         setFacilities(fList)
-      } catch (err) {
-        setDataError(err instanceof Error ? err.message : 'Failed to load campus data.')
+
+        if (!user) {
+          setDataLoading(false)
+          return
+        }
+
+        // Load only data relevant to the user's specific role
+        if (user.primary_role === 'student' || user.primary_role === 'faculty') {
+          const res = await dataStore.getReservations({ requesterId: user.id })
+          setMyReservations(res)
+        } else if (user.primary_role === 'officer') {
+          const [orgs, res] = await Promise.all([
+            dataStore.getMyOrganizations(user.id),
+            dataStore.getReservations({ requesterId: user.id }),
+          ])
+          setMyOrgs(orgs)
+          setMyReservations(res)
+          const filing = orgs.find((o) => canFileForOrganization(o)) || orgs[0]
+          if (filing) {
+            const props = await proposalStore.listForOrganization(filing.id)
+            setOrgProposals(props)
+          }
+        } else if (isPureSignatory) {
+          const [inbox, advised] = await Promise.all([
+            proposalStore.getInbox(user.primary_role, user.id),
+            user.primary_role === 'adviser'
+              ? dataStore.getAdvisedOrganizations(user.id)
+              : Promise.resolve([] as Organization[]),
+          ])
+          setInboxItems(inbox)
+          setAdvisedOrgs(advised)
+        } else if (isAdmin) {
+          const [allRes, inbox] = await Promise.all([
+            dataStore.getReservations({ status: 'pending' }),
+            proposalStore.getInbox(user.primary_role, user.id),
+          ])
+          setAllPendingReservations(allRes)
+          setInboxItems(inbox)
+        }
+      } catch {
+        // Keep partial state if any query fails
       } finally {
         setDataLoading(false)
       }
     }
+    loadRoleScopedData()
+  }, [user, isPureSignatory, isAdmin])
 
-    loadData()
-  }, [])
-
-  const facilityCount = facilities.length
-  const buildingCount = buildings.length
-  const reservableCount = facilities.filter((f) => f.reservation_enabled).length
-
-  const facilitiesByBuilding = useMemo(() => {
-    const map = new Map<string, number>()
-
+  const facilitiesMap = useMemo(() => {
+    const map: Record<string, Facility> = {}
     facilities.forEach((f) => {
-      map.set(f.building_id, (map.get(f.building_id) ?? 0) + 1)
+      map[f.id] = f
     })
-
     return map
   }, [facilities])
 
-  const reservableFacilities = facilities.filter((f) => f.reservation_enabled)
+  const facilitiesByBuilding = useMemo(() => {
+    const map = new Map<string, number>()
+    facilities.forEach((f) => {
+      map.set(f.building_id, (map.get(f.building_id) ?? 0) + 1)
+    })
+    return map
+  }, [facilities])
 
-  const statusPill = (status: string) => {
-    switch (status) {
-      case 'available':
-        return 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
-      case 'reserved':
-      case 'occupied':
-        return 'bg-[var(--surface-2)] text-[var(--ink)] border-[var(--line-strong)]'
-      case 'maintenance':
-        return 'bg-[var(--surface-2)] text-[var(--muted)] border-[var(--line)]'
-      default:
-        return 'bg-[var(--surface-2)] text-[var(--muted)] border-[var(--line)]'
-    }
-  }
-
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/login')
-  }
+  const reservableFacilities = useMemo(
+    () => facilities.filter((f) => f.reservation_enabled),
+    [facilities],
+  )
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
+      <div className="min-h-[60vh] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-sm border-[var(--accent)] navy-gradient-button flex items-center justify-center">
-            <Building2 className="w-6 h-6 text-[var(--paper)]" />
+          <div className="w-10 h-10 rounded-[var(--radius)] bg-[var(--ink)] border border-[var(--accent)] flex items-center justify-center">
+            <Building2 className="w-5 h-5 text-[var(--paper)]" />
           </div>
-          <p className="text-xs text-[var(--muted)] uppercase tracking-widest font-medium">
-            Loading
+          <p className="text-xs text-[var(--muted)] font-mono uppercase tracking-widest">
+            Initializing Workspace…
           </p>
         </div>
       </div>
     )
   }
 
-  return (
-    <div className="space-y-0 pb-12">
-
-      {/* Hero */}
-      <section className="navy-gradient text-[var(--paper)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-12 items-start">
-
+  // ============================================================================
+  // 1. UNAUTHENTICATED INSTITUTIONAL PORTAL VIEW
+  // ============================================================================
+  if (!user) {
+    return (
+      <div className="space-y-10">
+        {/* Grayish-Black Institutional Hero with Subtle Blue Hints */}
+        <section className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink-soft)] overflow-hidden shadow-sm">
+          <div className="p-8 sm:p-12 lg:p-14 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm border border-white/20 text-white/70 text-xs font-semibold uppercase tracking-wider mb-2">
-                <Compass className="w-3.5 h-3.5" />
-                ONE LSPU · Unified Campus Platform
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[var(--accent-line)] text-xs font-mono uppercase tracking-widest">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                ONE LSPU · Institutional Governance Portal
+              </div>
+              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.12] text-[var(--paper)]">
+                Unified campus facilities &amp; role-based event governance.
+              </h1>
+              <p className="text-sm sm:text-base text-[var(--paper)]/70 leading-relaxed max-w-2xl">
+                A centralized institutional platform connecting students, faculty, student organizations,
+                and university signatories. Inspect schematic floor plans, prevent scheduling conflicts,
+                and route event proposals through dedicated role-specific workspaces.
+              </p>
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <Link
+                  to="/login"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-[var(--radius)] bg-[var(--accent)] text-[var(--accent-ink)] font-semibold text-xs uppercase tracking-wider hover:bg-[var(--accent-strong)] transition"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  Sign In to Role Workspace
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <Link
+                  to="/explorer"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/15 font-semibold text-xs uppercase tracking-wider hover:border-[var(--accent)] transition"
+                >
+                  <Compass className="w-3.5 h-3.5 text-[var(--accent)]" />
+                  Public Campus Map
+                </Link>
+              </div>
+            </div>
+
+            {/* Live Campus Telemetry Card */}
+            <div className="lg:col-span-5 bg-[var(--ink-dark)] border border-[var(--ink-soft)] rounded-[var(--radius)] p-6 space-y-5">
+              <div className="flex items-center justify-between border-b border-[var(--ink-soft)] pb-3">
+                <span className="text-xs font-mono uppercase tracking-widest text-[var(--paper)]/70">
+                  Live Campus Telemetry
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-[var(--accent-line)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                  ONLINE
+                </span>
               </div>
 
-              <h1 className="text-5xl lg:text-6xl font-black leading-none tracking-tighter">
-                Campus spaces,<br />
-                discovered and reserved.
-              </h1>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3.5 rounded-[var(--radius)] bg-[var(--ink)] border border-[var(--ink-soft)]">
+                  <div className="text-2xl font-extrabold text-[var(--paper)]">{buildings.length}</div>
+                  <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--paper)]/50 mt-0.5">
+                    Buildings Mapped
+                  </div>
+                </div>
+                <div className="p-3.5 rounded-[var(--radius)] bg-[var(--ink)] border border-[var(--ink-soft)]">
+                  <div className="text-2xl font-extrabold text-[var(--paper)]">{reservableFacilities.length}</div>
+                  <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--paper)]/50 mt-0.5">
+                    Reservable Spaces
+                  </div>
+                </div>
+              </div>
 
-              <p className="mt-4 text-base text-white/75 leading-relaxed max-w-xl">
-                Centralizing university auditoriums, laboratories, lecture halls, and arenas. Explore
-                interactive floor plans, eliminate double-bookings, and track approval status for
-                students and student organizations.
-              </p>
-
-              {user ? (
-                <div className="mt-8 flex flex-wrap gap-3">
+              <div className="space-y-2">
+                <p className="text-[11px] font-mono uppercase tracking-wider text-[var(--paper)]/50">
+                  Featured Institutional Venues
+                </p>
+                {reservableFacilities.slice(0, 3).map((f) => (
                   <Link
-                    to="/explorer"
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-white text-[var(--ink)] font-semibold text-sm hover:bg-slate-100 transition"
+                    key={f.id}
+                    to={`/facilities/${f.id}`}
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-[var(--radius)] bg-[var(--ink)] border border-[var(--ink-soft)] hover:border-[var(--accent)] transition group"
                   >
-                    <Compass className="w-4 h-4" />
-                    Campus Explorer
-                    <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                  </Link>
-
-                  {isOfficer && (
-                    <Link
-                      to="/organization"
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-sm border border-white/40 text-white font-semibold text-sm hover:bg-white/10 transition"
-                    >
-                      <Users className="w-4 h-4" />
-                      Org Dashboard
-                      <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                    </Link>
-                  )}
-
-                  {(isAdmin || isOfficer || isStudent) && (
-                    <Link
-                      to="/my-reservations"
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-sm border border-white/40 text-white font-semibold text-sm hover:bg-white/10 transition"
-                    >
-                      <Calendar className="w-4 h-4" />
-                      My Reservations
-                    </Link>
-                  )}
-
-                  {isAdmin && (
-                    <Link
-                      to="/admin"
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-sm border border-white/40 text-white font-semibold text-sm hover:bg-white/10 transition"
-                    >
-                      <ShieldCheck className="w-4 h-4" />
-                      Admin Panel
-                      <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                    </Link>
-                  )}
-                </div>
-              ) : (
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <Link
-                    to="/login"
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-white text-[var(--ink)] font-semibold text-sm hover:bg-slate-100 transition"
-                  >
-                    <Compass className="w-4 h-4" />
-                    Sign in
-                    <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            <div className="lg:col-span-5 space-y-6">
-              {dataError ? (
-                <div className="rounded-sm border border-[var(--line)] bg-white p-5 text-center">
-                  <p className="text-xs text-[var(--muted)]">{dataError}</p>
-                </div>
-              ) : (
-                <>
-                  {/* Availability board */}
-                  <div className="rounded-sm border border-white/20 bg-white p-5 shadow-[var(--shadow-medium)]">
-                    <h3 className="text-[var(--muted)] text-xs font-semibold uppercase tracking-widest mb-4">
-                      Availability board
-                    </h3>
-
-                    <div className="space-y-3">
-                      {reservableFacilities.slice(0, 4).map((f) => (
-                        <div
-                          key={f.id}
-                          className="flex items-center justify-between px-4 py-3 border border-[var(--line)] rounded-sm hover:border-[var(--accent-line)] transition"
-                        >
-                          <div className="flex flex-col">
-                            <p className="text-[var(--ink)] font-medium text-sm">{f.name}</p>
-                            <span className="text-xs text-[var(--muted)] uppercase tracking-widest">
-                              {f.facility_code}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <span
-                              className={`w-2 h-2 rounded-full ${statusPill(f.status)}`}
-                            />
-                            <span className="text-xs text-[var(--muted)] font-medium capitalize">
-                              {f.status}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-
-                      {reservableFacilities.length === 0 && (
-                        <p className="text-xs text-[var(--muted)] text-center py-2">
-                          No reservable facilities loaded.
-                        </p>
-                      )}
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-[var(--paper)] truncate group-hover:text-[var(--accent-line)]">
+                        {f.name}
+                      </p>
+                      <span className="text-[10px] font-mono text-[var(--paper)]/50 uppercase">
+                        {f.facility_code} · {f.capacity} cap
+                      </span>
                     </div>
-
-                    <Link
-                      to="/facilities"
-                      className="block text-[10px] font-bold uppercase tracking-widest text-[var(--accent-text)] hover:text-[var(--accent-deep)] mt-3 flex items-center gap-1"
-                    >
-                      View all {facilityCount} facilities
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
-                  </div>
-
-                  {/* Live stats */}
-                  <div className="grid grid-cols-2 gap-4">
-                    {[
-                      { label: 'Campus buildings', value: buildingCount },
-                      { label: 'Reservable facilities', value: reservableCount },
-                      { label: 'User roles', value: 5 },
-                      { label: 'Availability derived', value: 'LIVE' },
-                    ].map((stat) => (
-                      <div
-                        key={stat.label}
-                        className="rounded-sm border border-white/20 bg-white p-4 shadow-sm"
-                      >
-                        <div className="text-xl font-black text-[var(--ink)]">
-                          {stat.value}
-                        </div>
-                        <div className="mt-1 text-[10px] text-[var(--muted)] uppercase tracking-widest font-medium">
-                          {stat.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-xs bg-[var(--ink-soft)] text-[var(--accent-line)] border border-[var(--accent)]/30">
+                      {f.status}
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </div>
+          </div>
+        </section>
 
+        {/* Institutional Role Architecture Overview */}
+        <section className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+              <p className="text-xs font-mono uppercase tracking-widest text-[var(--accent-text)] font-semibold">
+                Strict Role Separation
+              </p>
+              <h2 className="text-xl font-extrabold text-[var(--ink)]">
+                Dedicated Workspaces by Institutional Role
+              </h2>
+            </div>
+            <p className="text-xs text-[var(--muted)]">
+              Each account only sees the tools, queues, and actions relevant to its authority.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                role: 'Students & Faculty',
+                desc: 'Explore interactive building floor plans, check live room schedules, and submit personal or academic reservation requests.',
+                tag: 'Discovery & Booking',
+              },
+              {
+                role: 'Student Org Officers',
+                desc: 'Manage student organization activities, compile event proposal packets with budgets, and track signatory clearances.',
+                tag: 'Proposal Filing',
+              },
+              {
+                role: 'Approval Signatories',
+                desc: 'Advisers, College Deans, OSAS, Campus Directors, and the University President access a focused digital signature queue.',
+                tag: 'Steps 1–5 Governance',
+              },
+              {
+                role: 'Facility & System Admins',
+                desc: 'Audit venue utilization, approve or decline direct room bookings, and oversee institutional spaces.',
+                tag: 'Venue Command',
+              },
+            ].map((item) => (
+              <div key={item.role} className="panel p-5 flex flex-col justify-between space-y-4">
+                <div className="space-y-2">
+                  <span className="inline-block text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-xs bg-[var(--accent-tint)] text-[var(--accent-text)] border border-[var(--accent-line)]">
+                    {item.tag}
+                  </span>
+                  <h3 className="font-bold text-sm text-[var(--ink)]">{item.role}</h3>
+                  <p className="text-xs text-[var(--muted)] leading-relaxed">{item.desc}</p>
+                </div>
+                <Link
+                  to="/login"
+                  className="text-xs font-semibold text-[var(--accent-text)] hover:text-[var(--accent-strong)] inline-flex items-center gap-1"
+                >
+                  Sign in for access <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Campus Buildings Table */}
+        <section className="panel overflow-hidden">
+          <div className="px-6 py-4 border-b border-[var(--line)] bg-[var(--ink)] text-[var(--paper)] flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold uppercase tracking-wider">Campus Building Directory</h2>
+              <p className="text-xs text-[var(--paper)]/60">
+                Public schematic directory of university buildings and mapped rooms
+              </p>
+            </div>
+            <Link
+              to="/explorer"
+              className="text-xs font-mono text-[var(--accent-line)] hover:underline flex items-center gap-1"
+            >
+              Open Interactive Map <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] font-mono uppercase">
+                  <th className="px-6 py-3">Code</th>
+                  <th className="px-6 py-3">Building Name</th>
+                  <th className="px-6 py-3">Levels</th>
+                  <th className="px-6 py-3 text-right">Facilities</th>
+                  <th className="px-6 py-3 text-right">Explorer</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--line)]">
+                {buildings.map((b) => (
+                  <tr key={b.id} className="hover:bg-[var(--surface)] transition">
+                    <td className="px-6 py-3.5 font-mono font-bold text-[var(--accent-text)]">{b.code}</td>
+                    <td className="px-6 py-3.5">
+                      <div className="font-semibold text-[var(--ink)]">{b.name}</div>
+                      <div className="text-[var(--muted)]">{b.location_description}</div>
+                    </td>
+                    <td className="px-6 py-3.5 font-mono text-[var(--muted)]">{b.total_floors} Floors</td>
+                    <td className="px-6 py-3.5 text-right font-mono font-bold text-[var(--ink)]">
+                      {facilitiesByBuilding.get(b.id) ?? 0}
+                    </td>
+                    <td className="px-6 py-3.5 text-right">
+                      <Link
+                        to={`/explorer?building=${b.code}`}
+                        className="inline-flex items-center gap-1 font-semibold text-[var(--accent-text)] hover:text-[var(--accent-strong)]"
+                      >
+                        Inspect Plan <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* University-Wide Student Organization Events Calendar (Month / Week / Day) */}
+        <StudentOrgEventsCalendar />
+      </div>
+    )
+  }
+
+  // ============================================================================
+  // AUTHENTICATED ROLE-SCOPED WORKSPACE HEADER (Shared across roles, customized copy)
+  // ============================================================================
+  const roleMeta = ROLE_TITLES[user.primary_role] ?? {
+    badge: 'Institutional Workspace',
+    title: 'Campus Portal',
+    subtitle: 'Access your role-authorized tools below.',
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* Grayish-Black Role Banner */}
+      <section className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink-soft)] p-6 sm:p-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-xs bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[11px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                {roleMeta.badge}
+              </div>
+              {user.primary_role === 'adviser' &&
+                advisedOrgs.map((org) => (
+                  <span
+                    key={org.id}
+                    className="px-2.5 py-0.5 rounded-xs bg-[var(--accent)] text-[var(--accent-ink)] text-[10px] font-mono font-bold uppercase tracking-wider"
+                  >
+                    Assigned Adviser: {org.acronym}
+                  </span>
+                ))}
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--paper)]">
+              {user.primary_role === 'adviser' && advisedOrgs.length > 0
+                ? `${advisedOrgs.map((o) => o.acronym).join(' / ')} Adviser Endorsement Desk`
+                : roleMeta.title}
+            </h1>
+            <p className="text-xs sm:text-sm text-[var(--paper)]/70 leading-relaxed">
+              {user.primary_role === 'adviser' && advisedOrgs.length > 0
+                ? `Review student organization event proposals submitted by ${advisedOrgs.map((o) => (o.name === o.acronym ? o.name : `${o.name} (${o.acronym})`)).join(', ')} and issue Step 1 digital signatures.`
+                : roleMeta.subtitle}
+            </p>
+          </div>
+
+          {/* Role-Specific Primary Quick Actions */}
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            {(user.primary_role === 'student' || user.primary_role === 'faculty') && (
+              <>
+                <Link to="/explorer" className="btn-accent text-xs gap-2">
+                  <Compass className="w-4 h-4" /> Explore Floor Plans
+                </Link>
+                <Link
+                  to="/my-reservations"
+                  className="px-4 py-2.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/15 text-xs font-semibold hover:border-[var(--accent)] transition flex items-center gap-2"
+                >
+                  <Calendar className="w-4 h-4 text-[var(--accent-line)]" /> My Reservations
+                </Link>
+              </>
+            )}
+
+            {isOfficer && (
+              <>
+                <Link to="/proposals/new" className="btn-accent text-xs gap-2">
+                  <Plus className="w-4 h-4" /> File Event Proposal
+                </Link>
+                <Link
+                  to="/organization"
+                  className="px-4 py-2.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/15 text-xs font-semibold hover:border-[var(--accent)] transition flex items-center gap-2"
+                >
+                  <Users className="w-4 h-4 text-[var(--accent-line)]" /> Organization Hub
+                </Link>
+              </>
+            )}
+
+            {isPureSignatory && (
+              <Link to="/approvals" className="btn-accent text-xs gap-2">
+                <Inbox className="w-4 h-4" /> Open Signatory Queue ({inboxItems.length})
+              </Link>
+            )}
+
+            {isAdmin && (
+              <>
+                <Link to="/admin" className="btn-accent text-xs gap-2">
+                  <ShieldCheck className="w-4 h-4" /> Open Command Center
+                </Link>
+                <Link
+                  to="/approvals"
+                  className="px-4 py-2.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/15 text-xs font-semibold hover:border-[var(--accent)] transition flex items-center gap-2"
+                >
+                  <Inbox className="w-4 h-4 text-[var(--accent-line)]" /> Proposal Clearances ({inboxItems.length})
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-2xl font-black tracking-tight text-[var(--ink)]">
-              How it works
-            </h2>
+      {/* ========================================================================
+          ROLE VIEW A: STUDENT & FACULTY WORKSPACE
+          Only shows personal reservation metrics, personal bookings, and venue finder
+          ======================================================================== */}
+      {(user.primary_role === 'student' || user.primary_role === 'faculty') && (
+        <div className="space-y-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="panel p-5 border-t-2 border-t-[var(--accent)]">
+              <p className="kpi-value">{myReservations.filter((r) => r.status === 'approved').length}</p>
+              <p className="kpi-label">Approved Bookings</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{myReservations.filter((r) => r.status === 'pending').length}</p>
+              <p className="kpi-label">Pending Requests</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{reservableFacilities.filter((f) => f.status === 'available').length}</p>
+              <p className="kpi-label">Available Venues Now</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{buildings.length}</p>
+              <p className="kpi-label">Campus Buildings</p>
+            </div>
           </div>
 
-          <ol className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[0, 1, 2, 3].map((i) => {
-              const step = STEPS[i]
-              const Icon = step.icon
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Personal Reservations Feed */}
+            <div className="lg:col-span-7 panel overflow-hidden">
+              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+                <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[var(--accent)]" />
+                  Your Recent Facility Requests
+                </h2>
+                <Link to="/my-reservations" className="text-xs font-semibold text-[var(--accent-text)] hover:underline">
+                  View all ({myReservations.length})
+                </Link>
+              </div>
+              <div className="divide-y divide-[var(--line)]">
+                {dataLoading ? (
+                  <p className="p-6 text-xs text-[var(--muted)]">Loading your reservations…</p>
+                ) : myReservations.length === 0 ? (
+                  <div className="p-8 text-center space-y-2">
+                    <p className="text-sm font-semibold text-[var(--ink)]">No personal reservations yet</p>
+                    <p className="text-xs text-[var(--muted)]">
+                      Select a room on the Campus Explorer or Directory to submit a booking request.
+                    </p>
+                    <Link to="/explorer" className="btn-primary text-xs mt-2">
+                      Browse Campus Spaces
+                    </Link>
+                  </div>
+                ) : (
+                  myReservations.slice(0, 5).map((r) => {
+                    const fac = facilitiesMap[r.facility_id]
+                    return (
+                      <div key={r.id} className="p-4 flex items-center justify-between gap-4 hover:bg-[var(--surface)] transition">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className={`tag ${r.status === 'approved' ? 'tag-approved' : r.status === 'pending' ? 'tag-pending' : 'tag-rejected'}`}>
+                              {r.status}
+                            </span>
+                            <span className="text-xs font-mono text-[var(--muted)]">
+                              {fac?.facility_code ?? 'VENUE'}
+                            </span>
+                          </div>
+                          <p className="font-bold text-sm text-[var(--ink)] mt-1 truncate">{r.title}</p>
+                          <p className="text-xs text-[var(--muted)]">
+                            {fac?.name} · {formatDateTime(r.start_datetime)}
+                          </p>
+                        </div>
+                        {fac && (
+                          <Link to={`/facilities/${fac.id}`} className="btn-outline text-xs shrink-0">
+                            Inspect
+                          </Link>
+                        )}
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+            </div>
 
-              return (
-                <li key={i} className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <span className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-sm navy-gradient-button text-white font-black text-xs uppercase shadow-sm">
-                      {step.number}
-                    </span>
-
+            {/* Quick Building Directory for Students/Faculty */}
+            <div className="lg:col-span-5 panel overflow-hidden">
+              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+                <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-[var(--accent)]" />
+                  Quick Building Access
+                </h2>
+                <Link to="/facilities" className="text-xs font-semibold text-[var(--accent-text)] hover:underline">
+                  Full Directory
+                </Link>
+              </div>
+              <div className="divide-y divide-[var(--line)]">
+                {buildings.map((b) => (
+                  <Link
+                    key={b.id}
+                    to={`/explorer?building=${b.code}`}
+                    className="p-4 flex items-center justify-between hover:bg-[var(--accent-tint)] transition group"
+                  >
                     <div>
-                      <h3 className="font-bold text-[var(--ink)]">{step.title}</h3>
-                      <p className="text-sm text-[var(--muted)] leading-relaxed">
-                        {step.description}
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-[var(--accent-text)]">{b.code}</span>
+                        <span className="font-bold text-sm text-[var(--ink)] group-hover:text-[var(--accent-text)]">
+                          {b.name}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[var(--muted)] mt-0.5">
+                        {b.total_floors} floors · {facilitiesByBuilding.get(b.id) ?? 0} rooms
                       </p>
                     </div>
-                  </div>
-                </li>
-              )
-            })}
-          </ol>
+                    <ArrowRight className="w-4 h-4 text-[var(--muted)] group-hover:text-[var(--accent-text)]" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
+      )}
 
-      {/* Campus directory */}
-      <section className="bg-[var(--surface-2)] py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-black tracking-tight text-[var(--ink)]">
-              Campus directory
-            </h2>
-
-            <p className="text-xs text-[var(--muted)] uppercase tracking-widest font-medium">
-              {buildingCount} buildings · {facilityCount} facilities
-            </p>
+      {/* ========================================================================
+          ROLE VIEW B: STUDENT ORGANIZATION OFFICER WORKSPACE
+          Only shows org proposals, signatory progress, and org venue reservations
+          ======================================================================== */}
+      {isOfficer && (
+        <div className="space-y-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="panel p-5 border-t-2 border-t-[var(--accent)]">
+              <p className="kpi-value">{orgProposals.filter((p) => p.status === 'in_review').length}</p>
+              <p className="kpi-label">Proposals In Signatory Routing</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{orgProposals.filter((p) => p.status === 'returned').length}</p>
+              <p className="kpi-label">Returned for Revision</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{orgProposals.filter((p) => p.status === 'approved').length}</p>
+              <p className="kpi-label">Cleared &amp; Approved Events</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{myOrgs.length}</p>
+              <p className="kpi-label">Active Officer Seats</p>
+            </div>
           </div>
 
-          {dataError ? (
-            <div className="rounded-sm border border-[var(--line)] bg-white p-6 text-center">
-              <p className="text-xs text-[var(--muted)]">{dataError}</p>
-            </div>
-          ) : (
-            <div className="rounded-sm border border-[var(--line)] bg-white shadow-[var(--shadow-soft)] overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-[var(--line)]">
-                    <th className="px-6 py-4 text-xs font-bold text-[var(--muted)] uppercase tracking-wider">
-                      Building
-                    </th>
-                    <th className="px-6 py-4 text-xs font-bold text-[var(--muted)] uppercase tracking-wider">
-                      Floors
-                    </th>
-                    <th className="px-6 py-4 text-xs font-bold text-[var(--muted)] uppercase tracking-wider text-right">
-                      Facilities
-                    </th>
-                    <th className="px-6 py-4 text-xs font-bold text-[var(--muted)] uppercase tracking-wider text-right">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {buildings.map((b) => (
-                    <tr
-                      key={b.id}
-                      className="border-b border-[var(--line)] last:border-0 hover:bg-[var(--accent-tint)]/50 transition"
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="lg:col-span-8 panel overflow-hidden">
+              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+                <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-[var(--accent)]" />
+                  Organization Event Proposals
+                </h2>
+                <Link to="/proposals" className="text-xs font-semibold text-[var(--accent-text)] hover:underline">
+                  Manage All Proposals
+                </Link>
+              </div>
+              <div className="divide-y divide-[var(--line)]">
+                {orgProposals.length === 0 ? (
+                  <div className="p-8 text-center space-y-2">
+                    <p className="text-sm font-semibold text-[var(--ink)]">No event proposals filed yet</p>
+                    <p className="text-xs text-[var(--muted)]">
+                      Start a digital proposal packet to route your activity through the Adviser, Dean, OSAS, Director, and President.
+                    </p>
+                    <Link to="/proposals/new" className="btn-primary text-xs mt-2">
+                      Create First Proposal
+                    </Link>
+                  </div>
+                ) : (
+                  orgProposals.slice(0, 5).map((p) => (
+                    <Link
+                      key={p.id}
+                      to={p.status === 'draft' || p.status === 'returned' ? `/proposals/${p.id}/edit` : `/proposals/${p.id}`}
+                      className="p-4 flex items-center justify-between gap-4 hover:bg-[var(--accent-tint)] transition"
                     >
-                      <td className="px-6 py-4">
-                        <div className="font-medium text-[var(--ink)]">{b.name}</div>
-                        <div className="text-xs text-[var(--muted)]">
-                          {b.location_description}
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className={proposalTagClass(p.status)}>{PROPOSAL_STATUS_LABEL[p.status]}</span>
+                          {p.reference_no && (
+                            <span className="text-xs font-mono text-[var(--muted)]">{p.reference_no}</span>
+                          )}
                         </div>
-                      </td>
-
-                      <td className="px-6 py-4 text-xs text-[var(--muted)]">
-                        {b.total_floors}
-                      </td>
-
-                      <td className="px-6 py-4 text-right">
-                        <span className="font-mono font-bold text-[var(--ink)]">
-                          {facilitiesByBuilding.get(b.id) ?? 0}
-                        </span>
-                      </td>
-
-                      <td className="px-6 py-4 text-right">
-                        <Link
-                          to={`/explorer?building=${b.code}`}
-                          className="inline-flex items-center gap-1 text-xs font-bold text-[var(--accent-text)] hover:text-[var(--accent-deep)] uppercase tracking-wider"
-                        >
-                          View building
-                          <ArrowRight className="w-3 h-3" />
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        <p className="font-bold text-sm text-[var(--ink)] mt-1 truncate">{p.title}</p>
+                        <p className="text-xs text-[var(--muted)]">
+                          {p.start_datetime ? formatDateTime(p.start_datetime) : 'Schedule TBD'}
+                        </p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-[var(--muted)] shrink-0" />
+                    </Link>
+                  ))
+                )}
+              </div>
             </div>
-          )}
-        </div>
-      </section>
 
-      {/* Closing band */}
-      <section className="navy-gradient-dark text-[var(--paper)] py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-sm border border-white/15 bg-white/5 p-10 text-center md:text-left md:p-12">
-            <h2 className="text-2xl md:text-3xl font-black mb-4">
-              Run the full reservation lifecycle
-            </h2>
-
-            <p className="text-white/75 text-sm leading-relaxed mb-6 max-w-2xl mx-auto md:mx-0">
-              Discover a facility, verify availability, submit a request, receive a reviewed decision,
-              and see the approved booking reflected on the facility calendar.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4">
-              <Link
-                to="/login"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-sm bg-white text-[var(--ink)] font-semibold transition hover:bg-slate-100"
-              >
-                <Compass className="w-5 h-5" />
-                Sign in and explore
+            <div className="lg:col-span-4 panel p-5 space-y-4">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
+                <Users className="w-4 h-4 text-[var(--accent)]" />
+                Your Organization Seats
+              </h2>
+              {myOrgs.length === 0 ? (
+                <p className="text-xs text-[var(--muted)]">No active organization memberships found.</p>
+              ) : (
+                <div className="space-y-3">
+                  {myOrgs.map((o) => (
+                    <div key={o.id} className="p-3.5 rounded-[var(--radius)] bg-[var(--surface)] border border-[var(--line)] space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold text-[var(--accent-text)]">{o.acronym}</span>
+                        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-xs bg-[var(--paper)] border border-[var(--line)] text-[var(--ink)]">
+                          {o.organization_role}
+                        </span>
+                      </div>
+                      {o.name !== o.acronym && (
+                        <p className="font-bold text-xs text-[var(--ink)]">{o.name}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <Link to="/organization" className="btn-outline w-full text-xs">
+                Open Full Organization Dashboard
               </Link>
             </div>
           </div>
         </div>
-      </section>
+      )}
 
+      {/* ========================================================================
+          ROLE VIEW C: INSTITUTIONAL SIGNATORY DESK (Adviser, Dean, OSAS, Director, President)
+          Strictly shows ONLY proposals awaiting their digital signature & SLA status
+          ======================================================================== */}
+      {isPureSignatory && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="panel p-5 border-t-2 border-t-[var(--accent)]">
+              <p className="kpi-value">{inboxItems.length}</p>
+              <p className="kpi-label">Packets Awaiting Your Signature</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{inboxItems.filter((i) => isOverdue(i.step)).length}</p>
+              <p className="kpi-label">Overdue SLA (&gt;48 Hours)</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">48h</p>
+              <p className="kpi-label">Standard Institutional SLA</p>
+            </div>
+          </div>
+
+          <div className="panel overflow-hidden">
+            <div className="px-6 py-4 border-b border-[var(--line)] bg-[var(--ink)] text-[var(--paper)] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Inbox className="w-4 h-4 text-[var(--accent-line)]" />
+                <h2 className="text-xs font-bold uppercase tracking-wider">
+                  Pending Signatory Queue
+                </h2>
+              </div>
+              <Link to="/approvals" className="text-xs font-mono text-[var(--accent-line)] hover:underline">
+                Open Full Inbox →
+              </Link>
+            </div>
+
+            {dataLoading ? (
+              <p className="p-6 text-xs text-[var(--muted)]">Loading signatory queue…</p>
+            ) : inboxItems.length === 0 ? (
+              <div className="p-10 text-center space-y-2">
+                <CheckCircle2 className="w-8 h-8 text-[var(--accent)] mx-auto" />
+                <p className="text-sm font-bold text-[var(--ink)]">Signatory Queue Clear</p>
+                <p className="text-xs text-[var(--muted)]">
+                  No student organization event proposals are currently waiting on your office.
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-[var(--line)]">
+                {inboxItems.map(({ proposal: p, step, organization, facility }) => {
+                  const late = isOverdue(step)
+                  return (
+                    <Link
+                      key={step.id}
+                      to={`/proposals/${p.id}`}
+                      className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[var(--accent-tint)] transition"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="tag tag-approved">
+                            Step {step.step_order} · {step.label}
+                          </span>
+                          <span className="text-xs font-mono text-[var(--muted)]">{p.reference_no}</span>
+                          {late && (
+                            <span className="tag tag-maintenance inline-flex items-center gap-1">
+                              <AlertTriangle className="w-3 h-3" /> Overdue
+                            </span>
+                          )}
+                        </div>
+                        <p className="font-bold text-sm text-[var(--ink)]">{p.title}</p>
+                        <p className="text-xs text-[var(--muted)]">
+                          {organization?.acronym ?? organization?.name} · Venue: {facility?.name ?? 'TBD'} ·{' '}
+                          {formatDateTime(p.start_datetime)}
+                        </p>
+                      </div>
+                      <span className="btn-primary text-xs shrink-0">
+                        Review &amp; Sign →
+                      </span>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================
+          ROLE VIEW D: FACILITY ADMIN & SYSTEM ADMIN COMMAND OVERVIEW
+          Shows pending room bookings + final proposal clearances + system metrics
+          ======================================================================== */}
+      {isAdmin && (
+        <div className="space-y-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="panel p-5 border-t-2 border-t-[var(--accent)]">
+              <p className="kpi-value">{allPendingReservations.length}</p>
+              <p className="kpi-label">Pending Venue Bookings</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{inboxItems.length}</p>
+              <p className="kpi-label">Proposal Venue Clearances</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{facilities.length}</p>
+              <p className="kpi-label">Managed Facilities</p>
+            </div>
+            <div className="panel p-5">
+              <p className="kpi-value">{buildings.length}</p>
+              <p className="kpi-label">Campus Buildings</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="panel overflow-hidden">
+              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+                <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-[var(--accent)]" />
+                  Direct Facility Reservation Queue
+                </h2>
+                <Link to="/admin" className="text-xs font-semibold text-[var(--accent-text)] hover:underline">
+                  Open Command Queue →
+                </Link>
+              </div>
+              <div className="divide-y divide-[var(--line)]">
+                {allPendingReservations.length === 0 ? (
+                  <p className="p-6 text-xs text-[var(--muted)]">No pending direct reservations.</p>
+                ) : (
+                  allPendingReservations.slice(0, 4).map((r) => (
+                    <Link
+                      key={r.id}
+                      to="/admin"
+                      className="p-4 flex items-center justify-between hover:bg-[var(--accent-tint)] transition"
+                    >
+                      <div>
+                        <p className="font-bold text-sm text-[var(--ink)]">{r.title}</p>
+                        <p className="text-xs text-[var(--muted)]">
+                          {facilitiesMap[r.facility_id]?.name} · {formatDateTime(r.start_datetime)}
+                        </p>
+                      </div>
+                      <span className="tag tag-pending">Review</span>
+                    </Link>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="panel overflow-hidden">
+              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+                <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
+                  <Inbox className="w-4 h-4 text-[var(--accent)]" />
+                  Event Proposal Signatory Queue
+                </h2>
+                <Link to="/approvals" className="text-xs font-semibold text-[var(--accent-text)] hover:underline">
+                  Open Clearances →
+                </Link>
+              </div>
+              <div className="divide-y divide-[var(--line)]">
+                {inboxItems.length === 0 ? (
+                  <p className="p-6 text-xs text-[var(--muted)]">No event proposals awaiting clearance.</p>
+                ) : (
+                  inboxItems.slice(0, 4).map(({ proposal: p, step }) => (
+                    <Link
+                      key={step.id}
+                      to={`/proposals/${p.id}`}
+                      className="p-4 flex items-center justify-between hover:bg-[var(--accent-tint)] transition"
+                    >
+                      <div>
+                        <p className="font-bold text-sm text-[var(--ink)]">{p.title}</p>
+                        <p className="text-xs text-[var(--muted)]">
+                          Step {step.step_order}: {step.label} · {p.reference_no}
+                        </p>
+                      </div>
+                      <span className="tag tag-approved">Inspect</span>
+                    </Link>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* University-Wide Student Organization Events Calendar (Visible on all role views) */}
+      <StudentOrgEventsCalendar />
     </div>
   )
 }

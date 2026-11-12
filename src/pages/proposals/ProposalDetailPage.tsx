@@ -57,10 +57,13 @@ export function ProposalDetailPage() {
   const { proposal: p, organization, facility, budget, attachments, steps, events, people } = packet
   const current = steps.find((s) => s.step_order === p.current_step && s.status === 'pending')
   const role = user?.primary_role
+  const isAssignedAdviser =
+    !organization?.adviser_id || organization.adviser_id === user?.id
   const canAct =
     !!current &&
     p.status === 'in_review' &&
-    (role === current.step_role ||
+    ((role === 'adviser' && current.step_role === 'adviser' && isAssignedAdviser) ||
+      (role !== 'adviser' && role === current.step_role) ||
       (current.step_role === 'osas' && role === 'osa_staff') ||
       (current.step_role === 'osa_staff' && role === 'osas') ||
       role === 'system_admin')
