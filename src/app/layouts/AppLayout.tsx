@@ -33,6 +33,7 @@ export function AppLayout() {
       <footer className="border-t border-[var(--line)] bg-[var(--paper)] py-6 text-[var(--muted)] text-xs mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="" className="w-6 h-6 object-contain" />
             <span className="font-bold text-[var(--ink)] tracking-tight">ONE LSPU</span>
             <span className="text-[var(--line)]">|</span>
             <span>Institutional Facility & Activity Governance System</span>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
-import { ArrowRight, Eye, EyeOff, Building2 } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../features/auth/AuthContext'
 
@@ -58,9 +58,7 @@ export function LoginPage() {
       <div className="lg:w-1/2 bg-[var(--ink)] text-[var(--paper)] flex flex-col justify-between p-10 sm:p-16 border-b lg:border-b-0 lg:border-r border-[var(--ink-soft)]">
         <div>
           <Link to="/" className="inline-flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--accent)] flex items-center justify-center transition group-hover:bg-[var(--accent)]">
-              <Building2 className="w-5 h-5 text-[var(--paper)]" />
-            </div>
+            <img src="/logo.png" alt="ONE LSPU logo" className="w-12 h-12 object-contain shrink-0" />
             <div>
               <span className="font-extrabold tracking-tight text-lg text-[var(--paper)] flex items-center gap-1.5">
                 ONE LSPU

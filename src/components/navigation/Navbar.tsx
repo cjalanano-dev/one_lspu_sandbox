@@ -201,9 +201,7 @@ export function Navbar() {
           {/* Institutional Brand Identity */}
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--accent)] flex items-center justify-center transition group-hover:bg-[var(--accent)]">
-                <Building2 className="w-4 h-4 text-[var(--paper)]" />
-              </div>
+              <img src="/logo.png" alt="ONE LSPU logo" className="w-9 h-9 object-contain shrink-0" />
               <div className="flex flex-col">
                 <span className="text-[var(--paper)] font-extrabold tracking-tight text-sm leading-none flex items-center gap-1.5">
                   ONE LSPU
