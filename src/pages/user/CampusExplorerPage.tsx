@@ -14,6 +14,8 @@ import {
 import { dataStore } from '../../lib/dataStore'
 import { facilityImageUrl } from '../../lib/facilityImages'
 import { FloorPlanViewer } from '../../features/campus/FloorPlanViewer'
+import { InteractiveCampusMap } from '../../features/campus/InteractiveCampusMap'
+import { REAL_CAMPUS_BUILDINGS, CampusMapBuilding } from '../../features/campus/campusMapData'
 import { useAuth } from '../../features/auth/AuthContext'
 import type { Building, Floor, Facility } from '../../types'
 
@@ -239,6 +241,31 @@ export function CampusExplorerPage() {
           <Building2 className="w-4 h-4" /> Full Facilities Directory
         </Link>
       </div>
+
+      {/* Interactive 2D Real Campus Map (LSPU San Pablo City Campus) */}
+      <InteractiveCampusMap
+        selectedBuildingCode={selectedBuilding?.code}
+        onSelectBuilding={(mapBuilding: CampusMapBuilding) => {
+          const matched = buildings.find(
+            (b) => b.code.toLowerCase() === mapBuilding.code.toLowerCase() ||
+                   b.name.toLowerCase().includes(mapBuilding.shortLabel.toLowerCase())
+          )
+          if (matched) {
+            setSelectedBuilding(matched)
+          } else {
+            // Virtual fallback building for unseeded or auxiliary buildings
+            setSelectedBuilding({
+              id: mapBuilding.id,
+              code: mapBuilding.code,
+              name: mapBuilding.name,
+              description: mapBuilding.description ?? null,
+              location_description: 'LSPU San Pablo Campus',
+              total_floors: mapBuilding.floors ?? 1,
+              created_at: new Date().toISOString(),
+            })
+          }
+        }}
+      />
 
       {/* Building Selector Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
