@@ -909,7 +909,7 @@ CREATE POLICY "Proposal files deletable by editors" ON storage.objects
 
 INSERT INTO public.organizations (name, acronym, description, logo_url, status, college, org_type, parent_org_id)
 VALUES (
-  'Organization of Computer Total Achievers', 'OCTA',
+  'Organization for Computing and Technology Advancements', 'OCTA',
   'Mother student organization of the College of Computer Studies (CCS).',
   'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=128&q=80',
   'active', 'College of Computer Studies (CCS)', 'college_mother', NULL
@@ -947,6 +947,69 @@ FROM public.organizations o JOIN public.profiles p ON p.email = 'officer@campus.
 WHERE o.acronym = 'OCTA'
 ON CONFLICT (organization_id, user_id)
 DO UPDATE SET organization_role = 'president', membership_status = 'active';
+
+-- Dedicated organization test accounts (OCTA, ALGO, BSIT, COESC)
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'president', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'octa.president@campus.edu'
+WHERE o.acronym = 'OCTA'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'president', membership_status = 'active';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'secretary', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'octa.secretary@campus.edu'
+WHERE o.acronym = 'OCTA'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'secretary', membership_status = 'active';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'president', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'algo.president@campus.edu'
+WHERE o.acronym = 'ALGO'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'president', membership_status = 'active';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'secretary', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'algo.secretary@campus.edu'
+WHERE o.acronym = 'ALGO'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'secretary', membership_status = 'active';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'president', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'bsit.president@campus.edu'
+WHERE o.acronym = 'BSIT'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'president', membership_status = 'active';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'secretary', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'bsit.secretary@campus.edu'
+WHERE o.acronym = 'BSIT'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'secretary', membership_status = 'active';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'president', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'coesc.president@campus.edu'
+WHERE o.acronym = 'COESC'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'president', membership_status = 'active';
+
+INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)
+SELECT o.id, p.id, 'secretary', 'active'
+FROM public.organizations o JOIN public.profiles p ON p.email = 'coesc.secretary@campus.edu'
+WHERE o.acronym = 'COESC'
+ON CONFLICT (organization_id, user_id) DO UPDATE SET organization_role = 'secretary', membership_status = 'active';
+
+UPDATE public.profiles
+SET primary_role = 'officer', account_status = 'active'
+WHERE email IN (
+  'officer@campus.edu',
+  'octa.president@campus.edu',
+  'octa.secretary@campus.edu',
+  'algo.president@campus.edu',
+  'algo.secretary@campus.edu',
+  'bsit.president@campus.edu',
+  'bsit.secretary@campus.edu',
+  'coesc.president@campus.edu',
+  'coesc.secretary@campus.edu'
+);
 
 -- Keep ACM membership too (linked by 20261113).
 INSERT INTO public.organization_members (organization_id, user_id, organization_role, membership_status)

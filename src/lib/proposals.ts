@@ -41,6 +41,17 @@ function fail(error: { message: string } | null): asserts error is null {
   if (error) throw new Error(error.message)
 }
 
+const ORG_NAME_OVERRIDES: Record<string, string> = {
+  OCTA: 'Organization for Computing and Technology Advancements',
+  COESC: 'College of Engineering Student Council',
+}
+
+function normalizeOrganization<T extends { name: string; acronym?: string | null } | null | undefined>(org: T): T {
+  if (!org) return org
+  const key = org.acronym ? String(org.acronym).toUpperCase() : ''
+  return key && ORG_NAME_OVERRIDES[key] ? { ...org, name: ORG_NAME_OVERRIDES[key] } : org
+}
+
 function mapProposal(row: any): Proposal {
   return {
     ...row,
@@ -120,7 +131,7 @@ export const proposalStore = {
         return {
           step: s,
           proposal,
-          organization: orgs?.find((o) => o.id === proposal.organization_id),
+          organization: normalizeOrganization(orgs?.find((o) => o.id === proposal.organization_id)),
           facility: facs?.find((f) => f.id === proposal.facility_id),
         }
       })
@@ -154,7 +165,7 @@ export const proposalStore = {
 
     return {
       proposal: mapProposal(proposal),
-      organization: org.data ?? null,
+      organization: normalizeOrganization(org.data) ?? null,
       facility: fac.data ? { ...fac.data, equipment: fac.data.equipment ?? [] } : null,
       budget: (budget.data ?? []).map((b) => ({ ...b, quantity: Number(b.quantity), unit_cost: Number(b.unit_cost) })),
       attachments: (attachments.data ?? []) as ProposalAttachment[],
