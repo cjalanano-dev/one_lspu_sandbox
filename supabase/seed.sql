@@ -282,19 +282,4 @@ BEGIN
     org_type = EXCLUDED.org_type,
     parent_org_id = EXCLUDED.parent_org_id;
 
-  INSERT INTO public.organizations (name, acronym, description, logo_url, status, college, org_type, parent_org_id)
-  VALUES (
-    'University Supreme Student Council', 'USSC',
-    'Apex governing student body for student welfare and activities across all colleges.',
-    'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=128&q=80',
-    'active', 'University Wide', 'university_wide', NULL
-  )
-  ON CONFLICT (acronym) DO UPDATE SET
-    name = EXCLUDED.name,
-    description = EXCLUDED.description,
-    logo_url = EXCLUDED.logo_url,
-    status = EXCLUDED.status,
-    college = EXCLUDED.college,
-    org_type = EXCLUDED.org_type,
-    parent_org_id = EXCLUDED.parent_org_id;
 END $$;

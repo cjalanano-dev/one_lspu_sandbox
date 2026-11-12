@@ -1,6 +1,6 @@
 -- Migration: 20261125_provision_org_advisers.sql
 -- Description: Provisions a dedicated Organization Adviser account for each
--- student organization (OCTA, ALGO, BSIT, COESC, USSC) with password 'Demo1234!'
+-- student organization (OCTA, ALGO, BSIT, COESC) with password 'Demo1234!'
 -- and assigns each organization its own respective adviser_id so Step 1
 -- proposal approvals are strictly scoped to the organization's own adviser.
 
@@ -17,8 +17,7 @@ BEGIN
       ('octa.adviser@campus.edu',  'OCTA Faculty Adviser',  'OCTA',  'College of Computer Studies (CCS)'),
       ('algo.adviser@campus.edu',  'ALGO Faculty Adviser',  'ALGO',  'College of Computer Studies (CCS)'),
       ('bsit.adviser@campus.edu',  'BSIT Faculty Adviser',  'BSIT',  'College of Computer Studies (CCS)'),
-      ('coesc.adviser@campus.edu', 'COESC Faculty Adviser', 'COESC', 'College of Engineering (COE)'),
-      ('ussc.adviser@campus.edu',  'USSC Faculty Adviser',  'USSC',  'University Wide')
+      ('coesc.adviser@campus.edu', 'COESC Faculty Adviser', 'COESC', 'College of Engineering (COE)')
     ) AS t(email, full_name, org_acronym, college)
   LOOP
     SELECT id INTO v_user_id FROM auth.users WHERE email = r.email;
