@@ -85,7 +85,7 @@ export function ProposalFormPage() {
   const [equipment, setEquipment] = useState<string[]>([])
   const [budget, setBudget] = useState<BudgetItem[]>([emptyBudgetRow()])
   const [attachments, setAttachments] = useState<ProposalAttachment[]>([])
-  const [docType, setDocType] = useState<AttachmentType>('proposal_letter')
+  const [docType, setDocType] = useState<AttachmentType>('program_flow')
 
   // reference data
   const [facilities, setFacilities] = useState<Facility[]>([])
@@ -505,7 +505,9 @@ export function ProposalFormPage() {
               <div>
                 <label className="field-label" htmlFor="doctype">Document type</label>
                 <select id="doctype" className="field-input" value={docType} onChange={(e) => setDocType(e.target.value as AttachmentType)}>
-                  {Object.entries(ATTACHMENT_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                  {Object.entries(ATTACHMENT_LABEL)
+                    .filter(([k]) => k !== 'proposal_letter')
+                    .map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
               </div>
               <label className={cn('btn-primary inline-flex items-center gap-2 cursor-pointer', (busy || !editable) && 'opacity-50 pointer-events-none')}>
