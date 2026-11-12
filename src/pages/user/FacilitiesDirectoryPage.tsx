@@ -44,16 +44,13 @@ export function FacilitiesDirectoryPage() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 border border-[var(--ink-soft)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="rounded-[var(--radius)] bg-[var(--ink)] text-[var(--paper)] p-6 border border-[var(--line-strong)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
-            {isPureSignatory ? 'Signatory Venue Reference' : 'Campus Venue Catalog'}
-          </span>
-          <h1 className="text-2xl font-extrabold text-[var(--paper)] tracking-tight flex items-center gap-2.5 mt-0.5">
-            <Building2 className="w-6 h-6 text-[var(--accent)]" />
+          <h1 className="text-2xl font-bold text-[var(--paper)] tracking-tight flex items-center gap-2.5">
+            <Building2 className="w-6 h-6 text-[var(--accent-line)]" />
             Campus Facilities Directory
           </h1>
-          <p className="text-xs text-[var(--paper)]/70 mt-1">
+          <p className="text-xs text-[var(--paper)]/75 mt-1">
             {isPureSignatory
               ? 'Reference room capacities, equipment specifications, and live schedules when evaluating event proposals.'
               : 'Browse university conference rooms, auditoriums, laboratories, and athletic venues.'}

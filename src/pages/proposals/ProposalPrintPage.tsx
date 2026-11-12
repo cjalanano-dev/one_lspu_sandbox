@@ -46,24 +46,24 @@ export function ProposalPrintPage() {
         </button>
       </div>
 
-      <article className="relative max-w-[210mm] mx-auto bg-[var(--paper)] p-[15mm] text-[11pt] leading-snug shadow print:shadow-none print:p-0 text-[var(--ink)]">
+      <article className="relative max-w-[210mm] mx-auto bg-[var(--paper)] p-5 sm:p-[15mm] text-xs sm:text-[11pt] leading-snug border border-[var(--line)] print:border-0 print:p-0 text-[var(--ink)]">
         {!approved && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden>
-            <span className="text-[64pt] font-black text-[var(--ink)]/5 -rotate-30 uppercase">{PROPOSAL_STATUS_LABEL[p.status]}</span>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden" aria-hidden>
+            <span className="text-4xl sm:text-[64pt] font-black text-[var(--ink)]/5 -rotate-30 uppercase">{PROPOSAL_STATUS_LABEL[p.status]}</span>
           </div>
         )}
 
-        <header className="flex justify-between items-start border-b-2 border-[var(--line-strong)] pb-3 mb-4">
+        <header className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-[var(--line-strong)] pb-3 mb-4 gap-4">
           <div>
-            <p className="text-[9pt] uppercase tracking-widest">ONE LSPU · Event Proposal Packet</p>
-            <h1 className="text-[18pt] font-black leading-tight">{p.title}</h1>
+            <p className="text-[9pt] uppercase tracking-widest font-mono">ONE LSPU · Event Proposal Packet</p>
+            <h1 className="text-lg sm:text-[18pt] font-bold leading-tight">{p.title}</h1>
             <p className="text-[10pt]">
               {organization?.name === organization?.acronym
                 ? organization?.name
                 : `${organization?.name} (${organization?.acronym})`}
             </p>
           </div>
-          <div className="text-right text-[9pt] flex gap-3 items-start">
+          <div className="sm:text-right text-[9pt] flex gap-3 items-start">
             <div>
               <p className="font-mono font-bold text-[11pt]">{p.reference_no}</p>
               <p>Revision {p.revision}</p>
@@ -129,7 +129,7 @@ export function ProposalPrintPage() {
         </Section>
 
         <Section title="6. Approvals">
-          <div className="grid grid-cols-3 gap-3 break-inside-avoid">
+          <div className="grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-3 break-inside-avoid">
             {steps.map((s) => (
               <div key={s.id} className="border-[var(--line-strong)] p-2 min-h-[34mm] flex flex-col">
                 <p className="text-[8pt] uppercase tracking-wider">Step {s.step_order}</p>

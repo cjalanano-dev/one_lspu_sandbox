@@ -129,17 +129,13 @@ export function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--ink-soft)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="rounded-[var(--radius)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--line-strong)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-xs bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)] mb-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-            {isSystemAdmin ? 'System Governance Workspace' : 'Venue Governance Workspace'}
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--paper)] tracking-tight flex items-center gap-2.5">
-            <ShieldCheck className="w-7 h-7 text-[var(--accent)]" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--paper)] tracking-tight flex items-center gap-2.5">
+            <ShieldCheck className="w-7 h-7 text-[var(--accent-line)]" />
             {isSystemAdmin ? 'System Administrator Command Center' : 'Facility Administrator Command Center'}
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--paper)]/70 mt-1">
+          <p className="text-xs sm:text-sm text-[var(--paper)]/75 mt-1">
             {isSystemAdmin
               ? 'Manage platform-wide facilities, users, organizations, and campus resources.'
               : 'Review incoming reservation requests, enforce conflict prevention, and monitor campus utilization.'}
@@ -164,30 +160,35 @@ export function AdminDashboardPage() {
         </div>
       ) : null}
 
-      {/* Overview — ruled stat strip instead of floating cards */}
-      <div className="border border-[var(--line)] rounded-sm bg-[var(--paper)] overflow-hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {[{
-          label: 'Pending Review',
-          value: pendingRequests.length,
-          icon: <Clock className="w-5 h-5" />,
-        }, {
-          label: 'Approved Bookings',
-          value: approvedReservations.length,
-          icon: <CheckCircle2 className="w-5 h-5" />,
-        }, {
-          label: 'Campus Facilities',
-          value: totalFacilities,
-          icon: <Building2 className="w-5 h-5" />,
-        }, {
-          label: 'Active Organizations',
-          value: organizations.length,
-          icon: <Users className="w-5 h-5" />,
-        }].map((cell, i) => (
-          <div key={cell.label} className="p-5 border-r border-b border-[var(--line)] last:col-start-1 last:border-r-0 last:border-b-0 lg:last:border-r-0 lg:border-r border-[var(--line)] sm:border-r-0 lg:border-b-0 lg:border-r border-[var(--line)]">
-            <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider block">{cell.label}</span>
-            <div className="mt-1 flex items-center gap-2">
-              <div className="text-2xl font-black text-[var(--ink)]">{cell.value}</div>
-              <div className="w-8 h-8 rounded-sm border border-[var(--ink)] flex items-center justify-center text-[var(--ink)] flex-shrink-0 ml-auto">
+      {/* Overview — ruled stat strip */}
+      <div className="ledger-strip grid-cols-2 lg:grid-cols-4">
+        {[
+          {
+            label: 'Pending Review',
+            value: pendingRequests.length,
+            icon: <Clock className="w-4 h-4" />,
+          },
+          {
+            label: 'Approved Bookings',
+            value: approvedReservations.length,
+            icon: <CheckCircle2 className="w-4 h-4" />,
+          },
+          {
+            label: 'Campus Facilities',
+            value: totalFacilities,
+            icon: <Building2 className="w-4 h-4" />,
+          },
+          {
+            label: 'Active Organizations',
+            value: organizations.length,
+            icon: <Users className="w-4 h-4" />,
+          },
+        ].map((cell) => (
+          <div key={cell.label} className="ledger-cell">
+            <span className="kpi-label block !mt-0">{cell.label}</span>
+            <div className="mt-1.5 flex items-center justify-between gap-2">
+              <div className="kpi-value">{cell.value}</div>
+              <div className="w-7 h-7 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] flex items-center justify-center text-[var(--ink)] shrink-0">
                 {cell.icon}
               </div>
             </div>
@@ -196,60 +197,62 @@ export function AdminDashboardPage() {
       </div>
 
       {/* Main Review Section Tabs */}
-      <div className="border border-[var(--line)] rounded-sm bg-[var(--paper)] overflow-hidden">
-        <div className="border-b border-[var(--line)] px-6 pt-4 flex items-center gap-6">
+      <div className="border border-[var(--line)] rounded-[var(--radius)] bg-[var(--paper)] overflow-hidden">
+        <div className="border-b border-[var(--line)] px-4 sm:px-6 pt-4 flex items-center gap-4 sm:gap-6 overflow-x-auto">
           <button
             onClick={() => setActiveTab('pending')}
-            className={`pb-4 text-xs font-bold transition border-b-2 flex items-center gap-2 ${
+            className={`pb-4 text-xs font-bold transition border-b-2 flex items-center gap-2 whitespace-nowrap ${
               activeTab === 'pending'
                 ? 'border-[var(--line-strong)] text-[var(--ink)]'
                 : 'border-transparent text-[var(--muted)] hover:text-[var(--accent-text)]'
             }`}
           >
-            <Clock className="w-3 h-3" />
+            <Clock className="w-3.5 h-3.5" />
             Pending Approval Queue
-            <span className={`tag ${activeTab === 'pending' ? 'tag-available' : 'tag-pending'} ml-2`}>
+            <span className={`tag ${activeTab === 'pending' ? 'tag-available' : 'tag-pending'} ml-1`}>
               {filteredPending.length}
             </span>
           </button>
 
           <button
             onClick={() => setActiveTab('all')}
-            className={`pb-4 text-xs font-bold transition border-b-2 flex items-center gap-2 ${
+            className={`pb-4 text-xs font-bold transition border-b-2 flex items-center gap-2 whitespace-nowrap ${
               activeTab === 'all'
                 ? 'border-[var(--line-strong)] text-[var(--ink)]'
                 : 'border-transparent text-[var(--muted)] hover:text-[var(--accent-text)]'
             }`}
           >
-            <Calendar className="w-3 h-3" />
+            <Calendar className="w-3.5 h-3.5" />
             All Reservations Archive
-            <span className="tag tag-pending ml-2">{totalReservations}</span>
+            <span className="tag tag-pending ml-1">{totalReservations}</span>
           </button>
         </div>
 
         {/* Pending Approval Queue */}
         {activeTab === 'pending' && (
-          <div className="p-6">
-            <div className="flex gap-3 mb-5">
-              <div className="relative flex-1 sm:w-80">
+          <div className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
+              <div className="relative flex-1 sm:max-w-xs">
                 <Search className="w-4 h-4 text-[var(--faint)] absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Search title, purpose, or facility..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-sm bg-[var(--paper)] focus:border-[var(--line-strong)]"
+                  className="w-full pl-9 pr-3 py-2 text-xs border border-[var(--line)] rounded-[var(--radius)] bg-[var(--paper)] focus:border-[var(--line-strong)]"
                   aria-label="Search pending reservations"
                 />
               </div>
-              <div className="flex items-end gap-1.5">
-                <Filter className="w-3.5 h-3.5 text-[var(--faint)]" />
-                <label htmlFor="admin-status-filter" className="text-xs font-bold text-[var(--ink)] uppercase tracking-widest mb-1 block">Status filter</label>
+              <div className="flex items-center gap-2">
+                <Filter className="w-3.5 h-3.5 text-[var(--faint)] shrink-0" />
+                <label htmlFor="admin-status-filter" className="text-xs font-bold text-[var(--ink)] uppercase tracking-wider shrink-0">
+                  Status:
+                </label>
                 <select
                   id="admin-status-filter"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as any)}
-                  className="border border-[var(--line)] rounded-sm text-xs py-2 px-3 font-bold text-[var(--ink)] bg-[var(--paper)] focus:border-[var(--line-strong)] appearance-none"
+                  className="flex-1 sm:flex-none border border-[var(--line)] rounded-[var(--radius)] text-xs py-2 px-3 font-bold text-[var(--ink)] bg-[var(--paper)] focus:border-[var(--line-strong)]"
                 >
                   <option value="all">All statuses</option>
                   <option value="pending">Pending only</option>

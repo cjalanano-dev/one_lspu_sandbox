@@ -25,23 +25,23 @@ export const InteractiveCampusMap: React.FC<InteractiveCampusMapProps> = ({
   }
 
   return (
-    <div className="relative w-full rounded-[var(--radius)] overflow-hidden border border-[var(--line)] bg-[var(--surface-2)] shadow-inner select-none">
+    <div className="relative w-full rounded-[var(--radius)] overflow-hidden border border-[var(--line)] bg-[var(--surface-2)] select-none">
       {/* Map Header Toolbar */}
-      <div className="absolute top-3 left-3 right-3 z-10 flex items-center justify-between pointer-events-none">
-        <div className="flex items-center gap-2 bg-[var(--ink)]/90 backdrop-blur-md px-3 py-1.5 rounded-[var(--radius)] border border-[var(--ink-soft)] text-[var(--paper)] text-xs pointer-events-auto shadow-sm">
-          <Navigation className="w-3.5 h-3.5 text-[var(--accent)]" />
-          <span className="font-bold tracking-wide uppercase text-[11px]">
+      <div className="absolute top-2.5 left-2.5 right-2.5 z-10 flex items-center justify-between gap-2 pointer-events-none">
+        <div className="flex items-center gap-2 bg-[var(--ink)] px-3 py-1.5 rounded-[var(--radius)] border border-[var(--ink-soft)] text-[var(--paper)] text-xs pointer-events-auto min-w-0">
+          <Navigation className="w-3.5 h-3.5 text-[var(--accent-line)] shrink-0" />
+          <span className="font-bold tracking-wide uppercase text-xs truncate">
             LSPU San Pablo Campus Map
           </span>
-          <span className="text-[var(--paper)]/50 hidden sm:inline">· Click any building to inspect</span>
+          <span className="text-[var(--paper)]/60 hidden md:inline">· Click any building to inspect</span>
         </div>
 
         {/* Map Controls */}
-        <div className="flex items-center gap-1.5 bg-[var(--paper)] p-1 rounded-[var(--radius)] border border-[var(--line)] shadow-sm pointer-events-auto">
+        <div className="flex items-center gap-1 bg-[var(--paper)] p-1 rounded-[var(--radius)] border border-[var(--line)] pointer-events-auto shrink-0">
           <button
             type="button"
             onClick={() => handleZoom(0.2)}
-            className="p-1.5 hover:bg-[var(--surface)] text-[var(--ink)] rounded-xs transition"
+            className="p-1.5 hover:bg-[var(--accent-tint)] text-[var(--ink)] rounded-[var(--radius)] transition cursor-pointer"
             title="Zoom in"
           >
             <ZoomIn className="w-4 h-4" />
@@ -49,7 +49,7 @@ export const InteractiveCampusMap: React.FC<InteractiveCampusMapProps> = ({
           <button
             type="button"
             onClick={() => handleZoom(-0.2)}
-            className="p-1.5 hover:bg-[var(--surface)] text-[var(--ink)] rounded-xs transition"
+            className="p-1.5 hover:bg-[var(--accent-tint)] text-[var(--ink)] rounded-[var(--radius)] transition cursor-pointer"
             title="Zoom out"
           >
             <ZoomOut className="w-4 h-4" />
@@ -57,7 +57,7 @@ export const InteractiveCampusMap: React.FC<InteractiveCampusMapProps> = ({
           <button
             type="button"
             onClick={handleReset}
-            className="p-1.5 hover:bg-[var(--surface)] text-[var(--ink)] rounded-xs transition"
+            className="p-1.5 hover:bg-[var(--accent-tint)] text-[var(--ink)] rounded-[var(--radius)] transition cursor-pointer"
             title="Reset map view"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -66,7 +66,7 @@ export const InteractiveCampusMap: React.FC<InteractiveCampusMapProps> = ({
       </div>
 
       {/* SVG Canvas */}
-      <div className="w-full aspect-[4/3] max-h-[640px] overflow-hidden flex items-center justify-center bg-[#131b2b]">
+      <div className="w-full aspect-square sm:aspect-[4/3] max-h-[640px] overflow-hidden flex items-center justify-center bg-[#131b2b]">
         <svg
           viewBox="0 0 1000 1000"
           className="w-full h-full cursor-grab active:cursor-grabbing transition-transform duration-200"

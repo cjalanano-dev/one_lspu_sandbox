@@ -343,7 +343,7 @@ export function FacilityDetailPage() {
             </div>
 
             {facility.rules && (
-              <div className="mt-6 p-3 border-l-4 border-[var(--ink)] bg-[var(--surface-2)] text-xs text-[var(--ink)] flex items-start gap-2">
+              <div className="mt-6 p-3.5 border border-[var(--line-strong)] bg-[var(--surface-2)] text-xs text-[var(--ink)] flex items-start gap-2.5 rounded-[var(--radius)]">
                 <AlertTriangle className="w-4 h-4 text-[var(--ink)] shrink-0 mt-0.5" />
                 <span>{facility.rules}</span>
               </div>
@@ -394,10 +394,7 @@ export function FacilityDetailPage() {
                 <Calendar className="w-5 h-5" />
               </div>
               <div className="space-y-1.5 max-w-md mx-auto">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent-text)] font-bold">
-                  Signatory Reference Mode
-                </span>
-                <h4 className="text-base font-extrabold text-[var(--ink)]">
+                <h4 className="text-base font-bold text-[var(--ink)]">
                   Read-Only Venue Availability Inspection
                 </h4>
                 <p className="text-xs text-[var(--muted)] leading-relaxed">
@@ -459,16 +456,17 @@ export function FacilityDetailPage() {
                     or under maintenance. Try another day.
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                     {availableSlots.map((slot) => (
                       <button
                         key={`${slot.start}-${slot.end}`}
+                        type="button"
                         onClick={() => setSelectedSlot(slot)}
                         disabled={!slot.available}
                         aria-pressed={selectedSlot?.start === slot.start && selectedSlot?.end === slot.end}
-                        className={`px-3 py-2.5 rounded-sm text-xs font-medium border transition ${
+                        className={`px-3 py-2.5 rounded-[var(--radius)] text-xs font-mono font-medium border transition ${
                           selectedSlot?.start === slot.start && selectedSlot?.end === slot.end
-                            ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--accent-ink)] '
+                            ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--accent-ink)]'
                             : slot.available
                             ? 'bg-[var(--paper)] border-[var(--line-strong)] text-[var(--ink)] hover:bg-[var(--accent-tint)] hover:border-[var(--accent)]'
                             : 'bg-[var(--surface-2)] border-[var(--line)] text-[var(--faint)] cursor-not-allowed'
@@ -476,7 +474,7 @@ export function FacilityDetailPage() {
                       >
                         {slot.start} – {slot.end}
                         {!slot.available && (
-                          <span className="ml-1 text-xs text-[var(--faint)]">unavailable</span>
+                          <span className="block text-[10px] text-[var(--faint)] uppercase">Booked</span>
                         )}
                       </button>
                     ))}

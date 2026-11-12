@@ -2,44 +2,42 @@
 
 @layer base {
   :root {
-    /* ---------- Navy Institutional Palette ----------
-       Obsidian #020712 · Classic #0C1F42 · Uniform #1A2F5A · Royal #1E3A7D
-       Stormy #2C4F7F · Nautical #3D5E9B · Coastal #5E7BA8 · Sky #8A9DBE · Foggy #B5C2D9 */
-    --paper: #fbfcfe;        /* Near-white with a navy cast */
-    --surface: #f1f4f9;      /* Foggy Navy wash, very light */
-    --surface-2: #e3e9f2;    /* Secondary grouping */
+    /* ---------- Architectural Space & Signatory Ledger Palette ---------- */
+    --paper: #FFFFFF;        /* Pure stock panels & cards */
+    --surface: #FAFAFC;      /* Architectural draft canvas */
+    --surface-2: #F2F4F8;    /* Ledger cell tint & secondary grouping */
 
-    --ink: #0c1f42;          /* Classic Navy: primary text & dark chrome */
-    --ink-dark: #020712;     /* Obsidian Navy: deepest headers */
-    --ink-soft: #1a2f5a;     /* Uniform Navy: elevated dark surface */
+    --ink: #111318;          /* Carbon primary ink & dark chrome */
+    --ink-dark: #0A0B0E;     /* Deepest structural header band */
+    --ink-soft: #1B1E26;     /* Elevated carbon surface */
 
-    --muted: #2c4f7f;        /* Stormy Navy: secondary text */
-    --faint: #5e7ba8;        /* Coastal Navy: metadata */
-    --gray-medium: #b5c2d9;  /* Foggy Navy: disabled fills */
+    --muted: #4A505C;        /* Secondary charcoal text */
+    --faint: #767D8C;        /* Tabular metadata & disabled labels */
+    --gray-medium: #B8BFCC;  /* Unavailable legend swatch */
 
-    --line: #dbe2ee;         /* Hairline border */
-    --line-strong: #1a2f5a;  /* Uniform Navy rule */
+    --line: #E2E5EC;         /* Structural hairline border */
+    --line-strong: #16181D;  /* Emphasis rule */
 
-    /* ---------- Accents ---------- */
-    --accent: #3d5e9b;       /* Nautical Navy */
-    --accent-text: #1e3a7d;  /* Royal Navy: accessible on light */
-    --accent-strong: #1e3a7d;/* Royal Navy hover */
-    --accent-deep: #0c1f42;  /* Classic Navy hero bands */
+    /* ---------- Surgical Cobalt Blue Accents ---------- */
+    --accent: #1D4ED8;       /* Primary cobalt action & active state */
+    --accent-text: #1D4ED8;  /* Cobalt text on light surfaces (WCAG AA) */
+    --accent-strong: #1E40AF;/* Deep cobalt hover / pressed */
+    --accent-deep: #0F2557;  /* Deep institutional band */
 
-    --accent-ink: #fbfcfe;
-    --accent-tint: #e8edf6;  /* Foggy-derived hover wash */
-    --accent-tint-2: #d3dcec;
-    --accent-line: #8a9dbe;  /* Sky Navy border */
+    --accent-ink: #FFFFFF;
+    --accent-tint: #EFF4FF;  /* Whisper cobalt wash */
+    --accent-tint-2: #DBEAFE;
+    --accent-line: #BFDBFE;  /* Selection & focus hairline */
 
     /* ---------- Destructive / Warning ---------- */
-    --danger: #dc2626;
-    --danger-strong: #b91c1c;
-    --danger-ink: #fcfcfd;
-    --danger-tint: #fef2f2;
-    --danger-text: #b91c1c;
+    --danger: #B42318;
+    --danger-strong: #912018;
+    --danger-ink: #FFFFFF;
+    --danger-tint: #FEF3F2;
+    --danger-text: #B42318;
 
-    --radius: 0.375rem;
-    --radius-lg: 0.5rem;
+    --radius: 0.125rem;      /* 2px architectural corner */
+    --radius-lg: 0.125rem;   /* Unified 2px corner across all ledger frames */
 
     /* ---------- Type scale ---------- */
     --text-xs: 0.75rem;
@@ -58,15 +56,65 @@
     --space-4: 1rem;
     --space-6: 1.5rem;
     --space-8: 2rem;
+
+    --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  html {
+    color-scheme: light;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-medium) var(--surface);
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     background-color: var(--surface);
     color: var(--ink);
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: var(--font-sans);
     line-height: 1.5;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    caret-color: var(--accent);
+    overflow-x: hidden;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  code, pre, kbd, samp, .font-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  table, .kpi-value, time {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  a {
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 1px;
+  }
+
+  /* ---------- Custom WebKit Scrollbar ---------- */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--surface);
+    border-left: 1px solid var(--line);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--gray-medium);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--muted);
   }
 
   /* ---------- Focus styles (a11y) ---------- */
@@ -111,18 +159,20 @@
 }
 
 @layer components {
-  /* ---------- Status tags — refined institutional badges ---------- */
+  /* ---------- Status tags — stamped architectural ledger coupons ---------- */
   .tag {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    font-size: 0.6875rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
     font-weight: 600;
     padding: 0.1875rem 0.5rem;
-    border-radius: 0.25rem;
+    border-radius: var(--radius);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     line-height: 1.2;
+    font-variant-numeric: tabular-nums;
   }
   .tag-approved,
   .tag-available {
@@ -153,21 +203,43 @@
     border: 1px solid var(--gray-medium);
   }
 
-  /* ---------- KPI value ---------- */
+  /* ---------- Ledger KPI cell ---------- */
   .kpi-value {
-    font-size: 1.75rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
+    font-family: var(--font-mono);
+    font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
     color: var(--ink);
     line-height: 1.1;
+    font-variant-numeric: tabular-nums;
   }
   .kpi-label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     margin-top: 0.25rem;
+  }
+
+  /* ---------- Ruled Ledger Strip (Seamless 1px grid across all breakpoints) ---------- */
+  .ledger-strip {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    display: grid;
+    gap: 1px;
+    background-color: var(--line);
+    overflow: hidden;
+  }
+  .ledger-cell {
+    padding: 1rem 1.125rem;
+    background-color: var(--paper);
+    min-width: 0;
+  }
+  @media (min-width: 640px) {
+    .ledger-cell {
+      padding: 1.125rem 1.25rem;
+    }
   }
 
   /* ---------- Form field ---------- */
@@ -186,12 +258,12 @@
     background: var(--paper);
     color: var(--ink);
     font-size: 0.875rem;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: border-color 0.14s ease, background-color 0.14s ease;
   }
   .field-input:focus {
-    outline: none;
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-tint);
   }
 
   /* ---------- Buttons ---------- */
@@ -199,7 +271,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.625rem 1.25rem;
+    padding: 0.625rem 1.125rem;
     border-radius: var(--radius);
     background: var(--ink);
     color: var(--paper);
@@ -207,7 +279,7 @@
     font-weight: 600;
     border: 1px solid var(--ink);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.14s ease, border-color 0.14s ease, color 0.14s ease;
   }
   .btn-primary:hover {
     background: var(--accent);
@@ -225,7 +297,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.625rem 1.25rem;
+    padding: 0.625rem 1.125rem;
     border-radius: var(--radius);
     background: var(--accent);
     color: var(--accent-ink);
@@ -233,7 +305,7 @@
     font-weight: 600;
     border: 1px solid var(--accent);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.14s ease, border-color 0.14s ease;
   }
   .btn-accent:hover {
     background: var(--accent-strong);
@@ -250,19 +322,19 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.625rem 1.25rem;
+    padding: 0.625rem 1.125rem;
     border-radius: var(--radius);
-    border: 1px solid var(--line);
+    border: 1px solid var(--line-strong);
     background: var(--paper);
     color: var(--ink);
     font-size: 0.8125rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.14s ease, border-color 0.14s ease, color 0.14s ease;
   }
   .btn-outline:hover {
     background: var(--accent-tint);
-    border-color: var(--accent-line);
+    border-color: var(--accent);
     color: var(--accent-text);
   }
 
@@ -270,35 +342,50 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem 0.875rem;
+    padding: 0.5rem 0.75rem;
     border-radius: var(--radius);
     background: transparent;
     color: var(--muted);
     font-size: 0.8125rem;
     font-weight: 600;
-    border: none;
+    border: 1px solid transparent;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
   }
   .btn-text:hover {
     background: var(--accent-tint);
+    border-color: var(--accent-line);
     color: var(--accent-text);
   }
 
-  /* ---------- Panel ---------- */
+  /* ---------- Touch & Coarse Pointer Ergonomics ---------- */
+  @media (pointer: coarse) {
+    .btn-primary,
+    .btn-accent,
+    .btn-outline,
+    .btn-text {
+      min-height: 2.75rem; /* 44px touch target */
+    }
+    .field-input,
+    select {
+      min-height: 2.75rem;
+      font-size: 1rem; /* Prevents iOS Safari auto-zoom on focus */
+    }
+  }
+
+  /* ---------- Panel (Zero shadow, crisp hairline) ---------- */
   .panel {
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    box-shadow: 0 1px 2px 0 rgba(24, 26, 31, 0.03);
   }
 
   /* ---------- Accent link ---------- */
   .link-accent {
     color: var(--accent-text);
     text-decoration: none;
-    font-weight: 500;
-    transition: color 0.12s;
+    font-weight: 600;
+    transition: color 0.12s ease;
   }
   .link-accent:hover {
     color: var(--accent-strong);

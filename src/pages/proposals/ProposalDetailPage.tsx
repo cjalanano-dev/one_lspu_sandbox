@@ -152,10 +152,10 @@ export function ProposalDetailPage() {
               Due {formatDateTime(current.due_at)}. Approving adds your digital signature to the packet.
             </p>
           </div>
-          <div className="flex gap-2">
-            <button className="btn-primary inline-flex items-center gap-1" onClick={() => setDialog('approve')}><Check className="w-4 h-4" /> Approve</button>
-            <button className="btn-outline inline-flex items-center gap-1" onClick={() => setDialog('return')}><CornerUpLeft className="w-4 h-4" /> Return</button>
-            <button className="btn-outline inline-flex items-center gap-1" onClick={() => setDialog('reject')}><X className="w-4 h-4" /> Reject</button>
+          <div className="grid grid-cols-3 sm:flex gap-2">
+            <button className="btn-primary inline-flex items-center justify-center gap-1" onClick={() => setDialog('approve')}><Check className="w-4 h-4" /> Approve</button>
+            <button className="btn-outline inline-flex items-center justify-center gap-1" onClick={() => setDialog('return')}><CornerUpLeft className="w-4 h-4" /> Return</button>
+            <button className="btn-outline inline-flex items-center justify-center gap-1" onClick={() => setDialog('reject')}><X className="w-4 h-4" /> Reject</button>
           </div>
         </section>
       )}
@@ -190,24 +190,26 @@ export function ProposalDetailPage() {
             {budget.length === 0 ? (
               <p className="text-sm text-[var(--muted)]">No expenses declared.</p>
             ) : (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-xs uppercase text-[var(--muted)]">
-                    <th className="py-1">Item</th><th>Qty</th><th>Unit</th><th>Source</th><th className="text-right">Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {budget.map((b) => (
-                    <tr key={b.id} className="border-t border-[var(--line)]">
-                      <td className="py-1.5">{b.description}</td>
-                      <td>{b.quantity}</td>
-                      <td className="font-mono">{formatPeso(b.unit_cost)}</td>
-                      <td>{FUND_LABEL[b.source_of_funds]}</td>
-                      <td className="text-right font-mono">{formatPeso(b.quantity * b.unit_cost)}</td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm min-w-[28rem]">
+                  <thead>
+                    <tr className="text-left text-xs uppercase text-[var(--muted)] font-mono">
+                      <th className="py-1 pr-2">Item</th><th className="pr-2">Qty</th><th className="pr-2">Unit</th><th className="pr-2">Source</th><th className="text-right">Subtotal</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {budget.map((b) => (
+                      <tr key={b.id} className="border-t border-[var(--line)]">
+                        <td className="py-1.5 pr-2">{b.description}</td>
+                        <td className="pr-2 font-mono">{b.quantity}</td>
+                        <td className="pr-2 font-mono">{formatPeso(b.unit_cost)}</td>
+                        <td className="pr-2">{FUND_LABEL[b.source_of_funds]}</td>
+                        <td className="text-right font-mono">{formatPeso(b.quantity * b.unit_cost)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </section>
 

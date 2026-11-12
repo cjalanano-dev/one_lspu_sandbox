@@ -27,22 +27,21 @@ export function AppLayout() {
         Skip to main content
       </a>
       <Navbar />
-      <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8">
         <Outlet />
       </main>
-      <footer className="border-t border-[var(--line)] bg-[var(--paper)] py-6 text-[var(--muted)] text-xs mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="" className="w-6 h-6 object-contain" />
+      <footer className="border-t border-[var(--line)] bg-[var(--paper)] py-6 text-[var(--muted)] text-xs mt-8 sm:mt-12 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <img src="/logo.png" alt="" className="w-6 h-6 object-contain shrink-0" />
             <span className="font-bold text-[var(--ink)] tracking-tight">ONE LSPU</span>
-            <span className="text-[var(--line)]">|</span>
-            <span>Institutional Facility & Activity Governance System</span>
+            <span className="hidden sm:inline text-[var(--line)]">|</span>
+            <span className="w-full sm:w-auto text-xs text-[var(--muted)]">Institutional Facility &amp; Activity Governance System</span>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-[var(--line)] bg-[var(--surface)] rounded-[var(--radius)] text-[var(--ink)] font-medium">
-              <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full"></span>
-              <Shield className="w-3 h-3 text-[var(--accent)]" />
-              {roleLabel}
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-[var(--line)] bg-[var(--surface)] rounded-[var(--radius)] text-[var(--ink)] font-medium truncate max-w-full">
+              <Shield className="w-3 h-3 text-[var(--accent)] shrink-0" />
+              <span className="truncate">{roleLabel}</span>
             </span>
           </div>
         </div>

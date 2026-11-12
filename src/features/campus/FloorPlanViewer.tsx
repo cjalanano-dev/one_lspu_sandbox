@@ -100,17 +100,17 @@ export function FloorPlanViewer({ floor, facilities, selectedFacility, onSelectF
     <div className="flex flex-col lg:flex-row gap-6 items-start">
       {/* Interactive SVG Canvas */}
       <div className="w-full lg:flex-1 bg-[var(--paper)] rounded-sm border border-[var(--line)] p-4 sm:p-6 overflow-hidden">
-        <div className="flex items-center justify-between pb-4 border-b border-[var(--line)] mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[var(--line)] mb-4 gap-2">
           <div>
             <h3 className="font-bold text-[var(--ink)] text-base flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-sm bg-[var(--accent)]"></span>
+              <span className="w-2.5 h-2.5 rounded-[var(--radius)] bg-[var(--accent)] shrink-0"></span>
               {floor.name}
             </h3>
             <p className="text-xs text-[var(--muted)] mt-0.5">
               Select any room on the plan to inspect details and start a reservation request
             </p>
           </div>
-          <span className="text-xs font-mono font-bold text-[var(--muted)] px-2 py-1 border border-[var(--line)] rounded-sm uppercase tracking-widest">
+          <span className="self-start sm:self-auto text-xs font-mono font-bold text-[var(--muted)] px-2 py-1 border border-[var(--line)] rounded-[var(--radius)] uppercase tracking-wider shrink-0">
             Schematic floor plan
           </span>
         </div>

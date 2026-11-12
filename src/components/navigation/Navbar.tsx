@@ -43,7 +43,6 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
 
-  // Pure signatory roles (Adviser, Dean, OSAS, Director, President) only see relevant governance tools, not personal booking clutter
   const isPureSignatory = isApprover && !isAdmin
   const canBookPersonal = !isPureSignatory
 
@@ -118,17 +117,16 @@ export function Navbar() {
         to={path}
         className={`px-3 py-2 rounded-[var(--radius)] text-xs font-semibold transition flex items-center gap-2 border ${
           active
-            ? 'bg-[var(--ink-soft)] text-[var(--paper)] border-[var(--accent)] shadow-xs'
-            : 'text-[var(--paper)]/70 border-transparent hover:bg-[var(--ink-soft)] hover:text-[var(--paper)]'
+            ? 'bg-[var(--ink-soft)] text-[var(--paper)] border-[var(--accent)]'
+            : 'text-[var(--paper)]/75 border-transparent hover:bg-[var(--ink-soft)] hover:text-[var(--paper)]'
         } ${extra || ''}`}
       >
-        <span className={active ? 'text-[var(--accent)]' : 'text-[var(--paper)]/60'}>{icon}</span>
+        <span className={active ? 'text-[var(--accent-line)]' : 'text-[var(--paper)]/65'}>{icon}</span>
         {label}
       </Link>
     )
   }
 
-  // Strictly role-scoped navigation links (Calendar is visible on all role views)
   const getRoleNavigation = () => {
     if (!user) {
       return (
@@ -142,7 +140,6 @@ export function Navbar() {
 
     const role = user.primary_role
 
-    // 1. Student & Faculty: only facility discovery, events calendar, and personal bookings
     if (role === 'student' || role === 'faculty') {
       return (
         <>
@@ -155,7 +152,6 @@ export function Navbar() {
       )
     }
 
-    // 2. Organization Officer: Org workspace, proposals, events calendar, venue booking
     if (role === 'officer') {
       return (
         <>
@@ -169,7 +165,6 @@ export function Navbar() {
       )
     }
 
-    // 3. Institutional Signatories (Adviser, Dean, OSAS, Director, President): Approvals, Events Calendar & Campus Reference
     if (isPureSignatory) {
       return (
         <>
@@ -181,7 +176,6 @@ export function Navbar() {
       )
     }
 
-    // 4. Facility Admin & System Admin: Command Center, Approvals, Events Calendar, Campus Map, Directory
     return (
       <>
         {navItem('/', 'Command Overview', <LayoutDashboard className="w-4 h-4" />)}
@@ -195,29 +189,19 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-[var(--ink)] text-[var(--paper)] border-b border-[var(--ink-soft)] shadow-xs">
+    <header className="sticky top-0 z-50 bg-[var(--ink)] text-[var(--paper)] border-b border-[var(--ink-soft)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Institutional Brand Identity */}
           <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <img src="/logo.png" alt="ONE LSPU logo" className="w-9 h-9 object-contain shrink-0" />
-              <div className="flex flex-col">
-                <span className="text-[var(--paper)] font-extrabold tracking-tight text-sm leading-none flex items-center gap-1.5">
+            <Link to="/" className="flex items-center gap-3 group">
+              <img src="/logo.png" alt="ONE LSPU logo" className="w-8 h-8 object-contain shrink-0" />
+              <div className="flex items-baseline gap-2">
+                <span className="text-[var(--paper)] font-bold tracking-tight text-sm leading-none">
                   ONE LSPU
-                </span>
-                <span className="text-[10px] text-[var(--paper)]/50 font-mono uppercase tracking-widest mt-0.5">
-                  Institutional Portal
                 </span>
               </div>
             </Link>
-
-            {/* {user && (
-              <span className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--paper)]/10 text-[11px] font-mono text-[var(--paper)]/80">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-                {ROLE_DISPLAY_NAMES[user.primary_role] ?? user.primary_role}
-              </span>
-            )} */}
           </div>
 
           {/* Desktop Role-Scoped Navigation */}
@@ -233,7 +217,7 @@ export function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowNotifs(!showNotifs)}
-                    className="relative p-2 rounded-[var(--radius)] text-[var(--paper)]/80 hover:text-[var(--paper)] hover:bg-[var(--ink-soft)] transition"
+                    className="relative p-2 rounded-[var(--radius)] text-[var(--paper)]/80 hover:text-[var(--paper)] hover:bg-[var(--ink-soft)] transition cursor-pointer"
                     aria-label="View notifications"
                     aria-expanded={showNotifs}
                     aria-controls="notifications-dropdown"
@@ -247,7 +231,7 @@ export function Navbar() {
                   {showNotifs && (
                     <div
                       id="notifications-dropdown"
-                      className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line)] shadow-lg py-2 z-50"
+                      className="fixed sm:absolute left-3 right-3 sm:left-auto sm:right-0 top-16 sm:top-full mt-2 sm:w-96 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line-strong)] py-2 z-50"
                     >
                       <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--line)]">
                         <span className="font-bold text-xs uppercase tracking-wider text-[var(--ink)]">
@@ -285,7 +269,7 @@ export function Navbar() {
                                 <p className="text-[var(--muted)] mt-0.5 leading-relaxed">
                                   {n.message}
                                 </p>
-                                <span className="text-[11px] font-mono text-[var(--faint)] mt-1 block">
+                                <span className="text-xs font-mono text-[var(--faint)] mt-1 block">
                                   {new Date(n.created_at).toLocaleTimeString([], {
                                     hour: '2-digit',
                                     minute: '2-digit',
@@ -308,27 +292,27 @@ export function Navbar() {
                   <button
                     type="button"
                     onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                    className="flex items-center gap-2.5 text-left py-1 px-2 rounded-[var(--radius)] hover:bg-[var(--ink-soft)] transition"
+                    className="flex items-center gap-2.5 text-left py-1 px-2 rounded-[var(--radius)] hover:bg-[var(--ink-soft)] transition cursor-pointer"
                   >
-                    <div className="w-7 h-7 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--paper)]/20 flex items-center justify-center text-xs font-bold text-[var(--paper)] uppercase">
+                    <div className="w-7 h-7 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--paper)]/20 flex items-center justify-center text-xs font-mono font-bold text-[var(--paper)] uppercase">
                       {user.full_name?.slice(0, 2) || 'US'}
                     </div>
                     <div className="hidden md:block text-xs">
                       <div className="font-semibold text-[var(--paper)] leading-tight">
                         {user?.full_name}
                       </div>
-                      <div className="text-[10px] font-mono text-[var(--accent-line)]">
+                      <div className="text-xs font-mono text-[var(--accent-line)]">
                         {ROLE_DISPLAY_NAMES[user.primary_role] ?? user.primary_role}
                       </div>
                     </div>
                   </button>
 
                   {profileMenuOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-56 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line)] shadow-lg py-1.5 z-50">
+                    <div className="fixed sm:absolute left-3 right-3 sm:left-auto sm:right-0 top-16 sm:top-full mt-2 sm:w-64 bg-[var(--paper)] text-[var(--ink)] rounded-[var(--radius)] border border-[var(--line-strong)] py-1.5 z-50">
                       <div className="px-4 py-2.5 border-b border-[var(--line)] bg-[var(--surface)]">
                         <p className="text-xs font-bold text-[var(--ink)] truncate">{user.full_name}</p>
-                        <p className="text-[11px] font-mono text-[var(--muted)] truncate">{user.email}</p>
-                        <span className="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-xs bg-[var(--accent-tint)] text-[var(--accent-text)] border border-[var(--accent-line)] text-[10px] font-bold uppercase tracking-wider">
+                        <p className="text-xs font-mono text-[var(--muted)] truncate">{user.email}</p>
+                        <span className="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-[var(--radius)] bg-[var(--accent-tint)] text-[var(--accent-text)] border border-[var(--accent-line)] text-xs font-mono font-bold uppercase tracking-wider">
                           {ROLE_DISPLAY_NAMES[user.primary_role] ?? user.primary_role}
                         </span>
                       </div>
@@ -386,7 +370,7 @@ export function Navbar() {
                       <div className="border-t border-[var(--line)] my-1" />
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-4 py-2 text-xs font-semibold text-left text-[var(--danger-text)] hover:bg-[var(--danger-tint)] flex items-center gap-2.5"
+                        className="w-full px-4 py-2 text-xs font-semibold text-left text-[var(--danger-text)] hover:bg-[var(--danger)] hover:text-[var(--danger-ink)] transition flex items-center gap-2.5 cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
                         Sign out of session
@@ -422,18 +406,28 @@ export function Navbar() {
 
       {/* Mobile menu panel */}
       {mobileMenuOpen && (
-        <div id="mobile-menu" className="lg:hidden border-t border-[var(--ink-soft)] bg-[var(--ink)] px-4 pt-4 pb-6 space-y-4">
+        <div id="mobile-menu" className="lg:hidden border-t border-[var(--ink-soft)] bg-[var(--ink)] px-4 pt-4 pb-6 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          {user && (
+            <div className="px-3 py-2.5 rounded-[var(--radius)] bg-[var(--ink-dark)] border border-[var(--ink-soft)] flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-[var(--paper)] truncate">{user.full_name}</p>
+                <p className="text-xs font-mono text-[var(--accent-line)] truncate">
+                  {ROLE_DISPLAY_NAMES[user.primary_role] ?? user.primary_role}
+                </p>
+              </div>
+              <span className="text-xs font-mono text-[var(--paper)]/60 truncate max-w-[9rem]">
+                {user.email}
+              </span>
+            </div>
+          )}
           <nav className="flex flex-col space-y-1">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--paper)]/50 px-3 pb-2">
-              {user ? `${ROLE_DISPLAY_NAMES[user.primary_role] ?? 'Workspace'} Menu` : 'Public Directory'}
-            </span>
             {getRoleNavigation()}
           </nav>
           <div className="pt-4 border-t border-[var(--ink-soft)]">
             {user ? (
               <button
                 onClick={handleSignOut}
-                className="w-full py-2.5 px-4 rounded-[var(--radius)] bg-[var(--ink-soft)] text-xs font-semibold text-[var(--paper)] hover:bg-[var(--danger)] transition flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-4 rounded-[var(--radius)] bg-[var(--ink-soft)] text-xs font-semibold text-[var(--paper)] hover:bg-[var(--danger)] hover:text-[var(--danger-ink)] transition flex items-center justify-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
                 Sign out ({user.full_name})

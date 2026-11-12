@@ -78,7 +78,7 @@ export function Dialog({ isOpen, onClose, title, titleId, children }: DialogProp
       >
         <div
           ref={containerRef}
-          className="bg-[var(--paper)] rounded-[var(--radius)] max-w-md w-full p-6  border border-[var(--line)] relative"
+          className="bg-[var(--paper)] rounded-[var(--radius)] max-w-md w-full max-h-[calc(100vh-2rem)] overflow-y-auto p-5 sm:p-6 border border-[var(--line-strong)] relative"
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}

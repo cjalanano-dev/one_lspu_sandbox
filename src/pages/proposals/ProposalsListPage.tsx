@@ -62,16 +62,12 @@ export function ProposalsListPage() {
 
   return (
     <div className="space-y-6">
-      <header className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--ink-soft)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <header className="rounded-[var(--radius)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--line-strong)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-xs bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-            Student Organization Digital Paperwork
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--paper)]">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--paper)]">
             Event Proposals &amp; Signatory Routing
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--paper)]/70 max-w-2xl">
+          <p className="text-xs sm:text-sm text-[var(--paper)]/75 max-w-2xl">
             File the activity proposal, budget, and venue request once. It moves through the Org Adviser, College Dean,
             OSAS, Campus Director, and University President approvals digitally.
           </p>
@@ -113,9 +109,9 @@ export function ProposalsListPage() {
 
       {orgs.length > 0 && (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="ledger-strip grid-cols-2 sm:grid-cols-4">
             {(['draft', 'in_review', 'returned', 'approved'] as ProposalStatus[]).map((s) => (
-              <div key={s} className="panel p-4">
+              <div key={s} className="ledger-cell">
                 <p className="kpi-value">{counts(s)}</p>
                 <p className="kpi-label">{PROPOSAL_STATUS_LABEL[s]}</p>
               </div>

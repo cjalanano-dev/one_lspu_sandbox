@@ -122,67 +122,64 @@ export function OrganizationDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-[var(--accent-deep)] text-[var(--paper)] rounded-sm border border-[var(--accent-deep)] p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
+      <div className="bg-[var(--ink)] text-[var(--paper)] rounded-[var(--radius)] border border-[var(--line-strong)] p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 min-w-0">
           {selectedOrg?.logo_url ? (
             <img
               src={selectedOrg.logo_url}
               alt={selectedOrg.name}
-              className="w-14 h-14 rounded-sm object-cover border-[var(--paper)]/10 grayscale"
+              className="w-12 h-12 sm:w-14 sm:h-14 rounded-[var(--radius)] object-cover border border-[var(--paper)]/15 grayscale shrink-0"
             />
           ) : (
-            <div className="w-14 h-14 rounded-sm bg-[var(--paper)]/10 flex items-center justify-center border-[var(--paper)]/10 grayscale">
-              <Compass className="w-8 h-8 text-[var(--paper)]" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-[var(--radius)] bg-[var(--ink-soft)] flex items-center justify-center border border-[var(--paper)]/15 shrink-0">
+              <Compass className="w-7 h-7 text-[var(--accent-line)]" />
             </div>
           )}
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2 py-0.5 rounded-sm border-[var(--paper)] text-xs font-mono font-bold uppercase bg-[var(--paper)] text-[var(--ink)]">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+              <span className="px-2 py-0.5 rounded-[var(--radius)] text-xs font-mono font-bold uppercase bg-[var(--paper)] text-[var(--ink)]">
                 {selectedOrg?.acronym}
               </span>
               {selectedOrg?.college && (
-                <span className="px-2 py-0.5 rounded-sm border-[var(--paper)]/20 text-xs font-medium uppercase bg-[var(--paper)]/10 text-[var(--paper)]">
+                <span className="px-2 py-0.5 rounded-[var(--radius)] border border-[var(--paper)]/20 text-xs font-mono uppercase bg-[var(--ink-soft)] text-[var(--paper)]">
                   {selectedOrg.college}
                 </span>
               )}
               {selectedOrg?.parent_org_id && (
-                <span className="text-xs text-[var(--paper)]/60 font-medium uppercase tracking-wider">
+                <span className="text-xs text-[var(--paper)]/65 font-mono uppercase">
                   · Sub-org under OCTA
                 </span>
               )}
-              <span className="text-xs text-[var(--paper)]/50 font-medium uppercase tracking-widest">
-                Student Organization
-              </span>
               {adviserName && (
-                <span className="px-2 py-0.5 rounded-xs border border-[var(--accent)]/40 text-[11px] font-mono bg-[var(--ink-soft)] text-[var(--accent-line)]">
+                <span className="px-2 py-0.5 rounded-[var(--radius)] border border-[var(--accent)]/40 text-xs font-mono bg-[var(--ink-soft)] text-[var(--accent-line)]">
                   Adviser: {adviserName}
                 </span>
               )}
             </div>
-            <h1 className="text-2xl font-black text-[var(--paper)]">{selectedOrg?.name}</h1>
-            <p className="text-xs text-[var(--paper)]/60 mt-1 max-w-2xl leading-relaxed uppercase tracking-wider font-medium">
+            <h1 className="text-xl sm:text-2xl font-bold text-[var(--paper)] tracking-tight">{selectedOrg?.name}</h1>
+            <p className="text-xs text-[var(--paper)]/70 mt-1 max-w-2xl leading-relaxed">
               {selectedOrg?.description}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto shrink-0">
           {filingOrg && (
             <Link
               to={`/proposals/new?org=${filingOrg.id}`}
-              className="px-5 py-3 rounded-sm bg-[var(--paper)] text-[var(--ink)] font-bold text-sm flex items-center gap-2 hover:bg-[var(--accent-tint)] transition"
+              className="flex-1 sm:flex-none justify-center btn-accent text-xs gap-2"
             >
               <FileText className="w-4 h-4" />
               File Event Proposal
             </Link>
           )}
           {!filingOrg && (
-            <p className="text-xs text-[var(--paper)]/60">
+            <p className="text-xs text-[var(--paper)]/65">
               Only a president or secretary can file proposals for an organization.
             </p>
           )}
           <Link
             to="/proposals"
-            className="px-5 py-3 rounded-sm border-[var(--paper)] text-[var(--paper)] font-medium text-sm flex items-center gap-2 hover:bg-[var(--paper)]/5 transition"
+            className="flex-1 sm:flex-none justify-center px-4 py-2.5 rounded-[var(--radius)] border border-[var(--paper)]/25 bg-[var(--ink-soft)] text-[var(--paper)] font-semibold text-xs flex items-center gap-2 hover:border-[var(--accent)] transition"
           >
             View Proposals
           </Link>

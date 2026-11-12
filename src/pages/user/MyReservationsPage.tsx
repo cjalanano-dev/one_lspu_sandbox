@@ -96,16 +96,13 @@ export function MyReservationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--ink-soft)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="rounded-[var(--radius)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--line-strong)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
-            Personal Booking Ledger
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--paper)] tracking-tight flex items-center gap-2.5 mt-0.5">
-            <Calendar className="w-6 h-6 text-[var(--accent)]" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--paper)] tracking-tight flex items-center gap-2.5">
+            <Calendar className="w-6 h-6 text-[var(--accent-line)]" />
             My Facility Reservations
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--paper)]/70 mt-1">
+          <p className="text-xs sm:text-sm text-[var(--paper)]/75 mt-1">
             Track submission status, review administrator feedback, or manage your venue requests.
           </p>
         </div>
@@ -210,7 +207,7 @@ export function MyReservationsPage() {
                     </p>
 
                     {res.status === 'rejected' && res.rejection_reason && (
-                      <div className="mt-3 p-3 border-l-4 border-[var(--ink)] bg-[var(--surface-2)] text-[var(--ink)] text-xs flex items-start gap-2">
+                      <div className="mt-3 p-3.5 border border-[var(--line-strong)] bg-[var(--surface-2)] text-[var(--ink)] text-xs flex items-start gap-2.5 rounded-[var(--radius)]">
                         <AlertCircle className="w-4 h-4 text-[var(--ink)] shrink-0 mt-0.5" />
                         <div>
                           <span className="font-bold">Rejection Note: </span>

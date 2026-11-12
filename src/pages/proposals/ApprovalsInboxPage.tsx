@@ -60,30 +60,30 @@ export function ApprovalsInboxPage() {
 
   return (
     <div className="space-y-6">
-      {/* Grayish-Black Signatory Banner */}
-      <header className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--ink-soft)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Architectural Signatory Banner */}
+      <header className="rounded-[var(--radius)] bg-[var(--ink)] text-[var(--paper)] p-6 sm:p-8 border border-[var(--line-strong)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1.5">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-xs bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
+          <div className="flex flex-wrap items-center gap-2 mb-1">
+            <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-xs font-mono uppercase tracking-wider text-[var(--accent-line)]">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
               {ROLE_LABEL[user?.primary_role ?? ''] ?? 'Signatory Office'}
-            </div>
+            </span>
             {user?.primary_role === 'adviser' &&
               advisedOrgs.map((org) => (
                 <span
                   key={org.id}
-                  className="px-2.5 py-0.5 rounded-xs bg-[var(--accent)] text-[var(--accent-ink)] text-[10px] font-mono font-bold uppercase tracking-wider"
+                  className="px-2.5 py-0.5 rounded-[var(--radius)] bg-[var(--accent)] text-[var(--accent-ink)] text-xs font-mono font-bold uppercase tracking-wider"
                 >
                   Assigned to {org.acronym}
                 </span>
               ))}
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--paper)]">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--paper)]">
             {user?.primary_role === 'adviser' && advisedOrgs.length > 0
               ? `${advisedOrgs.map((o) => o.acronym).join(' / ')} Adviser Endorsement Inbox`
               : 'Digital Signatory & Clearance Inbox'}
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--paper)]/70">
+          <p className="text-xs sm:text-sm text-[var(--paper)]/75">
             {user?.primary_role === 'adviser' && advisedOrgs.length > 0
               ? `Showing Step 1 proposals exclusively from ${advisedOrgs.map((o) => (o.name === o.acronym ? o.name : `${o.name} (${o.acronym})`)).join(', ')}.`
               : 'Only proposals that have reached your specific signatory step in the approval chain appear in this queue.'}
@@ -96,16 +96,16 @@ export function ApprovalsInboxPage() {
         )}
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="panel p-5 border-t-2 border-t-[var(--accent)]">
+      <div className="ledger-strip grid-cols-1 sm:grid-cols-3">
+        <div className="ledger-cell">
           <p className="kpi-value">{items.length}</p>
           <p className="kpi-label">Awaiting Your Signature</p>
         </div>
-        <div className="panel p-5">
+        <div className="ledger-cell">
           <p className="kpi-value">{overdue.length}</p>
           <p className="kpi-label">Overdue (&gt;48 Hours)</p>
         </div>
-        <div className="panel p-5">
+        <div className="ledger-cell">
           <p className="kpi-value">SHA-256</p>
           <p className="kpi-label">Digital Signature Standard</p>
         </div>
@@ -172,10 +172,10 @@ export function ApprovalsInboxPage() {
                         </span>
                       </p>
                     </div>
-                    <div className="flex items-center gap-4 shrink-0">
-                      <div className="text-xs text-right">
-                        <p className="text-[10px] font-mono uppercase text-[var(--muted)]">SLA Due</p>
-                        <p className={late ? 'font-bold text-[var(--danger-text)]' : 'font-mono text-[var(--ink)]'}>
+                    <div className="flex items-center justify-between md:justify-end gap-4 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-[var(--line)]">
+                      <div className="text-xs md:text-right">
+                        <p className="text-xs font-mono uppercase text-[var(--muted)]">SLA Due</p>
+                        <p className={late ? 'font-bold text-[var(--danger-text)] font-mono' : 'font-mono text-[var(--ink)]'}>
                           {formatDateTime(step.due_at)}
                         </p>
                       </div>

@@ -304,27 +304,26 @@ export function StudentOrgEventsCalendar() {
   return (
     <section className="panel overflow-hidden">
       {/* Grayish-Black Institutional Calendar Header */}
-      <div className="bg-[var(--ink)] text-[var(--paper)] px-6 py-5 border-b border-[var(--ink-soft)] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-            University-Wide Student Organization Schedule
-          </div>
-          <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-[var(--paper)] flex items-center gap-2">
-            <CalendarIcon className="w-5 h-5 text-[var(--accent)]" />
-            Student Organization Events Calendar
+      <div className="bg-[var(--ink)] text-[var(--paper)] px-4 sm:px-6 py-4 sm:py-5 border-b border-[var(--ink-soft)] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg sm:text-xl font-bold tracking-tight text-[var(--paper)] flex items-center gap-2">
+            <CalendarIcon className="w-5 h-5 text-[var(--accent-line)] shrink-0" />
+            <span>Student Organization Events Calendar</span>
           </h2>
+          <p className="text-xs text-[var(--paper)]/65 mt-0.5 font-mono">
+            University-wide schedule of approved activities and venue bookings
+          </p>
         </div>
 
         {/* Controls: Organization Filter + View Switcher (Month | Week | Day) */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1.5 bg-[var(--ink-dark)] border border-[var(--ink-soft)] rounded-[var(--radius)] px-2.5 py-1.5">
-            <Filter className="w-3.5 h-3.5 text-[var(--accent-line)]" />
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <div className="flex items-center gap-1.5 bg-[var(--ink-dark)] border border-[var(--ink-soft)] rounded-[var(--radius)] px-2.5 py-1.5 min-w-0">
+            <Filter className="w-3.5 h-3.5 text-[var(--accent-line)] shrink-0" />
             <select
               aria-label="Filter by student organization"
               value={selectedOrgFilter}
               onChange={(e) => setSelectedOrgFilter(e.target.value)}
-              className="bg-[var(--ink-dark)] text-[var(--paper)] text-xs font-medium focus:outline-none pr-1"
+              className="bg-[var(--ink-dark)] text-[var(--paper)] text-xs font-medium focus:outline-none pr-1 w-full sm:w-auto truncate"
             >
               <option value="all">All Student Organizations ({events.length})</option>
               {organizations.map((org) => (
@@ -339,7 +338,7 @@ export function StudentOrgEventsCalendar() {
           <div
             role="tablist"
             aria-label="Calendar view mode"
-            className="inline-flex rounded-[var(--radius)] bg-[var(--ink-dark)] p-1 border border-[var(--ink-soft)]"
+            className="grid grid-cols-3 sm:inline-flex rounded-[var(--radius)] bg-[var(--ink-dark)] p-1 border border-[var(--ink-soft)] shrink-0"
           >
             {(['month', 'week', 'day'] as CalendarViewMode[]).map((mode) => {
               const active = view === mode
@@ -350,7 +349,7 @@ export function StudentOrgEventsCalendar() {
                   role="tab"
                   aria-selected={active}
                   onClick={() => setView(mode)}
-                  className={`px-3.5 py-1 rounded-xs text-xs font-bold uppercase tracking-wider transition cursor-pointer ${
+                  className={`px-3.5 py-1.5 sm:py-1 rounded-[var(--radius)] text-xs font-bold uppercase tracking-wider transition cursor-pointer ${
                     active
                       ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
                       : 'text-[var(--paper)]/70 hover:text-[var(--paper)]'
@@ -365,14 +364,14 @@ export function StudentOrgEventsCalendar() {
       </div>
 
       {/* Sub-toolbar: Date Navigation & Status Legend */}
-      <div className="px-6 py-3.5 bg-[var(--surface)] border-b border-[var(--line)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <div className="inline-flex items-center rounded-[var(--radius)] border border-[var(--line)] bg-[var(--paper)] p-0.5">
+      <div className="px-4 sm:px-6 py-3.5 bg-[var(--surface)] border-b border-[var(--line)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex items-center rounded-[var(--radius)] border border-[var(--line)] bg-[var(--paper)] p-0.5 shrink-0">
             <button
               type="button"
               onClick={handlePrev}
               aria-label="Previous period"
-              className="p-1.5 rounded-xs text-[var(--ink)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] transition cursor-pointer"
+              className="p-1.5 rounded-[var(--radius)] text-[var(--ink)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] transition cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -387,23 +386,23 @@ export function StudentOrgEventsCalendar() {
               type="button"
               onClick={handleNext}
               aria-label="Next period"
-              className="p-1.5 rounded-xs text-[var(--ink)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] transition cursor-pointer"
+              className="p-1.5 rounded-[var(--radius)] text-[var(--ink)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)] transition cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-          <h3 className="text-sm sm:text-base font-extrabold text-[var(--ink)] tracking-tight ml-1">
+          <h3 className="text-sm sm:text-base font-bold text-[var(--ink)] tracking-tight ml-1">
             {periodLabel}
           </h3>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 text-[11px] font-mono text-[var(--muted)]">
+        <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-[var(--muted)]">
           <span className="inline-flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-xs bg-[var(--accent)]" />
+            <span className="w-2.5 h-2.5 rounded-[var(--radius)] bg-[var(--accent)]" />
             Approved Event
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-xs bg-[var(--ink)]" />
+            <span className="w-2.5 h-2.5 rounded-[var(--radius)] bg-[var(--ink)]" />
             Scheduled / In Review
           </span>
         </div>
@@ -419,102 +418,143 @@ export function StudentOrgEventsCalendar() {
       ) : (
         <div className="bg-[var(--paper)]">
           {/* ================================================================
-              1. MONTH VIEW
+              1. MONTH VIEW (Scrollable grid on mobile + selected day agenda)
               ================================================================ */}
           {view === 'month' && (
             <div>
-              <div className="grid grid-cols-7 border-b border-[var(--line)] bg-[var(--surface)]">
-                {WEEKDAYS.map((day) => (
-                  <div
-                    key={day}
-                    className="py-2.5 px-3 text-center text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--muted)] border-r border-[var(--line)] last:border-r-0"
-                  >
-                    {day}
+              <div className="overflow-x-auto">
+                <div className="min-w-[38rem]">
+                  <div className="grid grid-cols-7 border-b border-[var(--line)] bg-[var(--surface)]">
+                    {WEEKDAYS.map((day) => (
+                      <div
+                        key={day}
+                        className="py-2.5 px-2 text-center text-xs font-mono font-bold uppercase tracking-wider text-[var(--muted)] border-r border-[var(--line)] last:border-r-0"
+                      >
+                        {day}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-              <div className="grid grid-cols-7 divide-x divide-y divide-[var(--line)]">
-                {monthDays.map((cellDate) => {
-                  const inCurrentMonth = cellDate.getMonth() === cursorDate.getMonth()
-                  const isToday = isSameDay(cellDate, today)
-                  const isSelectedDay = isSameDay(cellDate, cursorDate)
-                  const cellEvents = filteredEvents.filter((ev) => eventOccursOnDate(ev, cellDate))
+                  <div className="grid grid-cols-7 divide-x divide-y divide-[var(--line)]">
+                    {monthDays.map((cellDate) => {
+                      const inCurrentMonth = cellDate.getMonth() === cursorDate.getMonth()
+                      const isToday = isSameDay(cellDate, today)
+                      const isSelectedDay = isSameDay(cellDate, cursorDate)
+                      const cellEvents = filteredEvents.filter((ev) => eventOccursOnDate(ev, cellDate))
 
-                  return (
-                    <div
-                      key={cellDate.toISOString()}
-                      onClick={() => setCursorDate(cellDate)}
-                      className={`min-h-[7rem] p-2 transition flex flex-col justify-between cursor-pointer ${
-                        !inCurrentMonth
-                          ? 'bg-[var(--surface)]/60 text-[var(--faint)]'
-                          : isSelectedDay
-                            ? 'bg-[var(--accent-tint)]/40'
-                            : 'bg-[var(--paper)] hover:bg-[var(--surface)]/50'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setCursorDate(cellDate)
-                            setView('day')
-                          }}
-                          title="Inspect day schedule"
-                          className={`w-6 h-6 rounded-xs text-xs font-mono font-bold flex items-center justify-center transition ${
-                            isToday
-                              ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
-                              : inCurrentMonth
-                                ? 'text-[var(--ink)] hover:bg-[var(--surface-2)]'
-                                : 'text-[var(--faint)]'
+                      return (
+                        <div
+                          key={cellDate.toISOString()}
+                          onClick={() => setCursorDate(cellDate)}
+                          className={`min-h-[6.5rem] sm:min-h-[7rem] p-2 transition flex flex-col justify-between cursor-pointer ${
+                            !inCurrentMonth
+                              ? 'bg-[var(--surface)]/60 text-[var(--faint)]'
+                              : isSelectedDay
+                                ? 'bg-[var(--accent-tint)]/60'
+                                : 'bg-[var(--paper)] hover:bg-[var(--surface)]/50'
                           }`}
                         >
-                          {cellDate.getDate()}
-                        </button>
-                        {cellEvents.length > 0 && (
-                          <span className="text-[10px] font-mono text-[var(--muted)]">
-                            {cellEvents.length}
-                          </span>
-                        )}
-                      </div>
+                          <div className="flex items-center justify-between">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setCursorDate(cellDate)
+                                setView('day')
+                              }}
+                              title="Inspect day schedule"
+                              className={`w-6 h-6 rounded-[var(--radius)] text-xs font-mono font-bold flex items-center justify-center transition ${
+                                isToday
+                                  ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
+                                  : inCurrentMonth
+                                    ? 'text-[var(--ink)] hover:bg-[var(--surface-2)]'
+                                    : 'text-[var(--faint)]'
+                              }`}
+                            >
+                              {cellDate.getDate()}
+                            </button>
+                            {cellEvents.length > 0 && (
+                              <span className="text-xs font-mono text-[var(--muted)]">
+                                {cellEvents.length}
+                              </span>
+                            )}
+                          </div>
 
-                      <div className="space-y-1 mt-1.5">
-                        {cellEvents.slice(0, 3).map((ev) => (
-                          <button
-                            key={ev.id}
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setSelectedEvent(ev)
-                            }}
-                            className={`w-full text-left px-1.5 py-1 rounded-xs text-[11px] leading-tight truncate font-medium transition border cursor-pointer ${
-                              ev.status === 'approved'
-                                ? 'bg-[var(--accent-tint)] text-[var(--accent-text)] border-[var(--accent-line)] hover:bg-[var(--accent)] hover:text-[var(--accent-ink)]'
-                                : 'bg-[var(--ink)] text-[var(--paper)] border-[var(--ink)] hover:bg-[var(--ink-soft)]'
-                            }`}
-                          >
-                            <span className="font-mono font-bold mr-1">[{ev.organizationAcronym}]</span>
-                            {ev.title}
-                          </button>
-                        ))}
-                        {cellEvents.length > 3 && (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setCursorDate(cellDate)
-                              setView('day')
-                            }}
-                            className="w-full text-left px-1.5 py-0.5 text-[10px] font-mono font-bold text-[var(--accent-text)] hover:underline"
-                          >
-                            +{cellEvents.length - 3} more…
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
+                          <div className="space-y-1 mt-1.5">
+                            {cellEvents.slice(0, 3).map((ev) => (
+                              <button
+                                key={ev.id}
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setSelectedEvent(ev)
+                                }}
+                                className={`w-full text-left px-1.5 py-1 rounded-[var(--radius)] text-xs leading-tight truncate font-medium transition border cursor-pointer ${
+                                  ev.status === 'approved'
+                                    ? 'bg-[var(--accent-tint)] text-[var(--accent-text)] border-[var(--accent-line)] hover:bg-[var(--accent)] hover:text-[var(--accent-ink)]'
+                                    : 'bg-[var(--ink)] text-[var(--paper)] border-[var(--ink)] hover:bg-[var(--ink-soft)]'
+                                }`}
+                              >
+                                <span className="font-mono font-bold mr-1">[{ev.organizationAcronym}]</span>
+                                {ev.title}
+                              </button>
+                            ))}
+                            {cellEvents.length > 3 && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setCursorDate(cellDate)
+                                  setView('day')
+                                }}
+                                className="w-full text-left px-1.5 py-0.5 text-xs font-mono font-bold text-[var(--accent-text)] hover:underline"
+                              >
+                                +{cellEvents.length - 3} more…
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile Selected Day Quick Agenda below Month Grid */}
+              <div className="md:hidden border-t border-[var(--line)] bg-[var(--surface)] p-4 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold uppercase text-[var(--ink)]">
+                    {cursorDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                  </span>
+                  <span className="text-xs font-mono text-[var(--muted)]">
+                    {dayEvents.length} {dayEvents.length === 1 ? 'event' : 'events'}
+                  </span>
+                </div>
+                {dayEvents.length === 0 ? (
+                  <p className="text-xs text-[var(--muted)]">Tap any highlighted date above to inspect its events.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {dayEvents.map((ev) => (
+                      <button
+                        key={ev.id}
+                        type="button"
+                        onClick={() => setSelectedEvent(ev)}
+                        className="w-full text-left p-3 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--line)] flex items-center justify-between gap-3"
+                      >
+                        <div className="min-w-0">
+                          <span className="text-xs font-mono font-bold text-[var(--accent-text)]">
+                            [{ev.organizationAcronym}]
+                          </span>{' '}
+                          <span className="text-xs font-bold text-[var(--ink)]">{ev.title}</span>
+                          <p className="text-xs font-mono text-[var(--muted)] mt-0.5">{formatTimeRange(ev)}</p>
+                        </div>
+                        <span className={`tag shrink-0 ${ev.status === 'approved' ? 'tag-approved' : 'tag-pending'}`}>
+                          {ev.status}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

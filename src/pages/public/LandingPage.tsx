@@ -112,7 +112,6 @@ export function LandingPage() {
           return
         }
 
-        // Load only data relevant to the user's specific role
         if (user.primary_role === 'student' || user.primary_role === 'faculty') {
           const res = await dataStore.getReservations({ requesterId: user.id })
           setMyReservations(res)
@@ -196,22 +195,19 @@ export function LandingPage() {
   if (!user) {
     return (
       <div className="space-y-10">
-        {/* Grayish-Black Institutional Hero with Subtle Blue Hints */}
-        <section className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink-soft)] overflow-hidden shadow-sm">
-          <div className="p-8 sm:p-12 lg:p-14 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[var(--accent-line)] text-xs font-mono uppercase tracking-widest">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-                ONE LSPU · Institutional Governance Portal
+        {/* Architectural Split-Frame Ledger Hero */}
+        <section className="rounded-[var(--radius)] bg-[var(--ink)] text-[var(--paper)] border border-[var(--line-strong)] overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-[var(--ink-soft)]">
+            <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between space-y-8">
+              <div className="space-y-5">
+                <h1 className="text-3xl sm:text-5xl font-bold tracking-tight leading-[1.08] text-[var(--paper)]">
+                  Unified campus facilities &amp; role-based event governance.
+                </h1>
+                <p className="text-sm sm:text-base text-[var(--paper)]/75 leading-relaxed max-w-2xl">
+                  ONE LSPU unifies campus facility management and student event governance through interactive schematic floor plans, real-time availability, automated conflict detection, and a five-stage digital signatory workflow—eliminating manual paperwork, preventing double bookings, and delivering faster, transparent approvals across dedicated role-based workspaces.
+                </p>
               </div>
-              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.12] text-[var(--paper)]">
-                Unified campus facilities &amp; role-based event governance.
-              </h1>
-              <p className="text-sm sm:text-base text-[var(--paper)]/70 leading-relaxed max-w-2xl">
-                A centralized institutional platform connecting students, faculty, student organizations,
-                and university signatories. Inspect schematic floor plans, prevent scheduling conflicts,
-                and route event proposals through dedicated role-specific workspaces.
-              </p>
+
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <Link
                   to="/login"
@@ -223,60 +219,57 @@ export function LandingPage() {
                 </Link>
                 <Link
                   to="/explorer"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/15 font-semibold text-xs uppercase tracking-wider hover:border-[var(--accent)] transition"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/20 font-semibold text-xs uppercase tracking-wider hover:border-[var(--accent)] transition"
                 >
-                  <Compass className="w-3.5 h-3.5 text-[var(--accent)]" />
+                  <Compass className="w-3.5 h-3.5 text-[var(--accent-line)]" />
                   Public Campus Map
                 </Link>
               </div>
             </div>
 
-            {/* Live Campus Telemetry Card */}
-            <div className="lg:col-span-5 bg-[var(--ink-dark)] border border-[var(--ink-soft)] rounded-[var(--radius)] p-6 space-y-5">
-              <div className="flex items-center justify-between border-b border-[var(--ink-soft)] pb-3">
-                <span className="text-xs font-mono uppercase tracking-widest text-[var(--paper)]/70">
-                  Live Campus Telemetry
+            {/* Live Campus Availability Ledger Column */}
+            <div className="lg:col-span-5 bg-[var(--ink-dark)] flex flex-col justify-between">
+              <div className="px-6 py-4 border-b border-[var(--ink-soft)] flex items-center justify-between">
+                <span className="text-xs font-mono uppercase tracking-wider text-[var(--paper)]/80 font-semibold">
+                  Campus Availability Ledger
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-[var(--accent-line)]">
+                <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--accent-line)]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-                  ONLINE
+                  LIVE
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-[var(--radius)] bg-[var(--ink)] border border-[var(--ink-soft)]">
-                  <div className="text-2xl font-extrabold text-[var(--paper)]">{buildings.length}</div>
-                  <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--paper)]/50 mt-0.5">
+              <div className="grid grid-cols-2 divide-x divide-[var(--ink-soft)] border-b border-[var(--ink-soft)]">
+                <div className="p-5">
+                  <div className="text-2xl font-bold font-mono text-[var(--paper)]">{buildings.length}</div>
+                  <div className="text-xs font-mono uppercase tracking-wider text-[var(--paper)]/60 mt-1">
                     Buildings Mapped
                   </div>
                 </div>
-                <div className="p-3.5 rounded-[var(--radius)] bg-[var(--ink)] border border-[var(--ink-soft)]">
-                  <div className="text-2xl font-extrabold text-[var(--paper)]">{reservableFacilities.length}</div>
-                  <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--paper)]/50 mt-0.5">
+                <div className="p-5">
+                  <div className="text-2xl font-bold font-mono text-[var(--paper)]">{reservableFacilities.length}</div>
+                  <div className="text-xs font-mono uppercase tracking-wider text-[var(--paper)]/60 mt-1">
                     Reservable Spaces
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <p className="text-[11px] font-mono uppercase tracking-wider text-[var(--paper)]/50">
-                  Featured Institutional Venues
-                </p>
+              <div className="divide-y divide-[var(--ink-soft)]">
                 {reservableFacilities.slice(0, 3).map((f) => (
                   <Link
                     key={f.id}
                     to={`/facilities/${f.id}`}
-                    className="flex items-center justify-between px-3.5 py-2.5 rounded-[var(--radius)] bg-[var(--ink)] border border-[var(--ink-soft)] hover:border-[var(--accent)] transition group"
+                    className="flex items-center justify-between px-6 py-3.5 hover:bg-[var(--ink-soft)] transition group"
                   >
-                    <div className="min-w-0">
+                    <div className="min-w-0 pr-3">
                       <p className="text-xs font-semibold text-[var(--paper)] truncate group-hover:text-[var(--accent-line)]">
                         {f.name}
                       </p>
-                      <span className="text-[10px] font-mono text-[var(--paper)]/50 uppercase">
-                        {f.facility_code} · {f.capacity} cap
+                      <span className="text-xs font-mono text-[var(--paper)]/60 uppercase">
+                        {f.facility_code} · {f.capacity} seats
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-xs bg-[var(--ink-soft)] text-[var(--accent-line)] border border-[var(--accent)]/30">
+                    <span className="text-xs font-mono uppercase px-2 py-0.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--accent-line)] border border-[var(--accent)]/40 shrink-0">
                       {f.status}
                     </span>
                   </Link>
@@ -286,58 +279,62 @@ export function LandingPage() {
           </div>
         </section>
 
-        {/* Institutional Role Architecture Overview */}
-        <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-            <div>
-              <p className="text-xs font-mono uppercase tracking-widest text-[var(--accent-text)] font-semibold">
-                Strict Role Separation
-              </p>
-              <h2 className="text-xl font-extrabold text-[var(--ink)]">
-                Dedicated Workspaces by Institutional Role
-              </h2>
-            </div>
-            <p className="text-xs text-[var(--muted)]">
-              Each account only sees the tools, queues, and actions relevant to its authority.
+        {/* Institutional Role Directory — Ruled Architectural Matrix */}
+        <section className="panel overflow-hidden">
+          <div className="px-6 py-4 border-b border-[var(--line)] bg-[var(--surface)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h2 className="text-base font-bold text-[var(--ink)] tracking-tight">
+              Dedicated Workspaces by Institutional Role
+            </h2>
+            <p className="text-xs text-[var(--muted)] font-mono">
+              Each account only sees the tools, queues, and actions relevant to its authority
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[var(--line)]">
             {[
               {
+                code: 'ROLE-01',
                 role: 'Students & Faculty',
                 desc: 'Explore interactive building floor plans, check live room schedules, and submit personal or academic reservation requests.',
-                tag: 'Discovery & Booking',
+                scope: 'Discovery & Booking',
               },
               {
+                code: 'ROLE-02',
                 role: 'Student Org Officers',
                 desc: 'Manage student organization activities, compile event proposal packets with budgets, and track signatory clearances.',
-                tag: 'Proposal Filing',
+                scope: 'Proposal Filing',
               },
               {
+                code: 'ROLE-03',
                 role: 'Approval Signatories',
                 desc: 'Advisers, College Deans, OSAS, Campus Directors, and the University President access a focused digital signature queue.',
-                tag: 'Steps 1–5 Governance',
+                scope: 'Steps 1–5 Governance',
               },
               {
+                code: 'ROLE-04',
                 role: 'Facility & System Admins',
                 desc: 'Audit venue utilization, approve or decline direct room bookings, and oversee institutional spaces.',
-                tag: 'Venue Command',
+                scope: 'Venue Command',
               },
             ].map((item) => (
-              <div key={item.role} className="panel p-5 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <span className="inline-block text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-xs bg-[var(--accent-tint)] text-[var(--accent-text)] border border-[var(--accent-line)]">
-                    {item.tag}
-                  </span>
-                  <h3 className="font-bold text-sm text-[var(--ink)]">{item.role}</h3>
+              <div key={item.role} className="p-6 flex flex-col justify-between space-y-5 bg-[var(--paper)] hover:bg-[var(--surface)] transition">
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between border-b border-[var(--line)] pb-2">
+                    <span className="text-xs font-mono font-semibold text-[var(--accent-text)]">
+                      {item.code}
+                    </span>
+                    <span className="text-xs font-mono uppercase text-[var(--muted)]">
+                      {item.scope}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-sm text-[var(--ink)] pt-1">{item.role}</h3>
                   <p className="text-xs text-[var(--muted)] leading-relaxed">{item.desc}</p>
                 </div>
                 <Link
                   to="/login"
-                  className="text-xs font-semibold text-[var(--accent-text)] hover:text-[var(--accent-strong)] inline-flex items-center gap-1"
+                  className="text-xs font-semibold text-[var(--accent-text)] hover:text-[var(--accent-strong)] inline-flex items-center gap-1.5 pt-2"
                 >
-                  Sign in for access <ArrowRight className="w-3 h-3" />
+                  Authenticate workspace <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             ))}
@@ -349,7 +346,7 @@ export function LandingPage() {
           <div className="px-6 py-4 border-b border-[var(--line)] bg-[var(--ink)] text-[var(--paper)] flex items-center justify-between">
             <div>
               <h2 className="text-sm font-bold uppercase tracking-wider">Campus Building Directory</h2>
-              <p className="text-xs text-[var(--paper)]/60">
+              <p className="text-xs text-[var(--paper)]/70 mt-0.5">
                 Public schematic directory of university buildings and mapped rooms
               </p>
             </div>
@@ -373,7 +370,7 @@ export function LandingPage() {
               </thead>
               <tbody className="divide-y divide-[var(--line)]">
                 {buildings.map((b) => (
-                  <tr key={b.id} className="hover:bg-[var(--surface)] transition">
+                  <tr key={b.id} className="hover:bg-[var(--accent-tint)] transition">
                     <td className="px-6 py-3.5 font-mono font-bold text-[var(--accent-text)]">{b.code}</td>
                     <td className="px-6 py-3.5">
                       <div className="font-semibold text-[var(--ink)]">{b.name}</div>
@@ -398,14 +395,14 @@ export function LandingPage() {
           </div>
         </section>
 
-        {/* University-Wide Student Organization Events Calendar (Month / Week / Day) */}
+        {/* University-Wide Student Organization Events Calendar */}
         <StudentOrgEventsCalendar />
       </div>
     )
   }
 
   // ============================================================================
-  // AUTHENTICATED ROLE-SCOPED WORKSPACE HEADER (Shared across roles, customized copy)
+  // AUTHENTICATED ROLE-SCOPED WORKSPACE HEADER
   // ============================================================================
   const roleMeta = ROLE_TITLES[user.primary_role] ?? {
     badge: 'Institutional Workspace',
@@ -415,31 +412,31 @@ export function LandingPage() {
 
   return (
     <div className="space-y-8">
-      {/* Grayish-Black Role Banner */}
-      <section className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] border border-[var(--ink-soft)] p-6 sm:p-8">
+      {/* Architectural Role Command Header */}
+      <section className="rounded-[var(--radius)] bg-[var(--ink)] text-[var(--paper)] border border-[var(--line-strong)] p-6 sm:p-8">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-xs bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-[11px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-[var(--radius)] bg-[var(--ink-soft)] border border-[var(--accent)]/40 text-xs font-mono uppercase tracking-wider text-[var(--accent-line)]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
                 {roleMeta.badge}
-              </div>
+              </span>
               {user.primary_role === 'adviser' &&
                 advisedOrgs.map((org) => (
                   <span
                     key={org.id}
-                    className="px-2.5 py-0.5 rounded-xs bg-[var(--accent)] text-[var(--accent-ink)] text-[10px] font-mono font-bold uppercase tracking-wider"
+                    className="px-2.5 py-0.5 rounded-[var(--radius)] bg-[var(--accent)] text-[var(--accent-ink)] text-xs font-mono font-bold uppercase tracking-wider"
                   >
                     Assigned Adviser: {org.acronym}
                   </span>
                 ))}
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--paper)]">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--paper)]">
               {user.primary_role === 'adviser' && advisedOrgs.length > 0
                 ? `${advisedOrgs.map((o) => o.acronym).join(' / ')} Adviser Endorsement Desk`
                 : roleMeta.title}
             </h1>
-            <p className="text-xs sm:text-sm text-[var(--paper)]/70 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[var(--paper)]/75 leading-relaxed">
               {user.primary_role === 'adviser' && advisedOrgs.length > 0
                 ? `Review student organization event proposals submitted by ${advisedOrgs.map((o) => (o.name === o.acronym ? o.name : `${o.name} (${o.acronym})`)).join(', ')} and issue Step 1 digital signatures.`
                 : roleMeta.subtitle}
@@ -455,7 +452,7 @@ export function LandingPage() {
                 </Link>
                 <Link
                   to="/my-reservations"
-                  className="px-4 py-2.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/15 text-xs font-semibold hover:border-[var(--accent)] transition flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/20 text-xs font-semibold hover:border-[var(--accent)] transition flex items-center gap-2"
                 >
                   <Calendar className="w-4 h-4 text-[var(--accent-line)]" /> My Reservations
                 </Link>
@@ -469,7 +466,7 @@ export function LandingPage() {
                 </Link>
                 <Link
                   to="/organization"
-                  className="px-4 py-2.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/15 text-xs font-semibold hover:border-[var(--accent)] transition flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/20 text-xs font-semibold hover:border-[var(--accent)] transition flex items-center gap-2"
                 >
                   <Users className="w-4 h-4 text-[var(--accent-line)]" /> Organization Hub
                 </Link>
@@ -489,7 +486,7 @@ export function LandingPage() {
                 </Link>
                 <Link
                   to="/approvals"
-                  className="px-4 py-2.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/15 text-xs font-semibold hover:border-[var(--accent)] transition flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-[var(--radius)] bg-[var(--ink-soft)] text-[var(--paper)] border border-[var(--paper)]/20 text-xs font-semibold hover:border-[var(--accent)] transition flex items-center gap-2"
                 >
                   <Inbox className="w-4 h-4 text-[var(--accent-line)]" /> Proposal Clearances ({inboxItems.length})
                 </Link>
@@ -501,24 +498,23 @@ export function LandingPage() {
 
       {/* ========================================================================
           ROLE VIEW A: STUDENT & FACULTY WORKSPACE
-          Only shows personal reservation metrics, personal bookings, and venue finder
           ======================================================================== */}
       {(user.primary_role === 'student' || user.primary_role === 'faculty') && (
         <div className="space-y-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="panel p-5 border-t-2 border-t-[var(--accent)]">
+          <div className="ledger-strip grid-cols-2 sm:grid-cols-4">
+            <div className="ledger-cell">
               <p className="kpi-value">{myReservations.filter((r) => r.status === 'approved').length}</p>
               <p className="kpi-label">Approved Bookings</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{myReservations.filter((r) => r.status === 'pending').length}</p>
               <p className="kpi-label">Pending Requests</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{reservableFacilities.filter((f) => f.status === 'available').length}</p>
               <p className="kpi-label">Available Venues Now</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{buildings.length}</p>
               <p className="kpi-label">Campus Buildings</p>
             </div>
@@ -527,7 +523,7 @@ export function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Personal Reservations Feed */}
             <div className="lg:col-span-7 panel overflow-hidden">
-              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+              <div className="px-5 py-4 border-b border-[var(--line)] bg-[var(--surface)] flex items-center justify-between">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[var(--accent)]" />
                   Your Recent Facility Requests
@@ -553,7 +549,7 @@ export function LandingPage() {
                   myReservations.slice(0, 5).map((r) => {
                     const fac = facilitiesMap[r.facility_id]
                     return (
-                      <div key={r.id} className="p-4 flex items-center justify-between gap-4 hover:bg-[var(--surface)] transition">
+                      <div key={r.id} className="p-4 flex items-center justify-between gap-4 hover:bg-[var(--accent-tint)] transition">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <span className={`tag ${r.status === 'approved' ? 'tag-approved' : r.status === 'pending' ? 'tag-pending' : 'tag-rejected'}`}>
@@ -582,7 +578,7 @@ export function LandingPage() {
 
             {/* Quick Building Directory for Students/Faculty */}
             <div className="lg:col-span-5 panel overflow-hidden">
-              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+              <div className="px-5 py-4 border-b border-[var(--line)] bg-[var(--surface)] flex items-center justify-between">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
                   <Layers className="w-4 h-4 text-[var(--accent)]" />
                   Quick Building Access
@@ -605,7 +601,7 @@ export function LandingPage() {
                           {b.name}
                         </span>
                       </div>
-                      <p className="text-xs text-[var(--muted)] mt-0.5">
+                      <p className="text-xs text-[var(--muted)] mt-0.5 font-mono">
                         {b.total_floors} floors · {facilitiesByBuilding.get(b.id) ?? 0} rooms
                       </p>
                     </div>
@@ -620,24 +616,23 @@ export function LandingPage() {
 
       {/* ========================================================================
           ROLE VIEW B: STUDENT ORGANIZATION OFFICER WORKSPACE
-          Only shows org proposals, signatory progress, and org venue reservations
           ======================================================================== */}
       {isOfficer && (
         <div className="space-y-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="panel p-5 border-t-2 border-t-[var(--accent)]">
+          <div className="ledger-strip grid-cols-2 sm:grid-cols-4">
+            <div className="ledger-cell">
               <p className="kpi-value">{orgProposals.filter((p) => p.status === 'in_review').length}</p>
               <p className="kpi-label">Proposals In Signatory Routing</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{orgProposals.filter((p) => p.status === 'returned').length}</p>
               <p className="kpi-label">Returned for Revision</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{orgProposals.filter((p) => p.status === 'approved').length}</p>
               <p className="kpi-label">Cleared &amp; Approved Events</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{myOrgs.length}</p>
               <p className="kpi-label">Active Officer Seats</p>
             </div>
@@ -645,7 +640,7 @@ export function LandingPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             <div className="lg:col-span-8 panel overflow-hidden">
-              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+              <div className="px-5 py-4 border-b border-[var(--line)] bg-[var(--surface)] flex items-center justify-between">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
                   <FileText className="w-4 h-4 text-[var(--accent)]" />
                   Organization Event Proposals
@@ -680,7 +675,7 @@ export function LandingPage() {
                           )}
                         </div>
                         <p className="font-bold text-sm text-[var(--ink)] mt-1 truncate">{p.title}</p>
-                        <p className="text-xs text-[var(--muted)]">
+                        <p className="text-xs text-[var(--muted)] font-mono">
                           {p.start_datetime ? formatDateTime(p.start_datetime) : 'Schedule TBD'}
                         </p>
                       </div>
@@ -704,7 +699,7 @@ export function LandingPage() {
                     <div key={o.id} className="p-3.5 rounded-[var(--radius)] bg-[var(--surface)] border border-[var(--line)] space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="font-mono text-xs font-bold text-[var(--accent-text)]">{o.acronym}</span>
-                        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-xs bg-[var(--paper)] border border-[var(--line)] text-[var(--ink)]">
+                        <span className="text-xs font-mono uppercase px-2 py-0.5 rounded-[var(--radius)] bg-[var(--paper)] border border-[var(--line)] text-[var(--ink)]">
                           {o.organization_role}
                         </span>
                       </div>
@@ -724,21 +719,20 @@ export function LandingPage() {
       )}
 
       {/* ========================================================================
-          ROLE VIEW C: INSTITUTIONAL SIGNATORY DESK (Adviser, Dean, OSAS, Director, President)
-          Strictly shows ONLY proposals awaiting their digital signature & SLA status
+          ROLE VIEW C: INSTITUTIONAL SIGNATORY DESK
           ======================================================================== */}
       {isPureSignatory && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="panel p-5 border-t-2 border-t-[var(--accent)]">
+          <div className="ledger-strip grid-cols-1 sm:grid-cols-3">
+            <div className="ledger-cell">
               <p className="kpi-value">{inboxItems.length}</p>
               <p className="kpi-label">Packets Awaiting Your Signature</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{inboxItems.filter((i) => isOverdue(i.step)).length}</p>
               <p className="kpi-label">Overdue SLA (&gt;48 Hours)</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">48h</p>
               <p className="kpi-label">Standard Institutional SLA</p>
             </div>
@@ -792,7 +786,7 @@ export function LandingPage() {
                         <p className="font-bold text-sm text-[var(--ink)]">{p.title}</p>
                         <p className="text-xs text-[var(--muted)]">
                           {organization?.acronym ?? organization?.name} · Venue: {facility?.name ?? 'TBD'} ·{' '}
-                          {formatDateTime(p.start_datetime)}
+                          <span className="font-mono">{formatDateTime(p.start_datetime)}</span>
                         </p>
                       </div>
                       <span className="btn-primary text-xs shrink-0">
@@ -809,24 +803,23 @@ export function LandingPage() {
 
       {/* ========================================================================
           ROLE VIEW D: FACILITY ADMIN & SYSTEM ADMIN COMMAND OVERVIEW
-          Shows pending room bookings + final proposal clearances + system metrics
           ======================================================================== */}
       {isAdmin && (
         <div className="space-y-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="panel p-5 border-t-2 border-t-[var(--accent)]">
+          <div className="ledger-strip grid-cols-2 sm:grid-cols-4">
+            <div className="ledger-cell">
               <p className="kpi-value">{allPendingReservations.length}</p>
               <p className="kpi-label">Pending Venue Bookings</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{inboxItems.length}</p>
               <p className="kpi-label">Proposal Venue Clearances</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{facilities.length}</p>
               <p className="kpi-label">Managed Facilities</p>
             </div>
-            <div className="panel p-5">
+            <div className="ledger-cell">
               <p className="kpi-value">{buildings.length}</p>
               <p className="kpi-label">Campus Buildings</p>
             </div>
@@ -834,7 +827,7 @@ export function LandingPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="panel overflow-hidden">
-              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+              <div className="px-5 py-4 border-b border-[var(--line)] bg-[var(--surface)] flex items-center justify-between">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
                   <Clock className="w-4 h-4 text-[var(--accent)]" />
                   Direct Facility Reservation Queue
@@ -856,7 +849,7 @@ export function LandingPage() {
                       <div>
                         <p className="font-bold text-sm text-[var(--ink)]">{r.title}</p>
                         <p className="text-xs text-[var(--muted)]">
-                          {facilitiesMap[r.facility_id]?.name} · {formatDateTime(r.start_datetime)}
+                          {facilitiesMap[r.facility_id]?.name} · <span className="font-mono">{formatDateTime(r.start_datetime)}</span>
                         </p>
                       </div>
                       <span className="tag tag-pending">Review</span>
@@ -867,7 +860,7 @@ export function LandingPage() {
             </div>
 
             <div className="panel overflow-hidden">
-              <div className="px-5 py-4 border-b border-[var(--line)] flex items-center justify-between">
+              <div className="px-5 py-4 border-b border-[var(--line)] bg-[var(--surface)] flex items-center justify-between">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)] flex items-center gap-2">
                   <Inbox className="w-4 h-4 text-[var(--accent)]" />
                   Event Proposal Signatory Queue
@@ -888,7 +881,7 @@ export function LandingPage() {
                     >
                       <div>
                         <p className="font-bold text-sm text-[var(--ink)]">{p.title}</p>
-                        <p className="text-xs text-[var(--muted)]">
+                        <p className="text-xs text-[var(--muted)] font-mono">
                           Step {step.step_order}: {step.label} · {p.reference_no}
                         </p>
                       </div>
@@ -902,7 +895,7 @@ export function LandingPage() {
         </div>
       )}
 
-      {/* University-Wide Student Organization Events Calendar (Visible on all role views) */}
+      {/* University-Wide Student Organization Events Calendar */}
       <StudentOrgEventsCalendar />
     </div>
   )

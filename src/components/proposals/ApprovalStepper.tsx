@@ -31,7 +31,13 @@ export function ApprovalStepper({
     return <p className="text-xs text-[var(--muted)]">Not yet submitted. Routing starts on submit.</p>
   }
   return (
-    <ol className={cn('flex gap-2', compact ? 'items-center' : 'flex-col sm:flex-row')} aria-label="Approval progress">
+    <ol
+      className={cn(
+        'flex gap-2',
+        compact ? 'items-center overflow-x-auto max-w-full py-0.5' : 'flex-col sm:flex-row',
+      )}
+      aria-label="Approval progress"
+    >
       {steps.map((s, i) => {
         const done = s.status === 'approved'
         const active = s.status === 'pending'

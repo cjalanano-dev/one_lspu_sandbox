@@ -313,11 +313,11 @@ export function ProposalFormPage() {
         </span>
       </div>
 
-      <header>
-        <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
-          {status === 'returned' ? 'Revise & resubmit' : 'New event proposal'}
+      <header className="border-b border-[var(--line)] pb-4">
+        <h1 className="text-2xl font-bold text-[var(--ink)] tracking-tight">{title || 'Untitled event'}</h1>
+        <p className="text-xs text-[var(--muted)] mt-1 font-mono uppercase tracking-wider">
+          {status === 'returned' ? 'Status: Returned for Revision' : 'Status: Draft Event Proposal'}
         </p>
-        <h1 className="text-2xl font-black">{title || 'Untitled event'}</h1>
       </header>
 
       {returnNote && status === 'returned' && (
@@ -334,21 +334,26 @@ export function ProposalFormPage() {
       )}
 
       {/* Step indicator */}
-      <ol className="grid grid-cols-5 gap-1" aria-label="Form steps">
+      <ol className="grid grid-cols-5 gap-1.5" aria-label="Form steps">
         {STEPS.map((label, i) => (
-          <li key={label}>
+          <li key={label} className="min-w-0">
             <button
               type="button"
               onClick={() => (i < step ? go(i) : undefined)}
               disabled={i > step || busy || !editable}
               aria-current={i === step ? 'step' : undefined}
               className={cn(
-                'w-full text-left border-t-4 pt-2 text-xs font-bold uppercase tracking-wider',
-                i <= step ? 'border-[var(--ink)]' : 'border-[var(--line)] text-[var(--faint)]',
+                'w-full text-left border-t-4 pt-2 text-xs font-bold uppercase tracking-wider truncate',
+                i === step
+                  ? 'border-[var(--accent)] text-[var(--accent-text)]'
+                  : i < step
+                    ? 'border-[var(--ink)] text-[var(--ink)] cursor-pointer'
+                    : 'border-[var(--line)] text-[var(--faint)]',
               )}
             >
-              <span className="font-mono mr-1">{i + 1}</span>
+              <span className="font-mono mr-1">{i + 1}.</span>
               <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden text-[11px]">{label.split(' ')[0]}</span>
             </button>
           </li>
         ))}
@@ -449,45 +454,97 @@ export function ProposalFormPage() {
 
         {step === 2 && (
           <>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-xs uppercase tracking-wider text-[var(--muted)]">
-                    <th className="py-2 pr-2">Item</th>
-                    <th className="py-2 pr-2 w-20">Qty</th>
-                    <th className="py-2 pr-2 w-28">Unit cost</th>
-                    <th className="py-2 pr-2 w-36">Source</th>
-                    <th className="py-2 pr-2 w-28 text-right">Subtotal</th>
-                    <th className="w-8" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {budget.map((b, i) => {
-                    const set = (patch: Partial<BudgetItem>) => setBudget((l) => l.map((x, j) => (j === i ? { ...x, ...patch } : x)))
-                    return (
-                      <tr key={i} className="border-t border-[var(--line)]">
-                        <td className="py-2 pr-2"><input aria-label="Item" className="field-input w-full" value={b.description} onChange={(e) => set({ description: e.target.value })} placeholder="e.g. Snacks for participants" /></td>
-                        <td className="py-2 pr-2"><input aria-label="Quantity" type="number" min={1} className="field-input w-full" value={b.quantity} onChange={(e) => set({ quantity: Number(e.target.value) })} /></td>
-                        <td className="py-2 pr-2"><input aria-label="Unit cost" type="number" min={0} step="0.01" className="field-input w-full" value={b.unit_cost} onChange={(e) => set({ unit_cost: Number(e.target.value) })} /></td>
-                        <td className="py-2 pr-2">
-                          <select aria-label="Source of funds" className="field-input w-full" value={b.source_of_funds} onChange={(e) => set({ source_of_funds: e.target.value as FundSource })}>
-                            {Object.entries(FUND_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-                          </select>
-                        </td>
-                        <td className="py-2 pr-2 text-right font-mono">{formatPeso((b.quantity || 0) * (b.unit_cost || 0))}</td>
-                        <td><button type="button" aria-label="Remove row" className="btn-text" onClick={() => setBudget((l) => (l.length > 1 ? l.filter((_, j) => j !== i) : [emptyBudgetRow()]))}><Trash2 className="w-4 h-4" /></button></td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-                <tfoot>
-                  <tr className="border-t-2 border-[var(--ink)]">
-                    <td colSpan={4} className="py-2 font-bold uppercase text-xs tracking-wider">Total</td>
-                    <td className="py-2 pr-2 text-right font-mono font-bold">{formatPeso(total)}</td>
-                    <td />
-                  </tr>
-                </tfoot>
-              </table>
+            <div className="space-y-3">
+              {/* Desktop column headers */}
+              <div className="hidden md:grid md:grid-cols-12 gap-2 pb-2 border-b border-[var(--line)] text-xs font-mono uppercase tracking-wider text-[var(--muted)]">
+                <div className="col-span-5">Item Description</div>
+                <div className="col-span-2">Quantity</div>
+                <div className="col-span-2">Unit Cost (₱)</div>
+                <div className="col-span-2">Source</div>
+                <div className="col-span-1 text-right">Subtotal</div>
+              </div>
+
+              <div className="divide-y divide-[var(--line)]">
+                {budget.map((b, i) => {
+                  const set = (patch: Partial<BudgetItem>) =>
+                    setBudget((l) => l.map((x, j) => (j === i ? { ...x, ...patch } : x)))
+                  return (
+                    <div key={i} className="py-3 first:pt-0 md:grid md:grid-cols-12 md:gap-2 md:items-center space-y-2.5 md:space-y-0">
+                      <div className="md:col-span-5">
+                        <label className="md:hidden text-xs font-semibold text-[var(--muted)] block mb-1">Item description</label>
+                        <input
+                          aria-label="Item"
+                          className="field-input w-full"
+                          value={b.description}
+                          onChange={(e) => set({ description: e.target.value })}
+                          placeholder="e.g. Snacks for participants"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 md:contents">
+                        <div className="md:col-span-2">
+                          <label className="md:hidden text-xs font-semibold text-[var(--muted)] block mb-1">Qty</label>
+                          <input
+                            aria-label="Quantity"
+                            type="number"
+                            min={1}
+                            className="field-input w-full font-mono"
+                            value={b.quantity}
+                            onChange={(e) => set({ quantity: Number(e.target.value) })}
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="md:hidden text-xs font-semibold text-[var(--muted)] block mb-1">Unit cost</label>
+                          <input
+                            aria-label="Unit cost"
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            className="field-input w-full font-mono"
+                            value={b.unit_cost}
+                            onChange={(e) => set({ unit_cost: Number(e.target.value) })}
+                          />
+                        </div>
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="md:hidden text-xs font-semibold text-[var(--muted)] block mb-1">Source of funds</label>
+                        <select
+                          aria-label="Source of funds"
+                          className="field-input w-full"
+                          value={b.source_of_funds}
+                          onChange={(e) => set({ source_of_funds: e.target.value as FundSource })}
+                        >
+                          {Object.entries(FUND_LABEL).map(([k, v]) => (
+                            <option key={k} value={k}>
+                              {v}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="md:col-span-1 flex items-center justify-between md:justify-end gap-2 pt-1 md:pt-0">
+                        <span className="md:hidden text-xs font-mono text-[var(--muted)]">Subtotal:</span>
+                        <span className="font-mono text-xs font-bold text-[var(--ink)]">
+                          {formatPeso((b.quantity || 0) * (b.unit_cost || 0))}
+                        </span>
+                        <button
+                          type="button"
+                          aria-label="Remove row"
+                          className="btn-text p-1.5 text-[var(--muted)] hover:text-[var(--danger-text)]"
+                          onClick={() =>
+                            setBudget((l) => (l.length > 1 ? l.filter((_, j) => j !== i) : [emptyBudgetRow()]))
+                          }
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              <div className="border-t-2 border-[var(--ink)] pt-3 flex items-center justify-between">
+                <span className="font-bold uppercase text-xs tracking-wider text-[var(--ink)]">Total Estimated Budget</span>
+                <span className="font-mono font-bold text-base text-[var(--ink)]">{formatPeso(total)}</span>
+              </div>
             </div>
             <button type="button" className="btn-outline inline-flex items-center gap-2 text-sm" onClick={() => setBudget((l) => [...l, emptyBudgetRow()])}>
               <Plus className="w-4 h-4" /> Add line item
@@ -555,8 +612,8 @@ export function ProposalFormPage() {
         )}
       </section>
 
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex gap-2">
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center justify-between sm:justify-start gap-2">
           {step > 0 && (
             <button type="button" className="btn-outline inline-flex items-center gap-2" disabled={busy} onClick={() => go(step - 1)}>
               <ArrowLeft className="w-4 h-4" /> Back
@@ -568,17 +625,17 @@ export function ProposalFormPage() {
             </button>
           )}
         </div>
-        <div className="flex gap-2">
-          <button type="button" className="btn-outline inline-flex items-center gap-2" disabled={busy || !editable} onClick={() => save().catch((e) => setErrors([e.message]))}>
+        <div className="grid grid-cols-2 sm:flex gap-2">
+          <button type="button" className="btn-outline inline-flex items-center justify-center gap-2" disabled={busy || !editable} onClick={() => save().catch((e) => setErrors([e.message]))}>
             <Save className="w-4 h-4" /> Save draft
           </button>
           {step < STEPS.length - 1 ? (
-            <button type="button" className="btn-primary inline-flex items-center gap-2" disabled={busy || !editable} onClick={() => go(step + 1)}>
+            <button type="button" className="btn-primary inline-flex items-center justify-center gap-2" disabled={busy || !editable} onClick={() => go(step + 1)}>
               Next <ArrowRight className="w-4 h-4" />
             </button>
           ) : (
-            <button type="button" className="btn-primary inline-flex items-center gap-2" disabled={busy || !editable} onClick={handleSubmit}>
-              <Send className="w-4 h-4" /> {status === 'returned' ? 'Resubmit for approval' : 'Submit for approval'}
+            <button type="button" className="btn-primary inline-flex items-center justify-center gap-2" disabled={busy || !editable} onClick={handleSubmit}>
+              <Send className="w-4 h-4" /> {status === 'returned' ? 'Resubmit' : 'Submit'}
             </button>
           )}
         </div>

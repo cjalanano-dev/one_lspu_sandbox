@@ -224,17 +224,14 @@ export function CampusExplorerPage() {
 
   return (
     <div className="space-y-6">
-      {/* Grayish-Black Header Bar */}
-      <div className="rounded-[var(--radius-lg)] bg-[var(--ink)] text-[var(--paper)] p-6 border border-[var(--ink-soft)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Architectural Header Bar */}
+      <div className="rounded-[var(--radius)] bg-[var(--ink)] text-[var(--paper)] p-6 border border-[var(--line-strong)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent-line)]">
-            Spatial Campus Discovery
-          </span>
-          <h1 className="text-2xl font-extrabold text-[var(--paper)] tracking-tight flex items-center gap-2.5 mt-0.5">
-            <Compass className="w-6 h-6 text-[var(--accent)]" />
+          <h1 className="text-2xl font-bold text-[var(--paper)] tracking-tight flex items-center gap-2.5">
+            <Compass className="w-6 h-6 text-[var(--accent-line)]" />
             Interactive Campus Explorer
           </h1>
-          <p className="text-xs text-[var(--paper)]/70 mt-1">
+          <p className="text-xs text-[var(--paper)]/75 mt-1">
             Select a campus building, switch floor levels, and inspect room capacities on the schematic floor plan.
           </p>
         </div>
@@ -389,9 +386,9 @@ export function CampusExplorerPage() {
       {selectedBuilding && (
         <>
           {/* Floors + search + filters + view tabs */}
-          <div className="panel p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-              <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mr-1 flex items-center gap-1">
+          <div className="panel p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0">
+              <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mr-1 flex items-center gap-1 shrink-0">
                 <Layers className="w-3.5 h-3.5 text-[var(--accent)]" />
                 Levels:
               </span>
@@ -405,7 +402,7 @@ export function CampusExplorerPage() {
                       setSelectedFacility(null)
                     }}
                     aria-pressed={isSelected}
-                    className={`px-3.5 py-1.5 rounded-[var(--radius)] text-xs font-bold whitespace-nowrap transition duration-150 ${
+                    className={`px-3.5 py-1.5 rounded-[var(--radius)] text-xs font-bold whitespace-nowrap transition duration-150 shrink-0 ${
                       isSelected
                         ? 'bg-[var(--ink)] text-[var(--paper)] border border-[var(--accent)]'
                         : 'border border-[var(--line)] text-[var(--muted)] hover:bg-[var(--accent-tint)] hover:text-[var(--accent-text)]'
@@ -417,9 +414,9 @@ export function CampusExplorerPage() {
               })}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 w-full lg:w-auto">
               <div className="relative flex-1 sm:w-48">
-                <Search className="w-4 h-4 text-[var(--faint)] absolute left-3 top-2.5" />
+                <Search className="w-4 h-4 text-[var(--faint)] absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Search room, code..."
@@ -431,12 +428,12 @@ export function CampusExplorerPage() {
               </div>
 
               <div className="flex items-center gap-1.5">
-                <Filter className="w-3.5 h-3.5 text-[var(--faint)]" />
+                <Filter className="w-3.5 h-3.5 text-[var(--faint)] shrink-0" />
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
                   aria-label="Category filter"
-                  className="border border-[var(--line)] rounded-[var(--radius)] text-xs py-2 px-3 font-medium text-[var(--ink)] bg-[var(--paper)] focus:border-[var(--accent)]"
+                  className="w-full sm:w-auto border border-[var(--line)] rounded-[var(--radius)] text-xs py-2 px-3 font-medium text-[var(--ink)] bg-[var(--paper)] focus:border-[var(--accent)]"
                 >
                   <option value="all">All categories</option>
                   <option value="auditorium">Auditorium</option>
@@ -448,7 +445,7 @@ export function CampusExplorerPage() {
                 </select>
               </div>
 
-              <div className="flex items-center gap-1.5 ml-auto">
+              <div className="grid grid-cols-2 sm:flex items-center gap-1.5 sm:ml-auto">
                 <button
                   onClick={() => setViewTab('this-floor')}
                   className={`px-3 py-1.5 rounded-[var(--radius)] text-xs font-bold transition duration-150 ${
