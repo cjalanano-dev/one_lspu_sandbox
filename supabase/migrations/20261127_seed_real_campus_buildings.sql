@@ -43,3 +43,4 @@ FROM public.buildings b
 ON CONFLICT (building_id, floor_number) DO NOTHING;
 
 NOTIFY pgrst, 'reload schema';
+

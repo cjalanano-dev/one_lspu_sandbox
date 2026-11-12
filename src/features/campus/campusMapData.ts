@@ -327,3 +327,4 @@ export const REAL_CAMPUS_BUILDINGS: CampusMapBuilding[] = [
     floors: 1,
   },
 ]
+
