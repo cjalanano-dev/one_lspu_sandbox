@@ -79,7 +79,7 @@ export function ProposalFormPage() {
   const [description, setDescription] = useState('')
   const [objectives, setObjectives] = useState('')
   const [attendees, setAttendees] = useState(30)
-  const [facilityId, setFacilityId] = useState('')
+  const [facilityId, setFacilityId] = useState(search.get('facility') ?? '')
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
   const [equipment, setEquipment] = useState<string[]>([])

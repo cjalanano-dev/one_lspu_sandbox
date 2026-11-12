@@ -9,11 +9,14 @@ import {
   MapPin,
   Info,
   ArrowRight,
+  FileText,
 } from 'lucide-react'
 
 import { dataStore } from '../../lib/dataStore'
 import { facilityImageUrl } from '../../lib/facilityImages'
 import { FloorPlanViewer } from '../../features/campus/FloorPlanViewer'
+import { InteractiveCampusMap } from '../../features/campus/InteractiveCampusMap'
+import { REAL_CAMPUS_BUILDINGS, CampusMapBuilding } from '../../features/campus/campusMapData'
 import { useAuth } from '../../features/auth/AuthContext'
 import type { Building, Floor, Facility } from '../../types'
 
@@ -21,7 +24,7 @@ const MAX_CHIPS_PER_CARD = 5
 
 export function CampusExplorerPage() {
   const location = useLocation()
-  const { isApprover, isAdmin } = useAuth()
+  const { user, isApprover, isAdmin, isOfficer } = useAuth()
   const isPureSignatory = isApprover && !isAdmin
 
   const [buildings, setBuildings] = useState<Building[]>([])
@@ -239,6 +242,31 @@ export function CampusExplorerPage() {
           <Building2 className="w-4 h-4" /> Full Facilities Directory
         </Link>
       </div>
+
+      {/* Interactive 2D Real Campus Map (LSPU San Pablo City Campus) */}
+      <InteractiveCampusMap
+        selectedBuildingCode={selectedBuilding?.code}
+        onSelectBuilding={(mapBuilding: CampusMapBuilding) => {
+          const matched = buildings.find(
+            (b) => b.code.toLowerCase() === mapBuilding.code.toLowerCase() ||
+                   b.name.toLowerCase().includes(mapBuilding.shortLabel.toLowerCase())
+          )
+          if (matched) {
+            setSelectedBuilding(matched)
+          } else {
+            // Virtual fallback building for unseeded or auxiliary buildings
+            setSelectedBuilding({
+              id: mapBuilding.id,
+              code: mapBuilding.code,
+              name: mapBuilding.name,
+              description: mapBuilding.description ?? null,
+              location_description: 'LSPU San Pablo Campus',
+              total_floors: mapBuilding.floors ?? 1,
+              created_at: new Date().toISOString(),
+            })
+          }
+        }}
+      />
 
       {/* Building Selector Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -515,13 +543,26 @@ export function CampusExplorerPage() {
                         </div>
                       </div>
 
-                      <Link
-                        to={`/facilities/${selectedFacility.id}`}
-                        className="w-full btn-primary gap-1.5 py-3"
-                      >
-                        {isPureSignatory ? 'Inspect Venue Schedule & Specs' : 'View Details & Reserve'}
-                        <ArrowRight className="w-4 h-4 shrink-0" />
-                      </Link>
+                      <div className="flex flex-col gap-2 pt-2">
+                        {isOfficer && (
+                          <Link
+                            to={`/proposals/new?facility=${selectedFacility.id}`}
+                            className="w-full btn-accent gap-1.5 py-3 text-center justify-center font-bold"
+                          >
+                            <FileText className="w-4 h-4 shrink-0" />
+                            File Event Proposal for this Room
+                          </Link>
+                        )}
+                        <Link
+                          to={`/facilities/${selectedFacility.id}`}
+                          className="w-full btn-primary gap-1.5 py-3 text-center justify-center"
+                        >
+                          {isPureSignatory
+                            ? 'Inspect Venue Schedule & Specs'
+                            : 'View Details & Book Regular Reservation'}
+                          <ArrowRight className="w-4 h-4 shrink-0" />
+                        </Link>
+                      </div>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center h-full text-center p-8">
