@@ -27,6 +27,7 @@ DECLARE
 
   -- Floors
   v_fl_old_ccs_1f UUID;
+  v_fl_old_ccs_2f UUID;
   v_fl_new_ccs_1f UUID;
   v_fl_cte_2f UUID;
 BEGIN
@@ -66,6 +67,11 @@ BEGIN
   VALUES (v_b_old_ccs, '1st Floor', 1)
   ON CONFLICT (building_id, floor_number) DO UPDATE SET name = EXCLUDED.name
   RETURNING id INTO v_fl_old_ccs_1f;
+
+  INSERT INTO public.floors (building_id, name, floor_number)
+  VALUES (v_b_old_ccs, '2nd Floor', 2)
+  ON CONFLICT (building_id, floor_number) DO UPDATE SET name = EXCLUDED.name
+  RETURNING id INTO v_fl_old_ccs_2f;
 
   INSERT INTO public.floors (building_id, name, floor_number)
   VALUES (v_b_new_ccs, '1st Floor', 1)
@@ -139,17 +145,19 @@ BEGIN
     true
   );
 
-  -- E. Old CCS Building (Lec 1, Lab 1 to 6)
+  -- E. Old CCS Building (Floor 1: Lab 1-4; Floor 2: Lec 1, Lab 5-6)
   INSERT INTO public.facilities (
     building_id, floor_id, name, facility_code, category, description, capacity, equipment, reservation_enabled
   ) VALUES
-    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Lecture Room 1', 'OLD-CCS-LEC1', 'lecture_hall', 'Old CCS Lecture Room 1', 45, '["Whiteboard", "Wall-mounted Display"]'::jsonb, true),
-    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 1', 'OLD-CCS-LAB1', 'laboratory', 'Old CCS Computer Laboratory 1', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
-    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 2', 'OLD-CCS-LAB2', 'laboratory', 'Old CCS Computer Laboratory 2', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
-    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 3', 'OLD-CCS-LAB3', 'laboratory', 'Old CCS Computer Laboratory 3', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
-    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 4', 'OLD-CCS-LAB4', 'laboratory', 'Old CCS Computer Laboratory 4', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
-    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 5', 'OLD-CCS-LAB5', 'laboratory', 'Old CCS Computer Laboratory 5', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
-    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 6', 'OLD-CCS-LAB6', 'laboratory', 'Old CCS Computer Laboratory 6', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true);
+    -- Floor 1
+    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 1', 'OLD-CCS-LAB1', 'laboratory', 'Old CCS Computer Laboratory 1 (Floor 1)', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
+    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 2', 'OLD-CCS-LAB2', 'laboratory', 'Old CCS Computer Laboratory 2 (Floor 1)', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
+    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 3', 'OLD-CCS-LAB3', 'laboratory', 'Old CCS Computer Laboratory 3 (Floor 1)', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
+    (v_b_old_ccs, v_fl_old_ccs_1f, 'Old CCS - Computer Lab 4', 'OLD-CCS-LAB4', 'laboratory', 'Old CCS Computer Laboratory 4 (Floor 1)', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
+    -- Floor 2
+    (v_b_old_ccs, v_fl_old_ccs_2f, 'Old CCS - Lecture Room 1', 'OLD-CCS-LEC1', 'lecture_hall', 'Old CCS Lecture Room 1 (Floor 2)', 45, '["Whiteboard", "Wall-mounted Display"]'::jsonb, true),
+    (v_b_old_ccs, v_fl_old_ccs_2f, 'Old CCS - Computer Lab 5', 'OLD-CCS-LAB5', 'laboratory', 'Old CCS Computer Laboratory 5 (Floor 2)', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true),
+    (v_b_old_ccs, v_fl_old_ccs_2f, 'Old CCS - Computer Lab 6', 'OLD-CCS-LAB6', 'laboratory', 'Old CCS Computer Laboratory 6 (Floor 2)', 40, '["Computer Workstations", "Air Conditioning", "Projector"]'::jsonb, true);
 
   -- F. University Gymnasium (Own facility)
   INSERT INTO public.facilities (
@@ -319,3 +327,4 @@ BEGIN
 END $$;
 
 NOTIFY pgrst, 'reload schema';
+
